@@ -54,4 +54,4 @@ curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Hello C# Sample v1
 ```
 ## What's Next?
-[Integrate with Twilio](05-twiliointegration.md)
+[Change configuration](03-changeconfig.md)

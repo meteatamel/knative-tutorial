@@ -90,4 +90,4 @@ Hello World C# v1
 ```
 
 ## What's Next?
-[Change Configuration](02-changeconfig.md)
+[Configure Domain](02-configuredomain.md)
