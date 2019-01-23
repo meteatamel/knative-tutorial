@@ -98,7 +98,7 @@ At this point, the sample simply logs out the received messages.
 
 Let's first define the translation protocol we'll use in our sample. The body of Pub/Sub messages will include text and the languages to translate from and to as follows:
 
-```json
+```
 {text = 'Hello World', from='en', to='es'}: English to Spanish
 {text = 'Hello World', from='', to='es'}: Detected language to Spanish
 {text = 'Hello World', from='', to=''}: Error
