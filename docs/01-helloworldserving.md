@@ -79,13 +79,18 @@ The IP address of Knative ingress is listed under `EXTERNAL_IP`:
 ```bash
 kubectl get svc knative-ingressgateway -n istio-system
 ```
+Let's set this `EXTERNAL_IP` to a `KNATIVE_INGRESS` variable:
+
+```bash
+export KNATIVE_INGRESS=$(kubectl -n istio-system get service knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
 
 The URL of the service follows this format: `{service}.{namespace}.example.com`. In this case, we have `helloworld-csharp.default.example.com`. 
 
 Make a request to your service (replace `IP_ADDRESS` with `EXTERNAL_IP`):
 
 ```bash
-curl -H "Host: helloworld-csharp.default.example.com" http://{IP_ADDRESS}
+curl -H "Host: helloworld-csharp.default.example.com" http://$KNATIVE_INGRESS
 Hello World C# v1
 ```
 

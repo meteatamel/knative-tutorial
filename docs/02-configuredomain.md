@@ -47,10 +47,16 @@ You can then check that the custom domain is applied:
 kubectl get route helloworld-csharp --output jsonpath="{.status.domain}"
 ```
 
-Finally, you can test that the domain works with curl (again replace `1.2.3.4` with real IP):
+Let's set this `EXTERNAL_IP` to a `KNATIVE_INGRESS` variable:
 
 ```bash
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
+export KNATIVE_INGRESS=$(kubectl -n istio-system get service knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+Finally, you can test that the domain works with curl:
+
+```bash
+curl http://helloworld-csharp.default.$KNATIVE_INGRESS.nip.io
 Hello C# Sample v1
 ```
 ## What's Next?

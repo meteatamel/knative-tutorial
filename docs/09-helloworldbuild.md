@@ -29,7 +29,7 @@ spec:
     args:
     - "--dockerfile=/workspace/Dockerfile"
     # MY_GCP_PROJECT: Replace with the GCP Project's ID.
-    - "--destination=gcr.io/MY_GCP_PROJECT/helloworld-csharp:v1"
+    - "--destination=gcr.io/MY_GCP_PROJECT/helloworld-csharp:knativebuild"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to GCR.
 
@@ -40,6 +40,12 @@ You can start the build with:
 ```bash
 kubectl apply -f build-helloworld-csharp-gcr.yaml
 ```
+Check that it is created:
+
+```bash
+kubectl get build
+```
+
 Soon after, you'll see a pod created for the build:
 
 ```bash
@@ -64,4 +70,4 @@ At this point, you should see the image pushed to GCR:
 ![Google Container Registry](./images/gcr.png)
 
 ## What's Next?
-[Docker Build](10-dockerbuild.md)
+[Docker Hub Build](10-dockerbuild.md)

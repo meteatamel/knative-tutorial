@@ -37,7 +37,7 @@ Before going through the tutorial, make sure all Knative components show a `STAT
    * [Integrate with Vision API](docs/08-visioneventing.md)
 * Knative Build
    * [Hello World Build](docs/09-helloworldbuild.md)
-   * [Docker Build](docs/10-dockerbuild.md)
+   * [Docker Hub Build](docs/10-dockerbuild.md)
 -------
 
 This is not an official Google product.

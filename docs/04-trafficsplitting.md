@@ -51,16 +51,13 @@ helloworld-csharp-00002
 helloworld-csharp-00003   
 helloworld-csharp-00004   
 ```
-You should see roughly 20% of the requests going to the new revision (replace `1.2.3.4` with IP of Knative ingress):
+You should see roughly 20% of the requests going to the new revision:
 
 ```bash
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
+for i in {1..10}; do curl "http://helloworld-csharp.default.$KNATIVE_INGRESS.nip.io" ; sleep 1; done
 Hello C# Sample v1
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Hello C# Sample v1
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Hello C# Sample v1
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Hello C# Sample v4
 ```
 
@@ -98,16 +95,13 @@ Apply the change:
 ```bash
 kubectl apply -f service-v5.yaml
 ```
-You should see roughly 50% of the requests split between revisions (replace `1.2.3.4` with IP of Knative ingress):
+You should see roughly 50% of the requests split between revisions:
 
 ```bash
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
+for i in {1..10}; do curl "http://helloworld-csharp.default.$KNATIVE_INGRESS.nip.io" ; sleep 1; done
 Hello C# Sample v1
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Bye C# Sample v3
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Hello C# Sample v1
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
 Bye C# Sample v3
 ```
 

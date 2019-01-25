@@ -1,12 +1,12 @@
 # Hello World Eventing
 
-[Knative Eventing](https://github.com/knative/docs/tree/master/eventing) has an [Installation](https://github.com/knative/docs/tree/master/eventing#installation) section. We are assuming that you already went through it.
+You probably installed [Knative Eventing](https://github.com/knative/docs/tree/master/eventing) when you [installed Knative](https://github.com/knative/docs/blob/master/install/Knative-with-GKE.md#installing-knative). If not, Knative Eventing has an [Installation](https://github.com/knative/docs/tree/master/eventing#installation) section. We are assuming that you already went through it.
 
 Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.) and supports direct/simple and fanout delivery options:
 
 ![Diagram](https://github.com/knative/docs/blob/master/eventing/control-plane.png?raw=true)
 
-In this tutorial, we will focus on GCP Pub/Sub events and fanout delivery using Channel and Subscription. 
+In this tutorial, we will focus on GCP Pub/Sub events and fanout delivery using Channel and Subscription. Setup Knative Eventing using the `release-with-gcppubsub.yaml` file as described in the [GCP Cloud Pub/Sub](https://github.com/knative/docs/tree/master/eventing/samples/gcp-pubsub-source) page.
 
 ## Configuring outbound network access
 
@@ -14,9 +14,23 @@ In Knative, the outbound network access is disabled by default. This means that 
 
 In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://github.com/knative/docs/blob/master/serving/outbound-network-access.md) page to enable access. 
 
-## Hello World - .NET Core sample
+## Setup GcpPubSubSource and channel
 
 [GCP Cloud Pub/Sub](https://github.com/knative/docs/tree/master/eventing/samples/gcp-pubsub-source) page shows how to configure a GCP Pub/Sub event source. A `Go` Knative service listens for Pub/Sub events and dumps the contents of the event message. Go through this tutorial to setup eventing infrastructure. 
+
+At the end of the tutorial, make sure you have the `gcppubsubsource` and `channel` are setup:
+
+```bash
+kubectl get gcppubsubsource
+NAME             AGE
+testing-source   3d
+
+kubectl get channel
+NAME          AGE
+pubsub-test   3d
+```
+
+## Hello World - .NET Core sample
 
 Let's now create a .NET Core version of that sample. Create an empty ASP.NET Core app:
 

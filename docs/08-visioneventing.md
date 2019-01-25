@@ -297,7 +297,7 @@ gsutil notification list gs://knative-bucket
 We can finally test our Knative service by uploading an image to the bucket. You can simply drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
 
 ```bash
-gsutil cp mypicture.jpeg gs://knative-bucket/
+gsutil cp atamel.jpg gs://knative-bucket/
 ```
 This triggers a Pub/Sub message to our Knative service. Wait a little and check that a pod is created:
 
