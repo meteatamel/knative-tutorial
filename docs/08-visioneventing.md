@@ -306,9 +306,12 @@ kubectl get pods --selector serving.knative.dev/service=vision-csharp
 ```
 You can inspect the logs of the subscriber:
 
+You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
+
 ```bash
-kubectl logs --selector serving.knative.dev/service=vision-csharp -c user-container
+kubectl logs --follow -c user-container vision-csharp-00001-deployment-<podid>
 ```
+
 You should see something similar to this:
 
 ```bash

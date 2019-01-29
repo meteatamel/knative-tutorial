@@ -49,7 +49,6 @@ After the container is pushed, deploy the app.
 ```bash
 kubectl apply -f service-v1.yaml
 ```
-
 Check that pods are created and all Knative constructs (service, configuration, revision, route) have been deployed:
 
 ```bash
@@ -68,6 +67,32 @@ revision.serving.knative.dev/helloworld-csharp-00001
 
 NAME                                          
 route.serving.knative.dev/helloworld-csharp   
+```
+## (Optional) Install watch
+
+[Watch](https://en.wikipedia.org/wiki/Watch_(Unix)) is a command-line tool that runs the specified command repeatedly and displays the results on standard output so you can watch it change over time. It can be useful to watch Knative pods, services, etc. If you're using Mac, you can install watch using `homebrew` or a similar tool.
+
+To watch pods, Knative service, configuration, revision and route using watch, you can do this:
+
+```bash
+watch -n 1 kubectl get pod,ksvc,configuration,revision,route
+
+Every 1.0s: kubectl get pod,ksvc,config...
+
+NAME                                                     READY     STATUS    RESTARTS   AGE
+pod/helloworld-csharp-00001-deployment-b6c485d9f-rm7l4   3/3       Running   0          1m
+
+NAME                                            AGE
+service.serving.knative.dev/helloworld-csharp   1m
+
+NAME                                                  AGE
+configuration.serving.knative.dev/helloworld-csharp   1m
+
+NAME                                                   AGE
+revision.serving.knative.dev/helloworld-csharp-00001   1m
+
+NAME                                          AGE
+route.serving.knative.dev/helloworld-csharp   1m
 ```
 
 ## Test the service
