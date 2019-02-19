@@ -4,7 +4,7 @@
 
 The Knative Build API has a [Build](https://github.com/knative/docs/blob/master/build/builds.md) type that represents a single build job with one or more steps. There's also a [BuildTemplate](https://github.com/knative/docs/blob/master/build/build-templates.md) that allows you to chain Builds and parameterize them. 
 
-In the previous labs, we've been building and pushing container images manually to DockerHub. Let's utilize Knative Build and push to Google Cloud Registry (GCR) instead. 
+In the previous labs, we've been building and pushing container images manually to DockerHub. Let's utilize Knative Build and push to Google Container Registry (GCR) instead. 
 
 ## Design the build
 
