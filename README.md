@@ -38,6 +38,7 @@ Before going through the tutorial, make sure all Knative components show a `STAT
 * Knative Build
    * [Hello World Build](docs/09-helloworldbuild.md)
    * [Docker Hub Build](docs/10-dockerbuild.md)
+   * [Automatic Build](docs/11-autobuild.md)
 -------
 
 This is not an official Google product.
