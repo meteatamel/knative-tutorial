@@ -37,8 +37,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # replace {username} with your DockerHub 
-            image: docker.io/{username}/helloworld-csharp:v1
+            # replace meteatamel with your DockerHub 
+            image: docker.io/meteatamel/helloworld-csharp:v1
             env:
               - name: TARGET
                 value: "C# Sample v1"

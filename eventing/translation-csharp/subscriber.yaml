@@ -23,6 +23,10 @@ spec:
           container:
             # Replace meteatamel with your actual DockerHub
             image: docker.io/meteatamel/translation-csharp:v1
+        metadata:
+          annotations:
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription

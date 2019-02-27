@@ -129,8 +129,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/twilio-csharp:v1
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/twilio-csharp:v1
 ```
 
 After the container is pushed, deploy the app. 
