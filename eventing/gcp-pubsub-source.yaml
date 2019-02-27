@@ -23,7 +23,7 @@ spec:
   gcpCredsSecret:  # A secret in the knative-sources namespace
     name: google-cloud-key
     key: key.json
-  googleCloudProject: MY_GCP_PROJECT  # Replace this
+  googleCloudProject: knative-atamel  # Replace knative-atamel with your project id
   topic: testing
   sink:
     apiVersion: eventing.knative.dev/v1alpha1

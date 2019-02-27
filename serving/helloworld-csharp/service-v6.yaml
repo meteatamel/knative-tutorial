@@ -20,10 +20,26 @@ spec:
   runLatest:
     configuration:
       revisionTemplate:
+        metadata:
+          annotations:
+            # Default: Knative concurrency-based autoscaling with 
+            # 100 requests in-flight per pod.
+            autoscaling.knative.dev/class:  kpa.autoscaling.knative.dev
+            autoscaling.knative.dev/metric: concurrency
+            autoscaling.knative.dev/target: "100"
+
+            # Alternative: Kubernetes CPU-based autoscaling.
+            # autoscaling.knative.dev/class:  hpa.autoscaling.knative.dev
+            # autoscaling.knative.dev/metric: cpu
+            
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
+            # Limit scaling to 100 pods.
+            autoscaling.knative.dev/maxScale: "5"
         spec:
           container:
             # Replace meteatamel with your actual DockerHub
             image: docker.io/meteatamel/helloworld-csharp:v1
             env:
               - name: TARGET
-                value: "C# Sample v1"
+                value: "C# Sample v6"

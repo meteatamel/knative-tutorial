@@ -21,8 +21,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/translation-csharp:v1
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/translation-csharp:v1
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription

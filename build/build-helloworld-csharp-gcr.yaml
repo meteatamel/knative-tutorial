@@ -26,5 +26,5 @@ spec:
     image: "gcr.io/kaniko-project/executor:v0.6.0"
     args:
     - "--dockerfile=/workspace/Dockerfile"
-    # MY_GCP_PROJECT: Replace with the GCP Project's ID.
-    - "--destination=gcr.io/MY_GCP_PROJECT/helloworld-csharp:v1"
+    # Replace knative-atamel with your GCP Project's ID.
+    - "--destination=gcr.io/knative-atamel/helloworld-csharp:v1"

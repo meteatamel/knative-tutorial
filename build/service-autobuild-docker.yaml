@@ -33,13 +33,13 @@ spec:
             name: kaniko
             arguments:
               - name: IMAGE
-                # Replace {username} with your actual DockerHub
-                value: docker.io/{username}/helloworld-csharp:from-source
+                # Replace meteatamel with your actual DockerHub
+                value: docker.io/meteatamel/helloworld-csharp:from-source
       revisionTemplate:
         spec:
           container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/helloworld-csharp:from-source
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/helloworld-csharp:from-source
             imagePullPolicy: Always
             env:
               - name: TARGET
