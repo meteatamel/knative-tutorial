@@ -30,6 +30,7 @@ Before going through the tutorial, make sure all Knative components show a `STAT
    * [Configure domain](docs/02-configuredomain.md)
    * [Change configuration](docs/03-changeconfig.md)
    * [Traffic splitting](docs/04-trafficsplitting.md)
+   * [Configure autoscaling](docs/04.5-configureautoscaling.md)
    * [Integrate with Twilio](docs/05-twiliointegration.md)
 * Knative Eventing 
    * [Hello World Eventing](docs/06-helloworldeventing.md)
