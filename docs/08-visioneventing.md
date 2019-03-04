@@ -13,19 +13,7 @@ Let's start with creating an empty ASP.NET Core app:
 ```bash
 dotnet new web -o vision-csharp
 ```
-Inside the `vision-csharp` folder, change [Program.cs](../eventing/vision-csharp/Program.cs) to listen on port `8080`:
-
-```csharp
-public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-{
-    string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-    string url = String.Concat("http://0.0.0.0:", port);
-
-    return WebHost.CreateDefaultBuilder(args)
-        .UseStartup<Startup>().UseUrls(url);
-}
-```
-Update [Startup.cs](../eventing/vision-csharp/Startup.cs) to log incoming messages for now:
+Inside the `vision-csharp` folder, update [Startup.cs](../eventing/vision-csharp/Startup.cs) to log incoming messages for now:
 
 ```csharp
 using System;
@@ -217,17 +205,18 @@ COPY . .
 RUN dotnet publish -c Release -o out
 
 ENV PORT 8080
-EXPOSE $PORT
+
+ENV ASPNETCORE_URLS http://*:${PORT}
 
 CMD ["dotnet", "out/vision-csharp.dll"]
 ```
 
-Build and push the Docker image (replace `{username}` with your actual DockerHub): 
+Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
 
 ```docker
-docker build -t {username}/vision-csharp:v1 .
+docker build -t meteatamel/vision-csharp:v1 .
 
-docker push {username}/vision-csharp:v1
+docker push meteatamel/vision-csharp:v1
 ```
 ## Deploy the service and subscription
 
@@ -244,8 +233,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/vision-csharp:v1
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/vision-csharp:v1
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription

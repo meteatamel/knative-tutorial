@@ -17,19 +17,7 @@ Let's start with creating an empty ASP.NET Core app:
 ```bash
 dotnet new web -o twilio-csharp
 ```
-Inside the `twilio-csharp` folder, change [Program.cs](../serving/twilio-csharp/Program.cs) to listen on port `8080`:
-
-```csharp
-public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-{
-    string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-    string url = String.Concat("http://0.0.0.0:", port);
-
-    return WebHost.CreateDefaultBuilder(args)
-        .UseStartup<Startup>().UseUrls(url);
-}
-```
-And change [Startup.cs](../serving/twilio-csharp/Startup.cs) to use MVC:
+Inside the `twilio-csharp` folder, change [Startup.cs](../serving/twilio-csharp/Startup.cs) to use MVC:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -100,17 +88,18 @@ COPY . .
 RUN dotnet publish -c Release -o out
 
 ENV PORT 8080
-EXPOSE $PORT
+
+ENV ASPNETCORE_URLS http://*:${PORT}
 
 CMD ["dotnet", "out/twilio-csharp.dll"]
 ```
 
-Build and push the Docker image (replace `{username}` with your actual DockerHub): 
+Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
 
 ```docker
-docker build -t {username}/twilio-csharp:v1 .
+docker build -t meteatamel/twilio-csharp:v1 .
 
-docker push {username}/twilio-csharp:v1
+docker push meteatamel/twilio-csharp:v1
 ```
 
 ## Deploy the Knative service

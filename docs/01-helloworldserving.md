@@ -6,20 +6,18 @@
 
 Let's start with deploying an ASP.NET Core service on Knative as described on [Hello World .NET - Core sample](https://github.com/knative/docs/tree/master/serving/samples/helloworld-csharp) page with a few minor changes to the instructions:
 
-1. We use the (currently) latest version of .NET Core runtime: 2.2. In [Dockerfile](../serving/helloworld-csharp/Dockerfile), we changed the first line to reflect this: `FROM microsoft/dotnet:2.2-sdk`
-
-2. When building the Docker image, we tag our image with v1, v2, etc., so we can keep track of different versions of the service: 
+1. When building the Docker image, we tag our image with v1, v2, etc., so we can keep track of different versions of the service: 
 
 3. instead of `service.yaml`, we use [service-v1.yaml](../serving/helloworld-csharp/service-v1.yaml) for the first version. Again, to keep track of different service versions better. 
 
 ## Build and push Docker image
 
-With these changes in mind, in [helloworld-csharp](../serving/helloworld-csharp/) folder, build and push the container image. Replace `{username}` with your actual Docker Hub username:
+With these changes in mind, in [helloworld-csharp](../serving/helloworld-csharp/) folder, build and push the container image. Replace `meteatamel` with your actual Docker Hub username:
 
 ```docker
-docker build -t {username}/helloworld-csharp:v1 .
+docker build -t meteatamel/helloworld-csharp:v1 .
 
-docker push {username}/helloworld-csharp:v1
+docker push meteatamel/helloworld-csharp:v1
 ```
 ## Deploy the Knative service
 

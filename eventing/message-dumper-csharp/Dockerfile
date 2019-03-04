@@ -16,7 +16,9 @@ RUN dotnet publish -c Release -o out
 
 # Configure and document the service HTTP port.
 ENV PORT 8080
-EXPOSE $PORT
+
+# Make sure the app binds to $PORT
+ENV ASPNETCORE_URLS http://*:${PORT}
 
 # Run the web service on container startup.
 CMD ["dotnet", "out/message-dumper-csharp.dll"]
