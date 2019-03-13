@@ -16,11 +16,11 @@ We built and tested on Google Kubernetes Engine (GKE) but the samples should wor
 Before going through the tutorial, make sure all Knative components show a `STATUS` of `Running`:
 
 ```
-    kubectl get pods --namespace knative-serving
-    kubectl get pods --namespace knative-build
-    kubectl get pods --namespace knative-eventing
-    kubectl get pods --namespace knative-sources
-    kubectl get pods --namespace knative-monitoring
+    kubectl get pods -n knative-serving
+    kubectl get pods -n knative-eventing
+    kubectl get pods -n knative-build
+    kubectl get pods -n knative-sources
+    kubectl get pods -n knative-monitoring
 ```
 
 ## Steps

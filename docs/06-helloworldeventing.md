@@ -194,7 +194,7 @@ kubectl get pods --selector serving.knative.dev/service=message-dumper-csharp
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
-kubectl logs --follow -c user-container message-dumper-00001-deployment-<podid>
+kubectl logs --follow -c user-container <podid>
 ```
 You should see something similar to this:
 
@@ -218,7 +218,7 @@ info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
 Finally, if you decode the `Data` field, you should see the "Hello World" message:
 
 ```bash
-echo "SGVsbG8gV29ybGQ=" | base64 --decode
+echo "SGVsbG8gV29ybGQ=" | base64 -D
 Hello World
 ```
 

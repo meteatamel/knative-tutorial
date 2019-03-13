@@ -56,7 +56,7 @@ build-helloworld-csharp-gcr-pod-454bd8           0/1       Init:2/3
 You can see the progress of the build with:
 
 ```bash
-kubectl logs --follow --container=build-step-build-and-push build-helloworld-csharp-gcr-pod-454bd8
+kubectl logs --follow --container=build-step-build-and-push <podid>
 ```
 When the build is finished, you'll see the pod in `Completed` state:
 

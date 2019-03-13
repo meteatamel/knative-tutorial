@@ -51,6 +51,7 @@ Check that pods are created and all Knative constructs (service, configuration, 
 
 ```bash
 kubectl get pod,ksvc,configuration,revision,route
+
 NAME                                                      READY     STATUS    RESTARTS   
 pod/helloworld-csharp-00001-deployment-7fdb5c5dc9-wf2bp   3/3       Running   0          
 

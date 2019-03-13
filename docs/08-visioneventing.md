@@ -283,12 +283,9 @@ gsutil notification list gs://knative-bucket
 ```
 ## Test the service
 
-We can finally test our Knative service by uploading an image to the bucket. You can simply drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
+We can finally test our Knative service by uploading an image to the bucket. 
 
-```bash
-gsutil cp atamel.jpg gs://knative-bucket/
-```
-This triggers a Pub/Sub message to our Knative service. Wait a little and check that a pod is created:
+First, let's watch the logs of the service. Wait a little and check that a pod is created:
 
 ```bash
 kubectl get pods --selector serving.knative.dev/service=vision-csharp
@@ -298,14 +295,21 @@ You can inspect the logs of the subscriber:
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
-kubectl logs --follow -c user-container vision-csharp-00001-deployment-<podid>
+kubectl logs --follow -c user-container <podid>
 ```
 
-You should see something similar to this:
+Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
+
+```bash
+gsutil cp beach.jpg gs://knative-bucket/
+```
+This triggers a Pub/Sub message to our Knative service. 
+
+You should see something similar to this in logs:
 
 ```bash
 info: vision_csharp.Startup[0]
-      This picture is labelled: Forehead,Chin,Facial hair,Beard,Jaw,Moustache,Smile
+      This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
       Request finished in 1948.3204ms 200 
 ```

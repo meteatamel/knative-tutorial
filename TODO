@@ -1,4 +1,2 @@
-Build template sample
 Autoscale serving sample
-Autoscale configuration sample (scale to 1, sleep time)
 Knative Build and CNCF build pack example

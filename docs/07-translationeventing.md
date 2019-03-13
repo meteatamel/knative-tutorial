@@ -283,7 +283,7 @@ kubectl get pods --selector serving.knative.dev/service=translation-csharp
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
-kubectl logs --follow -c user-container translation-csharp-00001-deployment-<podid>
+kubectl logs --follow -c user-container <podid>
 ```
 
 You should see something similar to this:
