@@ -4,7 +4,7 @@ You probably installed [Knative Eventing](https://github.com/knative/docs/tree/m
 
 Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.) and supports direct/simple and fanout delivery options:
 
-![Diagram](https://github.com/knative/docs/blob/master/eventing/control-plane.png?raw=true)
+![Diagram](https://raw.githubusercontent.com/knative/docs/master/docs/eventing/images/control-plane.png)
 
 In this tutorial, we will focus on GCP Pub/Sub events and fanout delivery using Channel and Subscription. Setup Knative Eventing using the `release-with-gcppubsub.yaml` file as described in the [GCP Cloud Pub/Sub](https://github.com/knative/docs/tree/master/eventing/samples/gcp-pubsub-source) page.
 

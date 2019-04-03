@@ -22,8 +22,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace {username} with your actual DockerHub 
-            image: docker.io/{username}/helloworld-csharp:v1
+            # Replace `meteatamel` with your actual DockerHub 
+            image: docker.io/meteatamel/helloworld-csharp:v1
             env:
               - name: TARGET
                 value: "C# Sample v2"
@@ -66,12 +66,12 @@ To see this in action, change the [Startup.cs](../serving/helloworld-csharp/Star
 ```csharp
 await context.Response.WriteAsync($"Bye {target}\n");
 ```
-Build and push the Docker image tagging with `v3`. Replace `{username}` with your actual Docker Hub username:
+Build and push the Docker image tagging with `v3`. Replace `meteatamel` with your actual Docker Hub username:
 
 ```docker
-docker build -t {username}/helloworld-csharp:v3 .
+docker build -t meteatamel/helloworld-csharp:v3 .
 
-docker push {username}/helloworld-csharp:v3
+docker push meteatamel/helloworld-csharp:v3
 ```
 
 Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld-csharp/service-v3.yaml) file that changes `TARGET` value to `C# Sample v3` but more importantly, it refers to the new image with tag `v3`:
