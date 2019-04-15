@@ -67,8 +67,8 @@ spec:
     image: "gcr.io/kaniko-project/executor:v0.6.0"
     args:
     - "--dockerfile=/workspace/Dockerfile"
-    # Replace {username} with your actual DockerHub
-    - "--destination=docker.io/{username}/helloworld-csharp:knativebuild"
+    # Replace meteatamel with your actual DockerHub
+    - "--destination=docker.io/meteatamel/helloworld-csharp:knativebuild"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to Docker Hub tagged with `knativebuild`. Note how we're using `build-bot` as `serviceAccountName`.
 

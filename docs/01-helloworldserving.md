@@ -53,7 +53,7 @@ Check that pods are created and all Knative constructs (service, configuration, 
 kubectl get pod,ksvc,configuration,revision,route
 
 NAME                                                      READY     STATUS    RESTARTS   
-pod/helloworld-csharp-00001-deployment-7fdb5c5dc9-wf2bp   3/3       Running   0          
+pod/helloworld-csharp-c4pmt-deployment-7fdb5c5dc9-wf2bp   3/3       Running   0          
 
 NAME                                            
 service.serving.knative.dev/helloworld-csharp   
@@ -88,7 +88,7 @@ NAME                                                  AGE
 configuration.serving.knative.dev/helloworld-csharp   1m
 
 NAME                                                   AGE
-revision.serving.knative.dev/helloworld-csharp-00001   1m
+revision.serving.knative.dev/helloworld-csharp-c4pmt   1m
 
 NAME                                          AGE
 route.serving.knative.dev/helloworld-csharp   1m
@@ -96,25 +96,25 @@ route.serving.knative.dev/helloworld-csharp   1m
 
 ## Test the service
 
-To test the service, we need to find the IP address of the Knative ingress and the URL of the service.
+To test the service, we need to find the IP address of the Istio ingress gateway and the URL of the service.
 
-The IP address of Knative ingress is listed under `EXTERNAL_IP`:
+The IP address of Istio ingress is listed under `EXTERNAL_IP`:
 
 ```bash
-kubectl get svc knative-ingressgateway -n istio-system
+kubectl get svc istio-ingressgateway -n istio-system
 ```
-Let's set this `EXTERNAL_IP` to a `KNATIVE_INGRESS` variable:
+Let's set this `EXTERNAL_IP` to an `ISTIO_INGRESS` variable:
 
 ```bash
-export KNATIVE_INGRESS=$(kubectl -n istio-system get service knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export ISTIO_INGRESS=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 The URL of the service follows this format: `{service}.{namespace}.example.com`. In this case, we have `helloworld-csharp.default.example.com`. 
 
-Make a request to your service (replace `IP_ADDRESS` with `EXTERNAL_IP`):
+Make a request to your service:
 
 ```bash
-curl -H "Host: helloworld-csharp.default.example.com" http://$KNATIVE_INGRESS
+curl -H "Host: helloworld-csharp.default.example.com" http://$ISTIO_INGRESS
 Hello World C# v1
 ```
 

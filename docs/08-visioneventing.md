@@ -218,11 +218,12 @@ docker build -t meteatamel/vision-csharp:v1 .
 
 docker push meteatamel/vision-csharp:v1
 ```
-## Deploy the service and subscription
+## Deploy the service and trigger
 
-Create a [subscriber.yaml](../eventing/vision-csharp/subscriber.yaml) file.
+Create a [trigger.yaml](../eventing/vision-csharp/trigger.yaml) file.
 
 ```yaml
+# limitations under the License.
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
@@ -235,26 +236,26 @@ spec:
           container:
             # Replace meteatamel with your actual DockerHub
             image: docker.io/meteatamel/vision-csharp:v1
+        metadata:
+          annotations:
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
+kind: Trigger
 metadata:
-  name: gcppubsub-source-vision-csharp
+  name: vision-csharp
 spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: pubsub-test
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: vision-csharp
 ```
-This defines the Knative Service that will run our code and Subscription to connect to Pub/Sub messages via the Channel.
+This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
 
 ```bash
-kubectl apply -f subscriber.yaml
+kubectl apply -f trigger.yaml
 ```
 
 Check that the service is created:

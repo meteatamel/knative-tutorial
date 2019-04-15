@@ -29,16 +29,13 @@ spec:
             autoscaling.knative.dev/minScale: "1"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
+kind: Trigger
 metadata:
-  name: gcppubsub-source-sample-csharp
+  name: message-dumper-csharp
 spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: pubsub-test
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: message-dumper-csharp
+

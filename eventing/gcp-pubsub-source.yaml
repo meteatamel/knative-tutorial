@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# Replace the following before applying this file:
-#   MY_GCP_PROJECT: Replace with the GCP Project's ID.
-
 apiVersion: sources.eventing.knative.dev/v1alpha1
 kind: GcpPubSubSource
 metadata:
@@ -27,5 +23,5 @@ spec:
   topic: testing
   sink:
     apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: pubsub-test
+    kind: Broker
+    name: default

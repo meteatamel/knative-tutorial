@@ -11,12 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Channel
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
 metadata:
-  name: pubsub-test
+  name: vision-csharp
 spec:
-  provisioner:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: ClusterChannelProvisioner
-    name: in-memory-channel
+  runLatest:
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/vision-csharp:v1
+        metadata:
+          annotations:
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: vision-csharp
+spec:
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1alpha1
+      kind: Service
+      name: vision-csharp
+

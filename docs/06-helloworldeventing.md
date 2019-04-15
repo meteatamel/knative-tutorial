@@ -1,33 +1,32 @@
 # Hello World Eventing
 
-You probably installed [Knative Eventing](https://github.com/knative/docs/tree/master/eventing) when you [installed Knative](https://github.com/knative/docs/blob/master/install/Knative-with-GKE.md#installing-knative). If not, Knative Eventing has an [Installation](https://github.com/knative/docs/tree/master/eventing#installation) section. We are assuming that you already went through it.
+You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, [Knative Eventing](https://www.knative.dev/docs/eventing/) has an installation section. We are assuming that you already went through it.
 
-Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.) and supports direct/simple and fanout delivery options:
+As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter messages. This is explained in more detail on [Knative Eventing](https://www.knative.dev/docs/eventing/) page:
+
+![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
+
+Under the covers, Knative creates Channels and Subscriptions and supports direct and fanout delivery options:
 
 ![Diagram](https://raw.githubusercontent.com/knative/docs/master/docs/eventing/images/control-plane.png)
 
-In this tutorial, we will focus on GCP Pub/Sub events and fanout delivery using Channel and Subscription. Setup Knative Eventing using the `release-with-gcppubsub.yaml` file as described in the [GCP Cloud Pub/Sub](https://github.com/knative/docs/tree/master/eventing/samples/gcp-pubsub-source) page.
+Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events. 
 
 ## Configuring outbound network access
 
 In Knative, the outbound network access is disabled by default. This means that you cannot even call Google Cloud APIs from Knative. 
 
-In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://github.com/knative/docs/blob/master/serving/outbound-network-access.md) page to enable access. 
+In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://www.knative.dev/docs/serving/outbound-network-access/) page to enable access. 
 
-## Setup GcpPubSubSource and channel
+## Setup Google Cloud Pub/Sub event source
 
-[GCP Cloud Pub/Sub](https://github.com/knative/docs/tree/master/eventing/samples/gcp-pubsub-source) page shows how to configure a GCP Pub/Sub event source. A `Go` Knative service listens for Pub/Sub events and dumps the contents of the event message. Go through this tutorial to setup eventing infrastructure. 
-
-At the end of the tutorial, make sure you have the `gcppubsubsource` and `channel` are setup:
+Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source but don't create the trigger, we'll do that here. At the end, you should have a default broker setup:
 
 ```bash
-kubectl get gcppubsubsource
-NAME             AGE
-testing-source   3d
+kubectl get broker
 
-kubectl get channel
-NAME          AGE
-pubsub-test   3d
+NAME      READY   REASON   HOSTNAME                                   
+default   True             default-broker.default.svc.cluster.local   
 ```
 
 ## Hello World - .NET Core sample
@@ -131,9 +130,9 @@ docker build -t meteatamel/message-dumper-csharp:v1 .
 docker push meteatamel/message-dumper-csharp:v1
 ```
 
-## Deploy the service and subscription
+## Deploy the service and create a trigger
 
-Create a [subscriber.yaml](../eventing/message-dumper-csharp/subscriber.yaml) file.
+Create a [subscriber.yaml](../eventing/message-dumper-csharp/trigger.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
@@ -148,27 +147,27 @@ spec:
           container:
             # Replace meteatamel with your actual DockerHub
             image: docker.io/meteatamel/message-dumper-csharp:v1
-
+        metadata:
+          annotations:
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
+kind: Trigger
 metadata:
   name: gcppubsub-source-sample-csharp
 spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: pubsub-test
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: message-dumper-csharp
 ```
-This defines the Knative Service that will run our code and Subscription to connect to Pub/Sub messages via the Channel.
+
+This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages to the Service.
 
 ```bash
-kubectl apply -f subscriber.yaml
+kubectl apply -f trigger.yaml
 ```
 
 Check that the service is created:

@@ -221,9 +221,9 @@ docker build -t meteatamel/translation-csharp:v1 .
 
 docker push meteatamel/translation-csharp:v1
 ```
-## Deploy the service and subscription
+## Deploy the service and trigger
 
-Create a [subscriber.yaml](../eventing/translation-csharp/subscriber.yaml) file.
+Create a [trigger.yaml](../eventing/translation-csharp/trigger.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
@@ -238,26 +238,26 @@ spec:
           container:
             # Replace meteatamel with your actual DockerHub
             image: docker.io/meteatamel/translation-csharp:v1
+        metadata:
+          annotations:
+            # Disable scale to zero with a minScale of 1.
+            autoscaling.knative.dev/minScale: "1"
 ---
 apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
+kind: Trigger
 metadata:
-  name: gcppubsub-source-translation-csharp
+  name: translation-csharp
 spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: pubsub-test
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: translation-csharp
 ```
-This defines the Knative Service that will run our code and Subscription to connect to Pub/Sub messages via the Channel.
+This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
 
 ```bash
-kubectl apply -f subscriber.yaml
+kubectl apply -f trigger.yaml
 ```
 
 Check that the service is created:

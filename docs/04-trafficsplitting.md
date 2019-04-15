@@ -8,7 +8,7 @@ What if you want to control how much traffic the new revision gets? You can do t
 
 Let's create a new revision `v4` that gets only 20% of the traffic while the old revision `v1` gets 80%. 
 
-Create a [service-v4.yaml](../serving/helloworld-csharp/service-v4.yaml) file that has `TARGET` value of `C# Sample v4` and it uses `release` mode:
+Create a [service-v4.yaml](../serving/helloworld-csharp/service-v4.yaml) file that has `TARGET` value of `C# Sample v4` and it uses `release` mode. Note that the revision names are not correct but we'll fix that later:
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
@@ -34,27 +34,55 @@ spec:
                 value: "C# Sample v4"
 ```
 
-Note that the release mode lists two `revisions` (current and candidate) and `rolloutPercent` defines how much traffic the candidate (in this case `v4`) will receive
+The release mode lists two fake `revisions` (current and candidate) and `rolloutPercent` defines how much traffic the candidate (in this case `v4`) will receive
 
 Apply the change:
 
 ```bash
 kubectl apply -f service-v4.yaml
 ```
-You should first see a new revision is created for `v4`:
+You should first see a new revision is created for `v4` (generation 4):
 
 ```bash
-kubectl get revision                             
-NAME                      
-helloworld-csharp-00001   
-helloworld-csharp-00002   
-helloworld-csharp-00003   
-helloworld-csharp-00004   
+kubectl get revision 
+
+NAME                      SERVICE NAME                      GENERATION
+helloworld-csharp-4ht6f   helloworld-csharp-4ht6f-service   2
+helloworld-csharp-8sv8s   helloworld-csharp-8sv8s-service   3
+helloworld-csharp-t66v9   helloworld-csharp-t66v9-service   1
+helloworld-csharp-zd5qk   helloworld-csharp-zd5qk-service   4
 ```
+
+Now, replace the fake revision ids with the real ones for generation 1 and 4. The yaml file should look like this:
+
+```yaml
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: helloworld-csharp
+  namespace: default
+spec:
+  release:
+    # Ordered list of 1 or 2 revisions. 
+    # First revision is traffic target "current"
+    # Second revision is traffic target "candidate"
+    revisions: ["helloworld-csharp-t66v9", "helloworld-csharp-zd5qk"]
+    rolloutPercent: 20 # Percent [0-99] of traffic to route to "candidate" revision
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            # Replace meteatamel with your actual DockerHub
+            image: docker.io/meteatamel/helloworld-csharp:v1
+            env:
+              - name: TARGET
+                value: "C# Sample v4"
+```
+
 You should see roughly 20% of the requests going to the new revision:
 
 ```bash
-for i in {1..10}; do curl "http://helloworld-csharp.default.$KNATIVE_INGRESS.nip.io" ; sleep 1; done
+for i in {1..10}; do curl "http://helloworld-csharp.default.$ISTIO_INGRESS.nip.io" ; sleep 1; done
 Hello C# Sample v1
 Hello C# Sample v1
 Hello C# Sample v1
@@ -78,7 +106,7 @@ spec:
     # Ordered list of 1 or 2 revisions. 
     # First revision is traffic target "current"
     # Second revision is traffic target "candidate"
-    revisions: ["helloworld-csharp-00001", "helloworld-csharp-00003"]
+    revisions: ["helloworld-csharp-t66v9", "helloworld-csharp-8sv8s"]
     rolloutPercent: 50 # Percent [0-99] of traffic to route to "candidate" revision
     configuration:
       revisionTemplate:
@@ -98,7 +126,7 @@ kubectl apply -f service-v5.yaml
 You should see roughly 50% of the requests split between revisions:
 
 ```bash
-for i in {1..10}; do curl "http://helloworld-csharp.default.$KNATIVE_INGRESS.nip.io" ; sleep 1; done
+for i in {1..10}; do curl "http://helloworld-csharp.default.$ISTIO_INGRESS.nip.io" ; sleep 1; done
 Hello C# Sample v1
 Bye C# Sample v3
 Hello C# Sample v1

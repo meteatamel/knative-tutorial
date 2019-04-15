@@ -39,14 +39,14 @@ Now, you should see a new pod and a revision is created for the configuration ch
 ```bash
 kubectl get pod,configuration,revision,route 
 NAME                                                      READY     STATUS    RESTARTS   
-pod/helloworld-csharp-00001-deployment-7fdb5c5dc9-p2hr6   3/3       Running   0          
-pod/helloworld-csharp-00002-deployment-7d7d9c9fdd-r27v8   3/3       Running   0          
+pod/helloworld-csharp-c4pmt-deployment-7fdb5c5dc9-p2hr6   3/3       Running   0          
+pod/helloworld-csharp-vkvjt-deployment-7d7d9c9fdd-r27v8   3/3       Running   0          
 
 NAME                                                  configuration.serving.knative.dev/helloworld-csharp   
 
 NAME                                                   
-revision.serving.knative.dev/helloworld-csharp-00001   
-revision.serving.knative.dev/helloworld-csharp-00002   
+revision.serving.knative.dev/helloworld-csharp-c4pmt   
+revision.serving.knative.dev/helloworld-csharp-vkvjt   
 
 NAME                                          
 route.serving.knative.dev/helloworld-csharp   
