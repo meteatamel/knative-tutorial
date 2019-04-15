@@ -78,11 +78,17 @@ spec:
               - name: TARGET
                 value: "C# Sample v4"
 ```
+Apply the change:
+
+```bash
+kubectl apply -f service-v4.yaml
+```
 
 You should see roughly 20% of the requests going to the new revision:
 
 ```bash
 for i in {1..10}; do curl "http://helloworld-csharp.default.$ISTIO_INGRESS.nip.io" ; sleep 1; done
+
 Hello C# Sample v1
 Hello C# Sample v1
 Hello C# Sample v1
@@ -93,7 +99,7 @@ Hello C# Sample v4
 
 What if you want to split traffic with existing revisions? You can do that by referring to the existing revisions in the `revision` field.  
 
-Create a [service-v5.yaml](../serving/helloworld-csharp/service-v5.yaml) file that refers to `v1` and `v3` revisions that are split by 50%:
+Create a [service-v5.yaml](../serving/helloworld-csharp/service-v5.yaml) file that refers to `v1` and `v3` revisions that are split by 50%. Make sure you use the actual revision ids in your deployment:
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1

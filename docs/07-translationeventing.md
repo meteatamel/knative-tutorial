@@ -260,13 +260,12 @@ This defines the Knative Service that will run our code and Trigger to connect t
 kubectl apply -f trigger.yaml
 ```
 
-Check that the service is created:
+Check that the service and trigger are created:
 
 ```bash
-kubectl get ksvc translation-csharp
-NAME            AGE
-translation-csharp   8s  
+kubectl get ksvc,trigger
 ```
+
 ## Test the service
 
 We can now test our service by sending a translation request message to Pub/Sub topic:

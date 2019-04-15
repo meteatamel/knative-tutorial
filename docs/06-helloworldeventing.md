@@ -132,7 +132,7 @@ docker push meteatamel/message-dumper-csharp:v1
 
 ## Deploy the service and create a trigger
 
-Create a [subscriber.yaml](../eventing/message-dumper-csharp/trigger.yaml) file.
+Create a [trigger.yaml](../eventing/message-dumper-csharp/trigger.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
@@ -170,12 +170,10 @@ This defines the Knative Service that will run our code and Trigger to connect t
 kubectl apply -f trigger.yaml
 ```
 
-Check that the service is created:
+Check that the service and trigger are created:
 
 ```bash
-kubectl get ksvc message-dumper-csharp
-NAME            AGE
-message-dumper-csharp   21s  
+kubectl get ksvc,trigger
 ```
 ## Test the service
 

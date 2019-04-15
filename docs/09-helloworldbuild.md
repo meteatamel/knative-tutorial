@@ -1,8 +1,8 @@
 # Hello World Build
 
-[Knative Build](https://github.com/knative/build) utilizes existing Kubernetes primitives to provide you with the ability to run on-cluster container builds from source. For example, you can write a build that uses Kubernetes-native resources to obtain your source code from a repository, build a container image, then run that image.
+[Knative Build](https://www.knative.dev/docs/build/) utilizes existing Kubernetes primitives to provide you with the ability to run on-cluster container builds from source. For example, you can write a build that uses Kubernetes-native resources to obtain your source code from a repository, build a container image, then run that image.
 
-The Knative Build API has a [Build](https://github.com/knative/docs/blob/master/build/builds.md) type that represents a single build job with one or more steps. There's also a [BuildTemplate](https://github.com/knative/docs/blob/master/build/build-templates.md) that allows you to chain Builds and parameterize them. 
+The Knative Build API has a [Build](https://www.knative.dev/docs/build/builds/) type that represents a single build job with one or more steps. There's also a [BuildTemplate](https://www.knative.dev/docs/build/build-templates/) that allows you to chain Builds and parameterize them. 
 
 In the previous labs, we've been building and pushing container images manually to DockerHub. Let's utilize Knative Build and push to Google Container Registry (GCR) instead. 
 
@@ -50,6 +50,7 @@ Soon after, you'll see a pod created for the build:
 
 ```bash
 kubectl get pods
+
 NAME                                             READY     STATUS    
 build-helloworld-csharp-gcr-pod-454bd8           0/1       Init:2/3
 ```
@@ -62,6 +63,7 @@ When the build is finished, you'll see the pod in `Completed` state:
 
 ```bash
 kubectl get pods
+
 NAME                                              READY     STATUS 
 build-helloworld-csharp-gcr-pod-454bd8            0/1       Completed
 ```

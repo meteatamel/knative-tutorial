@@ -1,10 +1,10 @@
 # Hello World Serving
 
-[Knative Serving](https://github.com/knative/docs/tree/master/serving) has a [samples](https://github.com/knative/docs/tree/master/serving/samples) page with helloworld demos for various languages. You can choose your language of choice. For the purposes of this tutorial, we will go with `helloworld-csharp` sample and assume .NET Core 2.2 runtime.
+[Knative Serving](https://www.knative.dev/docs/serving/) has a [samples](https://www.knative.dev/docs/serving/samples/) page with helloworld demos for various languages. You can choose your language of choice. For the purposes of this tutorial, we will go with `helloworld-csharp` sample and assume .NET Core 2.2 runtime.
 
 ## Hello World - .NET Core sample
 
-Let's start with deploying an ASP.NET Core service on Knative as described on [Hello World .NET - Core sample](https://github.com/knative/docs/tree/master/serving/samples/helloworld-csharp) page with a few minor changes to the instructions:
+Let's start with deploying an ASP.NET Core service on Knative as described on [Hello World .NET - Core sample](https://www.knative.dev/docs/serving/samples/hello-world/helloworld-csharp/index.html) page with a few minor changes to the instructions:
 
 1. When building the Docker image, we tag our image with v1, v2, etc., so we can keep track of different versions of the service: 
 

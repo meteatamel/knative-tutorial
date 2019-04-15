@@ -1,6 +1,6 @@
 # Knative Tutorial
 
-This tutorial shows how to use different components of [Knative](https://github.com/knative/docs): Build, Eventing, and Serving. 
+This tutorial shows how to use different components of [Knative](https://www.knative.dev/docs/): Build, Eventing, and Serving. 
 
 ## Slides
 
@@ -9,7 +9,7 @@ There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knat
 [![Serverless with Knative](./docs/images/serverless-with-knative.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
 
 ## Pre-requisites
-We assume that you have a Kubernetes cluster with Knative (and its dependency Istio) installed already. If you need to install Istio and Knative, see [Knative Installation](https://github.com/knative/docs/blob/master/docs/install/README.md) page. For Google Kubernetes Engine specific instructions, see [Knative Install on Google Kubernetes Engine](https://github.com/knative/docs/blob/master/docs/install/Knative-with-GKE.md) page. 
+We assume that you have a Kubernetes cluster with Knative (and its dependency Istio) installed already. If you need to install Istio and Knative, see [Knative Installation](https://www.knative.dev/docs/install/) page. For Google Kubernetes Engine specific instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. 
 
 We built and tested on Knative version 0.5 on Google Kubernetes Engine (GKE) with Istio but the samples should work on any Kubernetes cluster with Knative.   
 

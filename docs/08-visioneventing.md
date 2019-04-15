@@ -258,12 +258,10 @@ This defines the Knative Service that will run our code and Trigger to connect t
 kubectl apply -f trigger.yaml
 ```
 
-Check that the service is created:
+Check that the service and trigger are created:
 
 ```bash
-kubectl get ksvc vision-csharp
-NAME            AGE
-vision-csharp   8s  
+kubectl get ksvc,trigger
 ```
 ## Create bucket and enabled notifications
 
