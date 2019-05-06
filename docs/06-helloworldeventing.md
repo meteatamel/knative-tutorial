@@ -1,7 +1,5 @@
 # Hello World Eventing
 
-You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, [Knative Eventing](https://www.knative.dev/docs/eventing/) has an installation section. We are assuming that you already went through it.
-
 As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter messages. This is explained in more detail on [Knative Eventing](https://www.knative.dev/docs/eventing/) page:
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
@@ -12,15 +10,35 @@ Under the covers, Knative creates Channels and Subscriptions and supports direct
 
 Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events. 
 
+## Install Knative Eventing
+
+You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, follow the Knative installation instructions and take a look at the installation section in [Knative Eventing](https://www.knative.dev/docs/eventing/) page. In the end, you should have pods running in `knative-eventing` and `knative-sources` namespaces. Double check that this is the case:
+
+```bash
+kubectl get pods -n knative-eventing
+kubectl get pods -n knative-sources
+```
+
 ## Configuring outbound network access
 
 In Knative, the outbound network access is disabled by default. This means that you cannot even call Google Cloud APIs from Knative. 
 
 In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://www.knative.dev/docs/serving/outbound-network-access/) page to enable access. 
 
-## Setup Google Cloud Pub/Sub event source
+## Setup Google Cloud Pub/Sub event source and default Broker
 
-Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source but don't create the trigger, we'll do that here. At the end, you should have a default broker setup:
+Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source and also have a Broker injected in the default namespace. But don't create the trigger, we'll do that here. 
+
+In the end, you should have a GCP Pub/Sub source setup:
+
+```bash
+kubectl get gcppubsubsource
+
+NAME             AGE
+testing-source   1d
+```
+
+And a default broker as well:
 
 ```bash
 kubectl get broker
