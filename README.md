@@ -32,6 +32,7 @@ Before going through the tutorial, make sure all Knative components show a `STAT
    * [Traffic splitting](docs/04-trafficsplitting.md)
    * [Configure autoscaling](docs/04.5-configureautoscaling.md)
    * [Integrate with Twilio](docs/05-twiliointegration.md)
+   * [Deploy to Cloud Run](docs/05.5-deploycloudrun.md)
 * Knative Eventing 
    * [Hello World Eventing](docs/06-helloworldeventing.md)
    * [Integrate with Translation API](docs/07-translationeventing.md)
