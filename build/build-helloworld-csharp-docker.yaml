@@ -28,4 +28,4 @@ spec:
     args:
     - "--dockerfile=/workspace/Dockerfile"
     # Replace {meteatamel} with your actual DockerHub
-    - "--destination=docker.io/meteatamel/helloworld-csharp:knativebuild"
+    - "--destination=docker.io/meteatamel/helloworld-csharp:build"

@@ -27,4 +27,4 @@ spec:
     args:
     - "--dockerfile=/workspace/Dockerfile"
     # Replace knative-atamel with your GCP Project's ID.
-    - "--destination=gcr.io/knative-atamel/helloworld-csharp:knativebuild"
+    - "--destination=gcr.io/knative-atamel/helloworld-csharp:build"

@@ -34,13 +34,13 @@ spec:
             arguments:
               - name: IMAGE
                 # Replace meteatamel with your actual DockerHub
-                value: docker.io/meteatamel/helloworld-csharp:from-source
+                value: docker.io/meteatamel/helloworld-csharp:autobuild
       revisionTemplate:
         spec:
           container:
             # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/helloworld-csharp:from-source
+            image: docker.io/meteatamel/helloworld-csharp:autobuild
             imagePullPolicy: Always
             env:
               - name: TARGET
-                value: "C# Sample from-source"
+                value: "C# Sample autobuild"

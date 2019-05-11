@@ -14,7 +14,7 @@
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
 metadata:
-  name: build-fromtemplate-helloworld-csharp-docker
+  name: buildtemplate-kaniko-helloworld-csharp-docker
 spec:
   serviceAccountName: build-bot 
   source:
@@ -26,4 +26,4 @@ spec:
       name: kaniko
       arguments:
       - name: IMAGE
-        value: docker.io/meteatamel/helloworld-csharp:knativebuild-fromtemplate
+        value: docker.io/meteatamel/helloworld-csharp:kaniko

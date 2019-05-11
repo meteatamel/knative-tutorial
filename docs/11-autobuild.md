@@ -40,7 +40,7 @@ spec:
             arguments:
               - name: IMAGE
                 # Replace meteatamel with your actual DockerHub
-                value: docker.io/meteatamel/helloworld-csharp:from-source
+                value: docker.io/meteatamel/helloworld-csharp:autobuild
       revisionTemplate:
         spec:
           container:

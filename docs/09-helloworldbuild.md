@@ -29,7 +29,7 @@ spec:
     args:
     - "--dockerfile=/workspace/Dockerfile"
     # knative-atamel: Replace with the GCP Project's ID.
-    - "--destination=gcr.io/knative-atamel/helloworld-csharp:knativebuild"
+    - "--destination=gcr.io/knative-atamel/helloworld-csharp:build"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to GCR.
 

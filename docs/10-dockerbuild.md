@@ -68,7 +68,7 @@ spec:
     args:
     - "--dockerfile=/workspace/Dockerfile"
     # Replace meteatamel with your actual DockerHub
-    - "--destination=docker.io/meteatamel/helloworld-csharp:knativebuild"
+    - "--destination=docker.io/meteatamel/helloworld-csharp:build"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to Docker Hub tagged with `knativebuild`. Note how we're using `build-bot` as `serviceAccountName`.
 
