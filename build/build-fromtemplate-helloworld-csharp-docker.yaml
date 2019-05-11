@@ -26,4 +26,4 @@ spec:
       name: kaniko
       arguments:
       - name: IMAGE
-        value: docker.io/meteatamel/helloworld-csharp:knativebuild
+        value: docker.io/meteatamel/helloworld-csharp:knativebuild-fromtemplate
