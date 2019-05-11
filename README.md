@@ -40,6 +40,7 @@ Before going through the tutorial, make sure all Knative components show a `STAT
 * Knative Build
    * [Hello World Build](docs/09-helloworldbuild.md)
    * [Docker Hub Build](docs/10-dockerbuild.md)
+   * [Kaniko Build Template](docs/10.5-kanikobuildtemplate.md)
    * [Automatic Build](docs/11-autobuild.md)
 -------
 

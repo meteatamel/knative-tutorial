@@ -110,4 +110,4 @@ At this point, you should see the image pushed to Docker Hub:
 ![Docker Hub](./images/dockerhub.png)
 
 ## What's Next?
-[Automatic Build](11-autobuild.md)
+[Kaniko Build Template](10.5-kanikobuildtemplate.md)

@@ -1,6 +1,6 @@
 # Automatic Build
 
-In the [previous lab](10-dockerbuild.md), we built and pushed a container image to Docker Hub manually. But it doesn't have to be manual. You can actually configure your Knative Service to automatically build when there's a change. 
+So far, we built and pushed container images manually. But it doesn't have to be manual. You can configure your Knative Service to automatically build when there's a change. 
 
 There's [Orchestrating a source-to-URL deployment on Kubernetes](https://github.com/knative/docs/tree/master/serving/samples/source-to-url-go) tutorial in Knative docs that explains how to do this and more but we will go through the steps here as well.
 
@@ -8,21 +8,7 @@ Make sure you already registered a Secret for Docker Hub and created a ServiceAc
 
 ## Kaniko Build Template
 
-We'll use the [Kaniko Build Template](https://github.com/knative/build-templates/tree/master/kaniko) in the service definition. 
-
-Install Kaniko Build Template:
-
-```yaml
-kubectl apply -f https://raw.githubusercontent.com/knative/build-templates/master/kaniko/kaniko.yaml
-```
-
-Check that it is installed:
-
-```yaml
-kubectl get buildtemplate
-NAME      AGE
-kaniko    24m
-```
+We'll use the [Kaniko Build Template](https://github.com/knative/build-templates/tree/master/kaniko) in the service definition. If you haven't installed the template yet, refer to the [previous lab](10.5-kanikobuildtemplate.md).
 
 ## Define the service with inline Build
 
