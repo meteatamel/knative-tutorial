@@ -19,9 +19,9 @@ spec:
   serviceAccountName: build-bot 
   source:
     git:
-      url: "https://github.com/knative/docs.git"
-      revision: "v0.1.x"
-    subPath: "serving/samples/helloworld-csharp/"
+      url: https://github.com/meteatamel/knative-tutorial.git
+      revision: master
+    subPath: serving/helloworld-csharp
   template:
       name: kaniko
       arguments:
