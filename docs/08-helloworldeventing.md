@@ -52,9 +52,9 @@ default   True             default-broker.default.svc.cluster.local
 Let's now create a .NET Core version of that sample. Create an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o message-dumper-csharp
+dotnet new web -o message-dumper
 ```
-Inside the `message-dumper-csharp` folder, update [Startup.cs](../eventing/message-dumper-csharp/Startup.up) to have a logger to print the contents of the event:
+Inside the `message-dumper/csharp` folder, update [Startup.cs](../eventing/message-dumper/csharp/Startup.up) to have a logger to print the contents of the event:
 
 ```csharp
 using System.IO;
@@ -64,7 +64,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace message_dumper_csharp
+namespace message_dumper
 {
     public class Startup
     {
@@ -91,7 +91,7 @@ namespace message_dumper_csharp
                 using (var reader = new StreamReader(context.Request.Body))
                 {
                     var content = reader.ReadToEnd();
-                    _logger.LogInformation("C# Message Dumper received message: " + content);
+                    _logger.LogInformation("Message Dumper received message: " + content);
                     await context.Response.WriteAsync(content);
                 }
             });
@@ -120,7 +120,7 @@ Before building the Docker image, make sure the app has no compilation errors:
 dotnet build
 ```
 
-Create a [Dockerfile](../eventing/message-dumper-csharp/Dockerfile) for the image:
+Create a [Dockerfile](../eventing/message-dumper/csharp/Dockerfile) for the image:
 
 ```
 FROM microsoft/dotnet:2.2-sdk
@@ -137,34 +137,34 @@ ENV PORT 8080
 
 ENV ASPNETCORE_URLS http://*:${PORT}
 
-CMD ["dotnet", "out/message-dumper-csharp.dll"]
+CMD ["dotnet", "out/message-dumper.dll"]
 ```
 
-Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub): 
 
 ```docker
-docker build -t meteatamel/message-dumper-csharp:v1 .
+docker build -t {username}/message-dumper:v1 .
 
-docker push meteatamel/message-dumper-csharp:v1
+docker push {username}/message-dumper:v1
 ```
 
 ## Deploy the service and create a trigger
 
-Create a [trigger.yaml](../eventing/message-dumper-csharp/trigger.yaml) file.
+Create a [trigger.yaml](../eventing/message-dumper/trigger.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: message-dumper-csharp
+  name: message-dumper
 spec:
   runLatest:
     configuration:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/message-dumper-csharp:v1
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/message-dumper:v1
         metadata:
           annotations:
             # Disable scale to zero with a minScale of 1.
@@ -173,13 +173,13 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: gcppubsub-source-sample-csharp
+  name: message-dumper
 spec:
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: message-dumper-csharp
+      name: message-dumper
 ```
 
 This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages to the Service.
@@ -204,7 +204,7 @@ gcloud pubsub topics publish testing --message="Hello World"
 Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=message-dumper-csharp
+kubectl get pods --selector serving.knative.dev/service=message-dumper
 ```
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
@@ -224,8 +224,8 @@ Content root path: /app
 Now listening on: http://0.0.0.0:8080
 Application started. Press Ctrl+C to shut down.
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
-      Request starting HTTP/1.1 POST http://message-dumper-csharp.default.svc.cluster.local/ application/json 108
-info: message_dumper_csharp.Startup[0]
+      Request starting HTTP/1.1 POST http://message-dumper.default.svc.cluster.local/ application/json 108
+info: message_dumper.Startup[0]
       C# Message Dumper received message: {"ID":"198012587785403","Data":"SGVsbG8gV29ybGQ=","Attributes":null,"PublishTime":"2019-01-21T15:25:58.25Z"}
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
       Request finished in 29.9881ms 200 

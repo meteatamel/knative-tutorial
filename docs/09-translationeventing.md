@@ -11,9 +11,9 @@ Since we're making calls to Google Cloud services, you need to make sure that th
 Let's start with creating an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o translation-csharp
+dotnet new web -o translation
 ```
-Inside the `translation-csharp` folder, update [Startup.cs](../eventing/translation-csharp/Startup.cs) to log incoming messages for now:
+Inside the `translation/csharp` folder, update [Startup.cs](../eventing/translation/csharp/Startup.cs) to log incoming messages for now:
 
 ```csharp
 using System;
@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace translation_csharp
+namespace translation
 {
     public class Startup
     {
@@ -91,10 +91,10 @@ Let's first define the translation protocol we'll use in our sample. The body of
 {text = 'Hello World', from='', to='es'}: Detected language to Spanish
 {text = 'Hello World', from='', to=''}: Error
 ```
-To encapsulate this, create a [TranslationRequest.cs](../eventing/translation-csharp/TranslationRequest.cs) class:
+To encapsulate this, create a [TranslationRequest.cs](../eventing/translation/csharp/TranslationRequest.cs) class:
 
 ```csharp
-namespace translate_csharp
+namespace translate
 {
     public class TranslationRequest
     {
@@ -121,14 +121,14 @@ Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](h
 ```
 In this case, the actual translation request will be Base64 encoded in `Data` field and it's the only thing we're interested in. 
 
-Create a [CloudEvent.cs](../eventing/translation-csharp/CloudEvent.cs) class to help us parse CloudEvents and decode `Data` field:
+Create a [CloudEvent.cs](../eventing/translation/csharp/CloudEvent.cs) class to help us parse CloudEvents and decode `Data` field:
 
 ```csharp
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace translation_csharp
+namespace translation
 {
     public class CloudEvent
     {
@@ -160,7 +160,7 @@ And add Translation API NuGet package to our project:
 ```
 dotnet add package Google.Cloud.Translation.V2
 ```
-Finally, we can change [Startup.cs](../eventing/translation-csharp/Startup.cs) to first extract the `CloudEvent` and then extract `TranslationRequest` out of it.  
+Finally, we can change [Startup.cs](../eventing/translation/csharp/Startup.cs) to first extract the `CloudEvent` and then extract `TranslationRequest` out of it.  
 
 ```csharp
 var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
@@ -184,7 +184,7 @@ if (response.DetectedSourceLanguage != null)
 }
 await context.Response.WriteAsync(response.TranslatedText);
 ```
-You can see the full code in [Startup.cs](../eventing/translation-csharp/Startup.cs).
+You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs).
 
 ## Build and push Docker image
 
@@ -194,7 +194,7 @@ Before building the Docker image, make sure the app has no compilation errors:
 dotnet build
 ```
 
-Create a [Dockerfile](../eventing/translation-csharp/Dockerfile) for the image:
+Create a [Dockerfile](../eventing/translation/csharp/Dockerfile) for the image:
 
 ```
 FROM microsoft/dotnet:2.2-sdk
@@ -211,33 +211,33 @@ ENV PORT 8080
 
 ENV ASPNETCORE_URLS http://*:${PORT}
 
-CMD ["dotnet", "out/translation-csharp.dll"]
+CMD ["dotnet", "out/translation.dll"]
 ```
 
-Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub): 
 
 ```docker
-docker build -t meteatamel/translation-csharp:v1 .
+docker build -t {username}/translation:v1 .
 
-docker push meteatamel/translation-csharp:v1
+docker push {username}/translation:v1
 ```
 ## Deploy the service and trigger
 
-Create a [trigger.yaml](../eventing/translation-csharp/trigger.yaml) file.
+Create a [trigger.yaml](../eventing/translation/trigger.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: translation-csharp
+  name: translation
 spec:
   runLatest:
     configuration:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/translation-csharp:v1
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/translation:v1
         metadata:
           annotations:
             # Disable scale to zero with a minScale of 1.
@@ -246,13 +246,13 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: translation-csharp
+  name: translation
 spec:
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: translation-csharp
+      name: translation
 ```
 This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
 
@@ -277,7 +277,7 @@ gcloud pubsub topics publish testing --message="{text:'Hello World', from: 'en',
 Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=translation-csharp
+kubectl get pods --selector serving.knative.dev/service=translation
 ```
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
@@ -288,11 +288,11 @@ kubectl logs --follow -c user-container <podid>
 You should see something similar to this:
 
 ```bash
-info: translation_csharp.Startup[0]
+info: translation.Startup[0]
       Decoded data: {text:'Hello World', from: 'en', to:'es'}
-info: translation_csharp.Startup[0]
+info: translation.Startup[0]
       Calling Translation API
-info: translation_csharp.Startup[0]
+info: translation.Startup[0]
       Translated text: Hola Mundo
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
       Request finished in 767.2586ms 200 

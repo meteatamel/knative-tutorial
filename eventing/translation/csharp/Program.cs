@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace translation_csharp
+namespace translation
 {
     public class Program
     {

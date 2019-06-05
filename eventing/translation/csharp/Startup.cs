@@ -13,9 +13,8 @@
 // limitations under the License.
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Google.Cloud.Vision.V1;
+using Google.Cloud.Translation.V2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace vision_csharp
+namespace translation
 {
     public class Startup
     {
@@ -57,16 +56,19 @@ namespace vision_csharp
                         var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
                         if (cloudEvent == null) return;
 
-                        var eventType = cloudEvent.Attributes["eventType"];
-                        if (eventType == null || eventType != "OBJECT_FINALIZE") return;
+                        var decodedData = cloudEvent.GetDecodedData();
+                        _logger.LogInformation($"Decoded data: {decodedData}");
+                        var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
 
-                        var storageUrl = ConstructStorageUrl(cloudEvent);
-
-                        var labels = await ExtractLabelsAsync(storageUrl);
-
-                        var message = "This picture is labelled: " + labels;
-                        _logger.LogInformation(message);
-                        await context.Response.WriteAsync(message);
+                        _logger.LogInformation("Calling Translation API");
+                        
+                        var response = await TranslateText(translationRequest);
+                        _logger.LogInformation($"Translated text: {response.TranslatedText}");
+                        if (response.DetectedSourceLanguage != null) 
+                        {
+                            _logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
+                        }
+                        await context.Response.WriteAsync(response.TranslatedText);
                     }
                     catch (Exception e)
                     {
@@ -77,24 +79,31 @@ namespace vision_csharp
             });
         }
 
-        private string ConstructStorageUrl(CloudEvent cloudEvent)
+        private async Task<TranslationResult> TranslateText(TranslationRequest translationRequest)
         {
-            return cloudEvent == null? null 
-                : string.Format("gs://{0}/{1}", cloudEvent.Attributes["bucketId"], cloudEvent.Attributes["objectId"]);
+            ValidateTranslationRequest(translationRequest);
+
+            var client = TranslationClient.Create();
+            var response = await client.TranslateTextAsync(translationRequest.Text, translationRequest.To, translationRequest.From);
+            return response;
         }
 
-        private async Task<string> ExtractLabelsAsync(string storageUrl)
+        private void ValidateTranslationRequest(TranslationRequest translationRequest)
         {
-            var visionClient = ImageAnnotatorClient.Create();
-            var labels = await visionClient.DetectLabelsAsync(Image.FromUri(storageUrl), maxResults: 10);
+            if (translationRequest == null)
+            {
+                throw new ArgumentException("Translation request cannot be null");
+            }
 
-            var orderedLabels = labels
-                .OrderByDescending(x => x.Score)
-                .TakeWhile((x, i) => i <= 2 || x.Score > 0.50)
-                .Select(x => x.Description)
-                .ToList();
+            if (string.IsNullOrEmpty(translationRequest.Text)) 
+            {
+                throw new ArgumentException("Translation text cannot be empty or null");
+            }
 
-            return string.Join(",", orderedLabels.ToArray());
+            if (string.IsNullOrEmpty(translationRequest.To))
+            {
+                throw new ArgumentException("Translation 'to' cannot be empty or null");
+            }
         }
     }
 }

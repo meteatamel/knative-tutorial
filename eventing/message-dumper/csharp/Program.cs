@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace vision_csharp
+namespace message_dumper
 {
     public class Program
     {
@@ -23,6 +23,7 @@ namespace vision_csharp
         {
             CreateWebHostBuilder(args).Build().Run();
         }
+
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();

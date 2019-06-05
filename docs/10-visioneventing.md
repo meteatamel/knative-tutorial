@@ -11,9 +11,9 @@ Since we're making calls to Google Cloud services, you need to make sure that th
 Let's start with creating an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o vision-csharp
+dotnet new web -o vision
 ```
-Inside the `vision-csharp` folder, update [Startup.cs](../eventing/vision-csharp/Startup.cs) to log incoming messages for now:
+Inside the `vision/csharp` folder, update [Startup.cs](../eventing/vision/csharp/Startup.cs) to log incoming messages for now:
 
 ```csharp
 using System;
@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace vision_csharp
+namespace vision
 {
     public class Startup
     {
@@ -97,14 +97,14 @@ Our Knative service will receive Pub/Sub messages from Cloud Storage in the form
 ```
 In this case, the `Attributes` has the bucket and file information that we're interested in.
 
-Create a [CloudEvent.cs](../eventing/vision-csharp/CloudEvent.cs):
+Create a [CloudEvent.cs](../eventing/vision/csharp/CloudEvent.cs):
 
 ```csharp
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace vision_csharp
+namespace vision
 {
     public class CloudEvent
     {
@@ -136,7 +136,7 @@ And add Vision API NuGet package to our project:
 ```
 dotnet add package Google.Cloud.Vision.V1
 ```
-We can now update [Startup.cs](../eventing/vision-csharp/Startup.cs) to first extract the `CloudEvent` and then check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
+We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to first extract the `CloudEvent` and then check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
 
 ```csharp
 var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
@@ -181,7 +181,7 @@ private async Task<string> ExtractLabelsAsync(string storageUrl)
     return string.Join(",", orderedLabels.ToArray());
 }
 ```
-You can see the full code in [Startup.cs](../eventing/vision-csharp/Startup.cs).
+You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs).
 
 ## Build and push Docker image
 
@@ -191,7 +191,7 @@ Before building the Docker image, make sure the app has no compilation errors:
 dotnet build
 ```
 
-Create a [Dockerfile](../eventing/vision-csharp/Dockerfile) for the image:
+Create a [Dockerfile](../eventing/vision/csharp/Dockerfile) for the image:
 
 ```
 FROM microsoft/dotnet:2.2-sdk
@@ -208,34 +208,34 @@ ENV PORT 8080
 
 ENV ASPNETCORE_URLS http://*:${PORT}
 
-CMD ["dotnet", "out/vision-csharp.dll"]
+CMD ["dotnet", "out/vision.dll"]
 ```
 
-Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub): 
 
 ```docker
-docker build -t meteatamel/vision-csharp:v1 .
+docker build -t {username}/vision:v1 .
 
-docker push meteatamel/vision-csharp:v1
+docker push {username}/vision:v1
 ```
 ## Deploy the service and trigger
 
-Create a [trigger.yaml](../eventing/vision-csharp/trigger.yaml) file.
+Create a [trigger.yaml](../eventing/vision/trigger.yaml) file.
 
 ```yaml
 # limitations under the License.
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: vision-csharp
+  name: vision
 spec:
   runLatest:
     configuration:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/vision-csharp:v1
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/vision:v1
         metadata:
           annotations:
             # Disable scale to zero with a minScale of 1.
@@ -244,13 +244,13 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: vision-csharp
+  name: vision
 spec:
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: vision-csharp
+      name: vision
 ```
 This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
 
@@ -287,7 +287,7 @@ We can finally test our Knative service by uploading an image to the bucket.
 First, let's watch the logs of the service. Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=vision-csharp
+kubectl get pods --selector serving.knative.dev/service=vision
 ```
 You can inspect the logs of the subscriber:
 
@@ -307,7 +307,7 @@ This triggers a Pub/Sub message to our Knative service.
 You should see something similar to this in logs:
 
 ```bash
-info: vision_csharp.Startup[0]
+info: vision.Startup[0]
       This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
       Request finished in 1948.3204ms 200 

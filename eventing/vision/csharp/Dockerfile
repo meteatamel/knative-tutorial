@@ -21,4 +21,4 @@ ENV PORT 8080
 ENV ASPNETCORE_URLS http://*:${PORT}
 
 # Run the web service on container startup.
-CMD ["dotnet", "out/vision-csharp.dll"]
+CMD ["dotnet", "out/vision.dll"]

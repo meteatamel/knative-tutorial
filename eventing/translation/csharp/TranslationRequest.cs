@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-namespace translation_csharp
+namespace translation
 {
 
     // {text = 'Hello World', from='en', to='es'}: English to Spanish
