@@ -300,7 +300,7 @@ kubectl logs --follow -c user-container <podid>
 Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
 
 ```bash
-gsutil cp beach.jpg gs://knative-bucket/
+gsutil cp pics/beach.jpg gs://knative-bucket/
 ```
 This triggers a Pub/Sub message to our Knative service. 
 

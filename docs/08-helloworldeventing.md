@@ -54,7 +54,7 @@ Let's now create a .NET Core version of that sample. Create an empty ASP.NET Cor
 ```bash
 dotnet new web -o message-dumper
 ```
-Inside the `message-dumper/csharp` folder, update [Startup.cs](../eventing/message-dumper/csharp/Startup.up) to have a logger to print the contents of the event:
+Inside the `message-dumper/csharp` folder, update [Startup.cs](../eventing/message-dumper/csharp/Startup.cs) to have a logger to print the contents of the event:
 
 ```csharp
 using System.IO;
@@ -238,4 +238,4 @@ Hello World
 ```
 
 ## What's Next?
-[Integrate with Translation API](07-translationeventing.md)
+[Integrate with Translation API](09-translationeventing.md)
