@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace helloworld_csharp
+namespace helloworld
 {
     public class Program
     {

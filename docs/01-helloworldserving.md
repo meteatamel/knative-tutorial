@@ -1,33 +1,29 @@
 # Hello World Serving
 
-[Knative Serving](https://www.knative.dev/docs/serving/) has a [samples](https://www.knative.dev/docs/serving/samples/) page with helloworld demos for various languages. You can choose your language of choice. For the purposes of this tutorial, we will go with `helloworld-csharp` sample and assume .NET Core 2.2 runtime.
+[Knative Serving](https://www.knative.dev/docs/serving/) has a [samples](https://www.knative.dev/docs/serving/samples/) page with `Hello World` type demos for various languages. In this tutorial, we will build something similar with a couple of minor differences:
 
-## Hello World - .NET Core sample
+1. When building the Docker image, we tag our images with `v1`, `v2`, etc. to better track different versions of the service. 
 
-Let's start with deploying an ASP.NET Core service on Knative as described on [Hello World .NET - Core sample](https://www.knative.dev/docs/serving/samples/hello-world/helloworld-csharp/index.html) page with a few minor changes to the instructions:
-
-1. When building the Docker image, we tag our image with v1, v2, etc., so we can keep track of different versions of the service: 
-
-3. instead of `service.yaml`, we use [service-v1.yaml](../serving/helloworld-csharp/service-v1.yaml) for the first version. Again, to keep track of different service versions better. 
+2. When defining the service, we use `service-v1.yaml` for the first version, `service-v2.yaml` for the second version etc. Again, to keep track of different service configurations better. 
 
 ## Build and push Docker image
 
-With these changes in mind, in [helloworld-csharp](../serving/helloworld-csharp/) folder, build and push the container image. Replace `meteatamel` with your actual Docker Hub username:
+With these changes in mind, in [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)). In that folder, build and push the container image. Replace `{username}` with your DockerHub username:
 
 ```docker
-docker build -t meteatamel/helloworld-csharp:v1 .
+docker build -t {username}/helloworld:v1 .
 
-docker push meteatamel/helloworld-csharp:v1
+docker push {username}/helloworld:v1
 ```
 ## Deploy the Knative service
 
-Create a [service-v1.yaml](../serving/helloworld-csharp/service-v1.yaml) file.
+Take a look at [service-v1.yaml](../serving/helloworld/service-v1.yaml) file where we define a Knative service:
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp
+  name: helloworld
   namespace: default
 spec:
   runLatest:
@@ -35,11 +31,11 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # replace meteatamel with your DockerHub 
-            image: docker.io/meteatamel/helloworld-csharp:v1
+            # Replace {username} with your DockerHub username
+            image: docker.io/{username}/helloworld:v1
             env:
               - name: TARGET
-                value: "C# Sample v1"
+                value: "v1"
 ```
 
 After the container is pushed, deploy the app. 
@@ -53,19 +49,19 @@ Check that pods are created and all Knative constructs (service, configuration, 
 kubectl get pod,ksvc,configuration,revision,route
 
 NAME                                                      READY     STATUS    RESTARTS   
-pod/helloworld-csharp-c4pmt-deployment-7fdb5c5dc9-wf2bp   3/3       Running   0          
+pod/helloworld-c4pmt-deployment-7fdb5c5dc9-wf2bp   3/3       Running   0          
 
 NAME                                            
-service.serving.knative.dev/helloworld-csharp   
+service.serving.knative.dev/helloworld   
 
 NAME                                                  
-configuration.serving.knative.dev/helloworld-csharp   
+configuration.serving.knative.dev/helloworld   
 
 NAME                                                   
-revision.serving.knative.dev/helloworld-csharp-00001   
+revision.serving.knative.dev/helloworld-00001   
 
 NAME                                          
-route.serving.knative.dev/helloworld-csharp   
+route.serving.knative.dev/helloworld   
 ```
 ## (Optional) Install watch
 
@@ -79,19 +75,19 @@ watch -n 1 kubectl get pod,ksvc,configuration,revision,route
 Every 1.0s: kubectl get pod,ksvc,config...
 
 NAME                                                     READY     STATUS    RESTARTS   AGE
-pod/helloworld-csharp-00001-deployment-b6c485d9f-rm7l4   3/3       Running   0          1m
+pod/helloworld-00001-deployment-b6c485d9f-rm7l4   3/3       Running   0          1m
+
+NAME                                     AGE
+service.serving.knative.dev/helloworld   1m
+
+NAME                                           AGE
+configuration.serving.knative.dev/helloworld   1m
 
 NAME                                            AGE
-service.serving.knative.dev/helloworld-csharp   1m
+revision.serving.knative.dev/helloworld-c4pmt   1m
 
-NAME                                                  AGE
-configuration.serving.knative.dev/helloworld-csharp   1m
-
-NAME                                                   AGE
-revision.serving.knative.dev/helloworld-csharp-c4pmt   1m
-
-NAME                                          AGE
-route.serving.knative.dev/helloworld-csharp   1m
+NAME                                   AGE
+route.serving.knative.dev/helloworld   1m
 ```
 
 ## Test the service
@@ -109,13 +105,13 @@ Let's set this `EXTERNAL_IP` to an `ISTIO_INGRESS` variable:
 export ISTIO_INGRESS=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-The URL of the service follows this format: `{service}.{namespace}.example.com`. In this case, we have `helloworld-csharp.default.example.com`. 
+The URL of the service follows this format: `{service}.{namespace}.example.com`. In this case, we have `helloworld.default.example.com`. 
 
 Make a request to your service:
 
 ```bash
-curl -H "Host: helloworld-csharp.default.example.com" http://$ISTIO_INGRESS
-Hello World C# v1
+curl -H "Host: helloworld.default.example.com" http://$ISTIO_INGRESS
+Hello World v1
 ```
 
 ## What's Next?

@@ -14,7 +14,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp
+  name: helloworld
   namespace: default
 spec:
   runLatest:
@@ -22,8 +22,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/helloworld-csharp:v1
+            # Replace {username} with your actual DockerHub 
+            image: docker.io/{username}/helloworld:v1
             env:
               - name: TARGET
-                value: "C# Sample v1"
+                value: "v2"

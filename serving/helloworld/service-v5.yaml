@@ -14,16 +14,21 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp
+  name: helloworld
   namespace: default
 spec:
-  runLatest:
+  release:
+    # Ordered list of 1 or 2 revisions. 
+    # First revision is traffic target "current"
+    # Second revision is traffic target "candidate"
+    revisions: ["helloworld-00001", "helloworld-00003"]
+    rolloutPercent: 50 # Percent [0-99] of traffic to route to "candidate" revision
     configuration:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/helloworld-csharp:v3
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/helloworld:v1
             env:
               - name: TARGET
-                value: "C# Sample v3"
+                value: "v4"

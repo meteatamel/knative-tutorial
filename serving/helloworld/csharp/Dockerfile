@@ -21,4 +21,4 @@ ENV PORT 8080
 ENV ASPNETCORE_URLS http://*:${PORT}
 
 # Run the web service on container startup.
-CMD ["dotnet", "out/helloworld-csharp.dll"]
+CMD ["dotnet", "out/helloworld.dll"]

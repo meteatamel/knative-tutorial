@@ -8,13 +8,13 @@ In [Knative Serving](https://github.com/knative/docs/tree/master/serving) whenev
 
 To see how Knative reacts to configuration changes, let's change the environment variable the container reads. 
 
-Create a [service-v2.yaml](../serving/helloworld-csharp/service-v2.yaml) file that changes `TARGET` value to `C# Sample v2`:
+Create a [service-v2.yaml](../serving/helloworld/service-v2.yaml) file that changes `TARGET` value to `v2`:
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp
+  name: helloworld
   namespace: default
 spec:
   runLatest:
@@ -22,11 +22,11 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace `meteatamel` with your actual DockerHub 
-            image: docker.io/meteatamel/helloworld-csharp:v1
+            # Replace `{username}` with your actual DockerHub 
+            image: docker.io/{username}/helloworld:v1
             env:
               - name: TARGET
-                value: "C# Sample v2"
+                value: "v2"
 ```
 
 Note that the image is still pointing to `v1` version. Apply the change:
@@ -39,48 +39,48 @@ Now, you should see a new pod and a revision is created for the configuration ch
 ```bash
 kubectl get pod,configuration,revision,route 
 NAME                                                      READY     STATUS    RESTARTS   
-pod/helloworld-csharp-c4pmt-deployment-7fdb5c5dc9-p2hr6   3/3       Running   0          
-pod/helloworld-csharp-vkvjt-deployment-7d7d9c9fdd-r27v8   3/3       Running   0          
+pod/helloworld-c4pmt-deployment-7fdb5c5dc9-p2hr6   3/3       Running   0          
+pod/helloworld-vkvjt-deployment-7d7d9c9fdd-r27v8   3/3       Running   0          
 
-NAME                                                  configuration.serving.knative.dev/helloworld-csharp   
+NAME                                                  configuration.serving.knative.dev/helloworld   
 
 NAME                                                   
-revision.serving.knative.dev/helloworld-csharp-c4pmt   
-revision.serving.knative.dev/helloworld-csharp-vkvjt   
+revision.serving.knative.dev/helloworld-c4pmt   
+revision.serving.knative.dev/helloworld-vkvjt   
 
 NAME                                          
-route.serving.knative.dev/helloworld-csharp   
+route.serving.knative.dev/helloworld   
 ```
 Test that the route is also updated and prints out `v2` (replace `1.2.3.4` with IP of Knative ingress):
 
 ```bash
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
-Hello World C# v2
+curl http://helloworld.default.1.2.3.4.nip.io
+Hello World v2
 ```
 ## Change container image
 
 Configuration changes are not limited to environment variables. For example, a new container image would also trigger a new revision and traffic routed to that revision. 
 
-To see this in action, change the [Startup.cs](../serving/helloworld-csharp/Startup.cs) to say 'Bye' instead of 'Hello':
+To see this in action, change the [Startup.cs](../serving/helloworld/csharp/Startup.cs) to say 'Bye' instead of 'Hello':
 
 ```csharp
 await context.Response.WriteAsync($"Bye {target}\n");
 ```
-Build and push the Docker image tagging with `v3`. Replace `meteatamel` with your actual Docker Hub username:
+Build and push the Docker image tagging with `v3`. Replace `{username}` with your actual Docker Hub username:
 
 ```docker
-docker build -t meteatamel/helloworld-csharp:v3 .
+docker build -t {username}/helloworld:v3 .
 
-docker push meteatamel/helloworld-csharp:v3
+docker push {username}/helloworld:v3
 ```
 
-Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld-csharp/service-v3.yaml) file that changes `TARGET` value to `C# Sample v3` but more importantly, it refers to the new image with tag `v3`:
+Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld/service-v3.yaml) file that changes `TARGET` value to `v3` but more importantly, it refers to the new image with tag `v3`:
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp
+  name: helloworld
   namespace: default
 spec:
   runLatest:
@@ -88,11 +88,11 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub 
-            image: docker.io/meteatamel/helloworld-csharp:v3
+            # Replace {username} with your actual DockerHub 
+            image: docker.io/{username}/helloworld:v3
             env:
               - name: TARGET
-                value: "C# Sample v3"
+                value: "v3"
 ```
 
 Apply the change:
@@ -103,7 +103,7 @@ kubectl apply -f service-v3.yaml
 Test that the route is updated to `v3` with the new container. It prints not only `v3` (from env variable) but also says Bye (from container). Replace `1.2.3.4` with IP of Knative ingress:
 
 ```bash
-curl http://helloworld-csharp.default.1.2.3.4.nip.io
+curl http://helloworld.default.1.2.3.4.nip.io
 Bye C# Sample v3
 ```
 
