@@ -55,7 +55,7 @@ Test that the route is also updated and prints out `v2` (replace `1.2.3.4` with 
 
 ```bash
 curl http://helloworld.default.1.2.3.4.nip.io
-Hello World v2
+Hello v2
 ```
 ## Change container image
 
@@ -104,7 +104,7 @@ Test that the route is updated to `v3` with the new container. It prints not onl
 
 ```bash
 curl http://helloworld.default.1.2.3.4.nip.io
-Bye C# Sample v3
+Bye v3
 ```
 
 ## What's Next?

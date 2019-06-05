@@ -15,7 +15,7 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 Let's create a service to handle SMS messages to Twilio. Start with creating an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o twilio
+dotnet new web -o twiliosample
 ```
 Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use MVC:
 
@@ -49,7 +49,7 @@ using Twilio.AspNet.Common;
 using Twilio.AspNet.Core;
 using Twilio.TwiML;
 
-namespace twilio_csharp
+namespace twiliosample
 {
     [Route("[controller]")]
     public class SmsController : TwilioController
@@ -91,7 +91,7 @@ ENV PORT 8080
 
 ENV ASPNETCORE_URLS http://*:${PORT}
 
-CMD ["dotnet", "out/twilio.dll"]
+CMD ["dotnet", "out/twiliosample.dll"]
 ```
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub): 

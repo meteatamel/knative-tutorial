@@ -52,7 +52,7 @@ Finally, you can test that the domain works with curl:
 
 ```bash
 curl http://helloworld.default.$ISTIO_INGRESS.nip.io
-Hello C# Sample v1
+Hello v1
 ```
 ## What's Next?
 [Change configuration](03-changeconfig.md)

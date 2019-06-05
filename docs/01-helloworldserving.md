@@ -38,7 +38,7 @@ spec:
                 value: "v1"
 ```
 
-After the container is pushed, deploy the app. 
+After the container is pushed, deploy the Knative service: 
 
 ```bash
 kubectl apply -f service-v1.yaml

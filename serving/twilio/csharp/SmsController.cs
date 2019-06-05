@@ -16,7 +16,7 @@ using Twilio.AspNet.Common;
 using Twilio.AspNet.Core;
 using Twilio.TwiML;
 
-namespace twilio
+namespace twiliosample
 {
     [Route("[controller]")]
     public class SmsController : TwilioController
