@@ -99,4 +99,4 @@ If you visit the url of the service again, you should see `Hello C# Sample v1` i
 
 As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing. 
 
-[Hello World Eventing](06-helloworldeventing.md)
+[Hello World Eventing](08-helloworldeventing.md)

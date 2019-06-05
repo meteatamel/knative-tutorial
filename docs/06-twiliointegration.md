@@ -146,4 +146,4 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 Now, you can send an SMS message to your Twilio number and you should get a reply back from the Knative service!
 
 ## What's Next?
-[Deploy to Cloud Run](05.5-deploycloudrun.md)
+[Deploy to Cloud Run](07-deploycloudrun.md)

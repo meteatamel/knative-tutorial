@@ -299,4 +299,4 @@ info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
 ```
 
 ## What's Next?
-[Integrate with Vision API](08-visioneventing.md)
+[Integrate with Vision API](10-visioneventing.md)

@@ -70,4 +70,4 @@ At this point, you should see the image pushed to GCR:
 ![Java App on GCR](./images/gcr-javaapp.png)
 
 ## What's Next?
-[Automatic Build](11-autobuild.md)
+[Automatic Build](15-autobuild.md)

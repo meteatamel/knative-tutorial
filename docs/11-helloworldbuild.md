@@ -72,4 +72,4 @@ At this point, you should see the image pushed to GCR:
 ![Google Container Registry](./images/gcr.png)
 
 ## What's Next?
-[Docker Hub Build](10-dockerbuild.md)
+[Docker Hub Build](12-dockerbuild.md)

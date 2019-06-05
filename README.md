@@ -23,24 +23,26 @@ Before going through the tutorial, make sure all Knative components show a `STAT
 
 ## Steps
 
-* Knative Serving
-   * [Hello World Serving](docs/01-helloworldserving.md)
-   * [Configure domain](docs/02-configuredomain.md)
-   * [Change configuration](docs/03-changeconfig.md)
-   * [Traffic splitting](docs/04-trafficsplitting.md)
-   * [Configure autoscaling](docs/04.5-configureautoscaling.md)
-   * [Integrate with Twilio](docs/05-twiliointegration.md)
-   * [Deploy to Cloud Run](docs/05.5-deploycloudrun.md)
-* Knative Eventing 
-   * [Hello World Eventing](docs/06-helloworldeventing.md)
-   * [Integrate with Translation API](docs/07-translationeventing.md)
-   * [Integrate with Vision API](docs/08-visioneventing.md)
-* Knative Build
-   * [Hello World Build](docs/09-helloworldbuild.md)
-   * [Docker Hub Build](docs/10-dockerbuild.md)
-   * [Kaniko Build Template](docs/10.5-kanikobuildtemplate.md)
-   * [Buildpacks Build Template](docs/10.7-buildpacksbuildtemplate.md)
-   * [Automatic Build](docs/11-autobuild.md)
+Knative Serving:
+* [Hello World Serving](docs/01-helloworldserving.md)
+* [Configure domain](docs/02-configuredomain.md)
+* [Change configuration](docs/03-changeconfig.md)
+* [Traffic splitting](docs/04-trafficsplitting.md)
+* [Configure autoscaling](docs/05-configureautoscaling.md)
+* [Integrate with Twilio](docs/06-twiliointegration.md)
+* [Deploy to Cloud Run](docs/07-deploycloudrun.md)
+
+Knative Eventing:
+* [Hello World Eventing](docs/08-helloworldeventing.md)
+* [Integrate with Translation API](docs/09-translationeventing.md)
+* [Integrate with Vision API](docs/10-visioneventing.md)
+
+Knative Build:
+* [Hello World Build](docs/11-helloworldbuild.md)
+* [Docker Hub Build](docs/12-dockerbuild.md)
+* [Kaniko Build Template](docs/13-kanikobuildtemplate.md)
+* [Buildpacks Build Template](docs/14-buildpacksbuildtemplate.md)
+* [Automatic Build](docs/15-autobuild.md)
 -------
 
 This is not an official Google product.
