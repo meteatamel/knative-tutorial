@@ -11,7 +11,7 @@ There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knat
 ## Pre-requisites
 We assume that you have a Kubernetes cluster with Knative (and its dependency Istio) installed already. If you need to install Istio and Knative, see [Knative Installation](https://www.knative.dev/docs/install/) page. For Google Kubernetes Engine specific instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. 
 
-We built and tested on Knative version 0.5 on Google Kubernetes Engine (GKE) with Istio but the samples should work on any Kubernetes cluster with Knative.   
+We tested the tutorial on Knative version **0.6** on Google Kubernetes Engine (GKE) with Istio but the samples should work on any Kubernetes cluster with Knative.   
 
 Before going through the tutorial, make sure all Knative components show a `STATUS` of `Running`:
 
@@ -19,8 +19,6 @@ Before going through the tutorial, make sure all Knative components show a `STAT
     kubectl get pods -n knative-serving
     kubectl get pods -n knative-eventing
     kubectl get pods -n knative-build
-    kubectl get pods -n knative-sources
-    kubectl get pods -n knative-monitoring
 ```
 
 ## Steps
