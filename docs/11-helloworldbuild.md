@@ -10,26 +10,26 @@ In the previous labs, we've been building and pushing container images manually 
 
 [Kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build container images from a Dockerfile, inside a container in Kubernetes cluster. The advantage is that Kaniko doesn't depend on a Docker daemon. We'll use Kaniko in our Build step. 
 
-Create a [build-helloworld-csharp-gcr.yaml](../build/build-helloworld-csharp-gcr.yaml) build file:
+Create a [build-helloworld-gcr.yaml](../build/build-helloworld-gcr.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
 metadata:
-  name: build-helloworld-csharp-gcr
+  name: build-helloworld-gcr
 spec:
   source:
     git:
       url: https://github.com/meteatamel/knative-tutorial.git
       revision: master
-    subPath: serving/helloworld-csharp
+    subPath: serving/helloworld/csharp
   steps:
   - name: build-and-push
     image: "gcr.io/kaniko-project/executor:v0.6.0"
     args:
     - "--dockerfile=/workspace/Dockerfile"
-    # knative-atamel: Replace with the GCP Project's ID.
-    - "--destination=gcr.io/knative-atamel/helloworld-csharp:build"
+    # Replace {PROJECT_ID} with your GCP Project's ID.
+    - "--destination=gcr.io/{PROJECT_ID}l/helloworld:build"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to GCR.
 
@@ -38,7 +38,7 @@ This uses Knative Build to download the source code in the 'workspace' directory
 You can start the build with:
 
 ```bash
-kubectl apply -f build-helloworld-csharp-gcr.yaml
+kubectl apply -f build-helloworld-gcr.yaml
 ```
 Check that it is created:
 
@@ -52,7 +52,7 @@ Soon after, you'll see a pod created for the build:
 kubectl get pods
 
 NAME                                             READY     STATUS    
-build-helloworld-csharp-gcr-pod-454bd8           0/1       Init:2/3
+build-helloworld-gcr-pod-454bd8           0/1       Init:2/3
 ```
 You can see the progress of the build with:
 
@@ -65,7 +65,7 @@ When the build is finished, you'll see the pod in `Completed` state:
 kubectl get pods
 
 NAME                                              READY     STATUS 
-build-helloworld-csharp-gcr-pod-454bd8            0/1       Completed
+build-helloworld-gcr-pod-454bd8            0/1       Completed
 ```
 At this point, you should see the image pushed to GCR:
 

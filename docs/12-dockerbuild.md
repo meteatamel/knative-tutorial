@@ -48,27 +48,27 @@ serviceaccount "build-bot" created
 
 ## Design the build
 
-We will use [Kaniko](https://github.com/GoogleContainerTools/kaniko) again in our Build. Create a [build-helloworld-csharp-docker.yaml](../build/build-helloworld-csharp-docker.yaml) build file:
+We will use [Kaniko](https://github.com/GoogleContainerTools/kaniko) again in our Build. Create a [build-helloworld-docker.yaml](../build/build-helloworld-docker.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
 metadata:
-  name: build-helloworld-csharp-docker
+  name: build-helloworld-docker
 spec:
-  serviceAccountName: build-bot 
+  serviceAccountName: build-bot
   source:
     git:
       url: https://github.com/meteatamel/knative-tutorial.git
       revision: master
-    subPath: serving/helloworld-csharp
+    subPath: serving/helloworld/csharp
   steps:
   - name: build-and-push
     image: "gcr.io/kaniko-project/executor:v0.6.0"
     args:
     - "--dockerfile=/workspace/Dockerfile"
-    # Replace meteatamel with your actual DockerHub
-    - "--destination=docker.io/meteatamel/helloworld-csharp:build"
+    # Replace {username} with your actual DockerHub
+    - "--destination=docker.io/{username}/helloworld:build"
 ```
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to Docker Hub tagged with `knativebuild`. Note how we're using `build-bot` as `serviceAccountName`.
 
@@ -77,7 +77,7 @@ This uses Knative Build to download the source code in the 'workspace' directory
 You can start the build with:
 
 ```bash
-kubectl apply -f build-helloworld-csharp-docker.yaml
+kubectl apply -f build-helloworld-docker.yaml
 ```
 
 Check that it is created:
@@ -91,7 +91,7 @@ Soon after, you'll see a pod created for the build:
 ```bash
 kubectl get pods
 NAME                                             READY     STATUS    
-build-helloworld-csharp-docker-pod-454bd8        0/1       Init:2/3
+build-helloworld-docker-pod-454bd8        0/1       Init:2/3
 ```
 You can see the progress of the build with:
 
@@ -103,7 +103,7 @@ When the build is finished, you'll see the pod in `Completed` state:
 ```bash
 kubectl get pods
 NAME                                              READY     STATUS 
-build-helloworld-csharp-docker-pod-454bd8         0/1       Completed
+build-helloworld-docker-pod-454bd8         0/1       Completed
 ```
 At this point, you should see the image pushed to Docker Hub:
 

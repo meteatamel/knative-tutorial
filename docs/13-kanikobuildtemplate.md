@@ -25,25 +25,25 @@ kaniko    24m
 
 ## Design the build
 
-Let's create a Build now. Create a [buildtemplate-kaniko-helloworld-csharp-gcr.yaml](../build/buildtemplate-kaniko-helloworld-csharp-gcr.yaml) build file:
+Let's create a Build now. Create a [buildtemplate-kaniko-helloworld-gcr.yaml](../build/buildtemplate-kaniko-helloworld-gcr.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
 metadata:
-  name: buildtemplate-kaniko-helloworld-csharp-gcr
+  name: buildtemplate-kaniko-helloworld-gcr
 spec:
-  serviceAccountName: build-bot 
   source:
     git:
       url: https://github.com/meteatamel/knative-tutorial.git
       revision: master
-    subPath: serving/helloworld-csharp
+    subPath: serving/helloworld/csharp
   template:
       name: kaniko
       arguments:
       - name: IMAGE
-        value: gcr.io/knative-atamel/helloworld-csharp:kaniko
+        # Replace {PROJECT_ID} with your GCP Project's ID.
+        value: gcr.io/{PROJECT_ID}/helloworld:kaniko
 ```
 Notice how the Build is not creating its own steps anymore but instead refers to the Kaniko template. The Docker image location is passed in via `IMAGE` argument. 
 
@@ -52,7 +52,7 @@ Notice how the Build is not creating its own steps anymore but instead refers to
 Start the build:
 
 ```bash
-kubectl apply -f buildtemplate-kaniko-helloworld-csharp-gcr.yaml
+kubectl apply -f buildtemplate-kaniko-helloworld-gcr.yaml
 ```
 
 After a few minutes, check the build is succeeded:
@@ -61,7 +61,7 @@ After a few minutes, check the build is succeeded:
 kubectl get build
 
 NAME                                          SUCCEEDED   
-buildtemplate-kaniko-helloworld-csharp-gcr   True
+buildtemplate-kaniko-helloworld-gcr   True
 ```
 
 At this point, you should see the image pushed to GCR. 

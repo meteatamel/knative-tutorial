@@ -20,7 +20,7 @@ Create a [service-autobuild-docker.yaml](../build/service-autobuild-docker.yaml)
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp-from-source
+  name: helloworld-from-source
   namespace: default
 spec:
   runLatest:
@@ -34,22 +34,22 @@ spec:
             git:
               url: https://github.com/meteatamel/knative-tutorial.git
               revision: master
-            subPath: "serving/helloworld-csharp/"
+            subPath: "serving/helloworld/csharp/"
           template:
             name: kaniko
             arguments:
               - name: IMAGE
-                # Replace meteatamel with your actual DockerHub
-                value: docker.io/meteatamel/helloworld-csharp:autobuild
+                # Replace {username} with your actual DockerHub
+                value: docker.io/{username}/helloworld:autobuild
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/helloworld-csharp:from-source
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/helloworld:autobuild
             imagePullPolicy: Always
             env:
               - name: TARGET
-                value: "C# Sample from-source"
+                value: "autobuild"
 ```
 Note the inline `build` section where we tell Knative Build how to get the source and how to build and push the image using Kaniko. 
 
@@ -66,7 +66,7 @@ You should see that a build is created:
 ```bash
 kubectl get build
 NAME                                  AGE
-helloworld-csharp-from-source-00001   12s
+helloworld-from-source-00001   12s
 ```
 
 Soon after, you'll see a pod created for the build:
@@ -74,20 +74,20 @@ Soon after, you'll see a pod created for the build:
 ```bash
 kubectl get pods
 NAME                                              READY     STATUS     
-helloworld-csharp-from-source-00001-pod-3dfef7    0/1       Init:2/3
+helloworld-from-source-00001-pod-3dfef7    0/1       Init:2/3
 ```
 When the build is finished, you'll see the pod in `Completed` state:
 
 ```bash
 kubectl get pods
 NAME                                              READY     STATUS 
-helloworld-csharp-from-source-00001-pod-3dfef7    0/1       Completed
+helloworld-from-source-00001-pod-3dfef7    0/1       Completed
 ```
 Soon after, you should also see a new pod created for the Knative service:
 
 ```bash
 NAME                                                             READY     STATUS
-helloworld-csharp-from-source-00001-deployment-5b74c5c8b-w8nmw   3/3       Running
+helloworld-from-source-00001-deployment-5b74c5c8b-w8nmw   3/3       Running
 ```
 At this point, you should see the image pushed to Docker Hub:
 
@@ -98,7 +98,7 @@ At this point, you should see the image pushed to Docker Hub:
 We can finally test the service with curl and see that the new service is up and running:
 
 ```yaml
-curl http://helloworld-csharp-from-source.default.$KNATIVE_INGRESS.nip.io
+curl http://helloworld-from-source.default.$KNATIVE_INGRESS.nip.io
 Hello C# Sample from-source
 ```
 

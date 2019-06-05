@@ -14,7 +14,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: helloworld-csharp-from-source
+  name: helloworld-from-source
   namespace: default
 spec:
   runLatest:
@@ -28,19 +28,19 @@ spec:
             git:
               url: https://github.com/meteatamel/knative-tutorial.git
               revision: master
-            subPath: "serving/helloworld-csharp/"
+            subPath: "serving/helloworld/csharp/"
           template:
             name: kaniko
             arguments:
               - name: IMAGE
-                # Replace meteatamel with your actual DockerHub
-                value: docker.io/meteatamel/helloworld-csharp:autobuild
+                # Replace {username} with your actual DockerHub
+                value: docker.io/{username}/helloworld:autobuild
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/helloworld-csharp:autobuild
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/helloworld:autobuild
             imagePullPolicy: Always
             env:
               - name: TARGET
-                value: "C# Sample autobuild"
+                value: "autobuild"

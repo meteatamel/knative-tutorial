@@ -24,4 +24,5 @@ spec:
       name: buildpacks-cnb
       arguments:
       - name: IMAGE
-        value: gcr.io/knative-atamel/sample-java-app:buildpack
+        # Replace {PROJECT_ID} with your GCP Project's ID.
+        value: gcr.io/{PROJECT_ID}/sample-java-app:buildpack

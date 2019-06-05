@@ -14,18 +14,16 @@
 apiVersion: build.knative.dev/v1alpha1
 kind: Build
 metadata:
-  name: build-helloworld-csharp-docker
+  name: buildtemplate-kaniko-helloworld-gcr
 spec:
-  serviceAccountName: build-bot
   source:
     git:
       url: https://github.com/meteatamel/knative-tutorial.git
       revision: master
-    subPath: serving/helloworld-csharp
-  steps:
-  - name: build-and-push
-    image: "gcr.io/kaniko-project/executor:v0.6.0"
-    args:
-    - "--dockerfile=/workspace/Dockerfile"
-    # Replace {meteatamel} with your actual DockerHub
-    - "--destination=docker.io/meteatamel/helloworld-csharp:build"
+    subPath: serving/helloworld/csharp
+  template:
+      name: kaniko
+      arguments:
+      - name: IMAGE
+        # Replace {PROJECT_ID} with your GCP Project's ID.
+        value: gcr.io/{PROJECT_ID}/helloworld:kaniko
