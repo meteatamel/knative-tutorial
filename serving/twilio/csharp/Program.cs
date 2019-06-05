@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace twilio_csharp
+namespace twilio
 {
     public class Program
     {

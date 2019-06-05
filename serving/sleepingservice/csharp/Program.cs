@@ -14,7 +14,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace sleepingservice_csharp
+namespace sleepingservice
 {
     public class Program
     {

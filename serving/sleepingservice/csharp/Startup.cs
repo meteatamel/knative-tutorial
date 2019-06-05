@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace sleepingservice_csharp
+namespace sleepingservice
 {
     public class Startup
     {

@@ -10,14 +10,14 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 
 ![Twilio Webhook](./images/twilio-webhook.png)
 
-## Twilio - .NET Core sample 
+## Twilio SMS Webhook handler
 
-Let's start with creating an empty ASP.NET Core app:
+Let's create a service to handle SMS messages to Twilio. Start with creating an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o twilio-csharp
+dotnet new web -o twilio
 ```
-Inside the `twilio-csharp` folder, change [Startup.cs](../serving/twilio-csharp/Startup.cs) to use MVC:
+Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use MVC:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -41,7 +41,7 @@ Next, let's install [twilio-aspnet](https://github.com/twilio/twilio-aspnet) pac
 ```bash
 dotnet add package Twilio.AspNet.Core 
 ```
-Finally, we can create [SmsController.cs](../serving/twilio-csharp/SmsController.cs) to receive SMS messages from Twilio:
+Finally, we can create [SmsController.cs](../serving/twilio/csharp/SmsController.cs) to receive SMS messages from Twilio:
 
 ```csharp
 using Microsoft.AspNetCore.Mvc;
@@ -74,7 +74,7 @@ Before building the Docker image, make sure the app has no compilation errors:
 dotnet build
 ```
 
-Create a [Dockerfile](../serving/twilio-csharp/Dockerfile) for the image:
+Create a [Dockerfile](../serving/twilio/csharp/Dockerfile) for the image:
 
 ```
 FROM microsoft/dotnet:2.2-sdk
@@ -91,26 +91,26 @@ ENV PORT 8080
 
 ENV ASPNETCORE_URLS http://*:${PORT}
 
-CMD ["dotnet", "out/twilio-csharp.dll"]
+CMD ["dotnet", "out/twilio.dll"]
 ```
 
-Build and push the Docker image (replace `meteatamel` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub): 
 
 ```docker
-docker build -t meteatamel/twilio-csharp:v1 .
+docker build -t {username}/twilio:v1 .
 
-docker push meteatamel/twilio-csharp:v1
+docker push {username}/twilio:v1
 ```
 
 ## Deploy the Knative service
 
-Create a [service.yaml](../serving/twilio-csharp/service.yaml) file.
+Take a look at the [service.yaml](../serving/twilio/service.yaml) file.
 
 ```yaml
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: twilio-csharp
+  name: twilio
   namespace: default
 spec:
   runLatest:
@@ -118,8 +118,8 @@ spec:
       revisionTemplate:
         spec:
           container:
-            # Replace meteatamel with your actual DockerHub
-            image: docker.io/meteatamel/twilio-csharp:v1
+            # Replace {username} with your actual DockerHub
+            image: docker.io/{username}/twilio:v1
 ```
 
 After the container is pushed, deploy the app. 
@@ -131,9 +131,10 @@ kubectl apply -f service.yaml
 Check that the service is created:
 
 ```bash
-kubectl get ksvc twilio-csharp
+kubectl get ksvc twilio
+
 NAME            AGE
-twilio-csharp   21s  
+twilio   21s  
 ```
 ## Test the service
 

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <RootNamespace>twilio_csharp</RootNamespace>
+    <RootNamespace>twilio</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

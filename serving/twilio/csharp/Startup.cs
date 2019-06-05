@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace twilio_csharp
+namespace twilio
 {
     public class Startup
     {
