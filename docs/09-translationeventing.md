@@ -6,12 +6,6 @@ In the [previous lab](08-helloworldeventing.md), our Knative service simply logg
 
 Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described in the previous lab. 
 
-## Create a Translation Handler
-
-Follow the instructions for your preferred language to create a service to handle translation messages:
-
-* [Create Translation Handler - C#](09-translationeventing-csharp.md)
-
 ## Define translation protocol
 
 Let's first define the translation protocol we'll use in our sample. The body of Pub/Sub messages will include text and the languages to translate from and to as follows:
@@ -21,6 +15,13 @@ Let's first define the translation protocol we'll use in our sample. The body of
 {text = 'Hello World', from='', to='es'}: Detected language to Spanish
 {text = 'Hello World', from='', to=''}: Error
 ```
+
+## Create a Translation Handler
+
+Follow the instructions for your preferred language to create a service to handle translation messages:
+
+* [Create Translation Handler - C#](09-translationeventing-csharp.md)
+
 ## Build and push Docker image
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub): 
