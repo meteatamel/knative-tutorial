@@ -10,89 +10,14 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 
 ![Twilio Webhook](./images/twilio-webhook.png)
 
-## Twilio SMS Webhook handler
+## Create Twilio SMS handler
 
-Let's create a service to handle SMS messages to Twilio. Start with creating an empty ASP.NET Core app:
+Follow the instructions for your preferred language to create a service to handle SMS messages to our Twilio number:
 
-```bash
-dotnet new web -o twiliosample
-```
-Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use MVC:
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvc();
-}
-
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-    if (env.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
-    }
-    
-    app.UseMvc();
-}
-```
-
-Next, let's install [twilio-aspnet](https://github.com/twilio/twilio-aspnet) package:
-
-```bash
-dotnet add package Twilio.AspNet.Core 
-```
-Finally, we can create [SmsController.cs](../serving/twilio/csharp/SmsController.cs) to receive SMS messages from Twilio:
-
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Twilio.AspNet.Common;
-using Twilio.AspNet.Core;
-using Twilio.TwiML;
-
-namespace twiliosample
-{
-    [Route("[controller]")]
-    public class SmsController : TwilioController
-    {
-        [HttpGet]
-        public TwiMLResult Index(SmsRequest incomingMessage)
-        {
-            var messagingResponse = new MessagingResponse();
-            messagingResponse.Message("The Knative copy cat says: " + incomingMessage.Body);
-            return TwiML(messagingResponse);
-        }
-    }
-}
-```
-`SmsController.cs` simply echoes back the received message. 
+* [Create Twilio SMS Handler - C#](06-twiliointegration-csharp.md)
+ 
 
 ## Build and push Docker image
-
-Before building the Docker image, make sure the app has no compilation errors:
-
-```bash
-dotnet build
-```
-
-Create a [Dockerfile](../serving/twilio/csharp/Dockerfile) for the image:
-
-```
-FROM microsoft/dotnet:2.2-sdk
-
-WORKDIR /app
-COPY *.csproj .
-RUN dotnet restore
-
-COPY . .
-
-RUN dotnet publish -c Release -o out
-
-ENV PORT 8080
-
-ENV ASPNETCORE_URLS http://*:${PORT}
-
-CMD ["dotnet", "out/twiliosample.dll"]
-```
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub): 
 

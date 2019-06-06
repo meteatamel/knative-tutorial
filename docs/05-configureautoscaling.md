@@ -10,7 +10,9 @@ The autoscaling can be bounded with `minScale` and `maxScale` annotations.
 
 ## Create a 'Sleeping' service
 
-Let's create a service to showcase autoscaling. You can look at the code in your language of choice but it essentially sleeps for 4000ms before responding to requests. For example, this is [Startup.cs](../serving/sleepingservice/csharp/Startup.cs) in C# sample:
+Let's deploy a service to showcase autoscaling. You can look at the code in your language of choice but it essentially sleeps for 4000ms before responding to requests. 
+
+For example, this is [Startup.cs](../serving/sleepingservice/csharp/Startup.cs) in C# sample:
 
 ```csharp
 app.Run(async (context) =>

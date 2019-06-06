@@ -1,14 +1,18 @@
 # Hello World Serving
 
-[Knative Serving](https://www.knative.dev/docs/serving/) has a [samples](https://www.knative.dev/docs/serving/samples/) page with `Hello World` type demos for various languages. In this tutorial, we will build something similar with a couple of minor differences:
+[Knative Serving](https://www.knative.dev/docs/serving/) already has a [samples](https://www.knative.dev/docs/serving/samples/) page with `Hello World` services for various languages. In this tutorial, we will build the same with a couple of minor differences:
 
 1. When building the Docker image, we tag our images with `v1`, `v2`, etc. to better track different versions of the service. 
 
 2. When defining the service, we use `service-v1.yaml` for the first version, `service-v2.yaml` for the second version etc. Again, to keep track of different service configurations better. 
 
+## Create a 'Hello World' service
+
+You can either create your 'Hello World' service as described in Knative Serving or take a look at the services we already created in [helloworld](../serving/helloworld/) folder for various languages ([csharp](../serving/helloworld/csharp/)). 
+
 ## Build and push Docker image
 
-With these changes in mind, in [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)). In that folder, build and push the container image. Replace `{username}` with your DockerHub username:
+In folder of your language of choice, build and push the container image defined by `Dockerfile`. Replace `{username}` with your DockerHub username:
 
 ```docker
 docker build -t {username}/helloworld:v1 .
