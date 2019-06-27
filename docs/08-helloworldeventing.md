@@ -8,11 +8,10 @@ Knative Eventing has a few different types of event sources (Kubernetes, GitHub,
 
 ## Install Knative Eventing
 
-You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, follow the Knative installation instructions and take a look at the installation section in [Knative Eventing](https://www.knative.dev/docs/eventing/) page. In the end, you should have pods running in `knative-eventing` and `knative-sources` namespaces. Double check that this is the case:
+You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, follow the Knative installation instructions and take a look at the installation section in [Knative Eventing](https://www.knative.dev/docs/eventing/) page. In the end, you should have pods running in `knative-eventing`. Double check that this is the case:
 
 ```bash
 kubectl get pods -n knative-eventing
-kubectl get pods -n knative-sources
 ```
 
 ## Configuring outbound network access
