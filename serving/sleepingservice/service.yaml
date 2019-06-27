@@ -11,33 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: sleepingservice
   namespace: default
 spec:
-  runLatest:
-    configuration:
-      revisionTemplate:
-        metadata:
-          annotations:
-            # Default: Knative concurrency-based autoscaling with 
-            # 100 requests in-flight per pod.
-            autoscaling.knative.dev/class:  kpa.autoscaling.knative.dev
-            autoscaling.knative.dev/metric: concurrency
-            # Change target to 1 to showcase autoscaling
-            autoscaling.knative.dev/target: "1"
+  template:
+    metadata:
+      annotations:
+        # Default: Knative concurrency-based autoscaling with 
+        # 100 requests in-flight per pod.
+        autoscaling.knative.dev/class:  kpa.autoscaling.knative.dev
+        autoscaling.knative.dev/metric: concurrency
+        # Changed target to 1 to showcase autoscaling
+        autoscaling.knative.dev/target: "1"
 
-            # Alternative: Kubernetes CPU-based autoscaling.
-            # autoscaling.knative.dev/class:  hpa.autoscaling.knative.dev
-            # autoscaling.knative.dev/metric: cpu
-            
-            # Disable scale to zero with a minScale of 1.
-            autoscaling.knative.dev/minScale: "1"
-            # Limit max scaling to 5 pods.
-            autoscaling.knative.dev/maxScale: "5"
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/sleepingservice:v1
+        # Alternative: Kubernetes CPU-based autoscaling.
+        # autoscaling.knative.dev/class:  hpa.autoscaling.knative.dev
+        # autoscaling.knative.dev/metric: cpu
+        
+        # Disable scale to zero with a minScale of 1.
+        autoscaling.knative.dev/minScale: "1"
+        # Limit max scaling to 5 pods.
+        autoscaling.knative.dev/maxScale: "5"
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/sleepingservice:v1
