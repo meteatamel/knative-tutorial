@@ -11,24 +11,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: helloworld
   namespace: default
 spec:
-  release:
-    # Ordered list of 1 or 2 revisions. 
-    # First revision is traffic target "current"
-    # Second revision is traffic target "candidate"
-    revisions: ["helloworld-00001", "helloworld-00004"]
-    rolloutPercent: 20 # Percent [0-99] of traffic to route to "candidate" revision
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/helloworld:v1
-            env:
-              - name: TARGET
-                value: "v4"
+  template:
+    metadata:
+      name: helloworld-v4
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/helloworld:v1
+          env:
+            - name: TARGET
+              value: "v4"
+  traffic:
+  - tag: current
+    revisionName: helloworld-v1
+    percent: 100
+  - tag: latest
+    latestRevision: true
+    percent: 0

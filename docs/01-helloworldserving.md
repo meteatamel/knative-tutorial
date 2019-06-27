@@ -24,22 +24,20 @@ docker push {username}/helloworld:v1
 Take a look at [service-v1.yaml](../serving/helloworld/service-v1.yaml) file where we define a Knative service:
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: helloworld
   namespace: default
 spec:
-  runLatest:
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your DockerHub username
-            image: docker.io/{username}/helloworld:v1
-            env:
-              - name: TARGET
-                value: "v1"
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/helloworld:v1
+          env:
+            - name: TARGET
+              value: "v1"
 ```
 
 After the container is pushed, deploy the Knative service: 

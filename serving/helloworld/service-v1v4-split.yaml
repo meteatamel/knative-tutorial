@@ -18,10 +18,22 @@ metadata:
   namespace: default
 spec:
   template:
+    metadata:
+      name: helloworld-v4
     spec:
       containers:
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v3
+        - image: docker.io/{username}/helloworld:v1
           env:
             - name: TARGET
-              value: "v3"
+              value: "v4"
+  traffic:
+  - tag: current
+    revisionName: helloworld-v1
+    percent: 50
+  - tag: candidate
+    revisionName: helloworld-v4
+    percent: 50
+  - tag: latest
+    latestRevision: true
+    percent: 0

@@ -1,142 +1,204 @@
 # Traffic Splitting
 
-So far, whenever we have a configuration change (code or env variables), we apply that change which in turn creates a new revision and the route is updated to direct 100% of the traffic to the new revision. This is because we've been using `spec.runLatest` mode in our service definition.
+So far, whenever we have a configuration change (code or env variable), we apply that change which in turn creates a new revision and the route is updated to direct 100% of the traffic to the new revision. 
 
-What if you want to control how much traffic the new revision gets? You can do that by using `spec.release` mode in the service definition.
+What if you want to control how the traffic is routed between current and latest revision? You can do that in Knative.
 
-## Split traffic between old and new 
+## Named revisions and pinning to a revision
 
-Let's create a new revision `v4` that gets only 20% of the traffic while the old revision `v1` gets 80%. 
+We deployed three versions of our Knative that created 3 revisions with random names that you can verify:
 
-Create a [service-v4.yaml](../serving/helloworld/service-v4.yaml) file that has `TARGET` value of `v4` and it uses `release` mode. Note that the revision names are not correct but we'll fix that later:
+```bash
+kubectl get revision
+
+NAME               SERVICE NAME
+helloworld-f4xvr   helloworld-f4xvr
+helloworld-ln8rv   helloworld-ln8rv
+helloworld-z9clz   helloworld-z9clz
+```
+
+For traffic splitting, it's useful to have meaningful revision names. It's also useful to pin the traffic to a certain revision. Let's do both. 
+
+Create a [service-v1-pinned.yaml](../serving/helloworld/service-v1-pinned.yaml) file as follows:
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: helloworld
   namespace: default
 spec:
-  release:
-    # Ordered list of 1 or 2 revisions. 
-    # First revision is traffic target "current"
-    # Second revision is traffic target "candidate"
-    revisions: ["helloworld-00001", "helloworld-00004"]
-    rolloutPercent: 20 # Percent [0-99] of traffic to route to "candidate" revision
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/helloworld:v1
-            env:
-              - name: TARGET
-                value: "v4"
+  template:
+    metadata:
+      name: helloworld-v1
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/helloworld:v1
+          env:
+            - name: TARGET
+              value: "v1"
+  traffic:
+  - tag: current
+    revisionName: helloworld-v1
+    percent: 100
+  - tag: latest
+    latestRevision: true
+    percent: 0
 ```
 
-The release mode lists two fake `revisions` (current and candidate) and `rolloutPercent` defines how much traffic the candidate (in this case `v4`) will receive
+Notice a couple of things:
+1. The revision of the Service has now a specific name: `helloworld-v1`
+2. There's a `traffic` section where we pin 100% of the traffic to the named revision. 
+
+In this setup, we can still deploy a new revision but that revision (`latest`) is not going to get the traffic. 
+
+Apply the change:
+
+```bash
+kubectl apply -f service-v1-pinned.yaml
+```
+
+You should see the new named revision created:
+
+```bash
+kubectl get revision
+
+NAME               SERVICE NAME       GENERATION
+helloworld-f4xvr   helloworld-f4xvr   2         
+helloworld-ln8rv   helloworld-ln8rv   3         
+helloworld-v1      helloworld-v1      4         
+helloworld-z9clz   helloworld-z9clz   1
+```
+And `helloworld-v1` is the one getting the traffic:
+
+```bash
+curl http://helloworld.default.$ISTIO_INGRESS.nip.io
+
+Hello v1
+```
+
+## Deploy a new version 
+
+Let's create a new revision. Create a [service-v4.yaml](../serving/helloworld/service-v4.yaml) file that has `TARGET` value of `v4`:
+
+```yaml
+apiVersion: serving.knative.dev/v1beta1
+kind: Service
+metadata:
+  name: helloworld
+  namespace: default
+spec:
+  template:
+    metadata:
+      name: helloworld-v4
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/helloworld:v1
+          env:
+            - name: TARGET
+              value: "v4"
+  traffic:
+  - tag: current
+    revisionName: helloworld-v1
+    percent: 100
+  - tag: latest
+    latestRevision: true
+    percent: 0
+```
+
+Notice that even though a new revision is being created `helloworld-v4`, the old revision `helloworld-v1` is the one getting the traffic. 
 
 Apply the change:
 
 ```bash
 kubectl apply -f service-v4.yaml
 ```
-You should first see a new revision is created for `v4` (generation 4):
+
+You should see the new named revision created:
 
 ```bash
-kubectl get revision 
+kubectl get revision
 
-NAME               SERVICE NAME               GENERATION
-helloworld-4ht6f   helloworld-4ht6f-service   2
-helloworld-8sv8s   helloworld-8sv8s-service   3
-helloworld-t66v9   helloworld-t66v9-service   1
-helloworld-zd5qk   helloworld-zd5qk-service   4
+NAME               SERVICE NAME       GENERATION
+helloworld-f4xvr   helloworld-f4xvr   2         
+helloworld-ln8rv   helloworld-ln8rv   3         
+helloworld-v1      helloworld-v1      4
+helloworld-v4      helloworld-v4      5         
+helloworld-z9clz   helloworld-z9clz   1
 ```
-
-Now, replace the fake revision ids with the real ones for generation 1 and 4. The yaml file should look like this:
-
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: helloworld
-  namespace: default
-spec:
-  release:
-    # Ordered list of 1 or 2 revisions. 
-    # First revision is traffic target "current"
-    # Second revision is traffic target "candidate"
-    revisions: ["helloworld-t66v9", "helloworld-zd5qk"]
-    rolloutPercent: 20 # Percent [0-99] of traffic to route to "candidate" revision
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/helloworld:v1
-            env:
-              - name: TARGET
-                value: "v4"
-```
-Apply the change:
+But `helloworld-v1` is still one getting the traffic:
 
 ```bash
-kubectl apply -f service-v4.yaml
+curl http://helloworld.default.$ISTIO_INGRESS.nip.io
+
+Hello v1
 ```
 
-You should see roughly 20% of the requests going to the new revision:
+You can verify that the new version is deployed by accessing the `latest` endpoint:
 
 ```bash
-for i in {1..10}; do curl "http://helloworld.default.$ISTIO_INGRESS.nip.io" ; sleep 1; done
+curl http://latest-helloworld.default.$ISTIO_INGRESS.nip.io
 
-Hello v1
-Hello v1
-Hello v1
 Hello v4
 ```
 
-## Split traffic between existing revisions 
+But the `current` one is `helloworld-v1`:
 
-What if you want to split traffic with existing revisions? You can do that by referring to the existing revisions in the `revision` field.  
+```bash
+curl http://current-helloworld.default.$ISTIO_INGRESS.nip.io
 
-Create a [service-v5.yaml](../serving/helloworld/service-v5.yaml) file that refers to `v1` and `v3` revisions that are split by 50%. Make sure you use the actual revision ids in your deployment:
+Hello v1
+```
+
+## Split the traffic 50-50 
+
+In this last section, let's split the traffic 50-50 between `helloworld-v1` and `helloworld-v4`. Create a [service-v1v4-split.yaml](../serving/helloworld/service-v1v4-split.yaml) file as follows:
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: helloworld
   namespace: default
 spec:
-  release:
-    # Ordered list of 1 or 2 revisions. 
-    # First revision is traffic target "current"
-    # Second revision is traffic target "candidate"
-    revisions: ["helloworld-0001", "helloworld-0003"]
-    rolloutPercent: 50 # Percent [0-99] of traffic to route to "candidate" revision
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/helloworld-csharp:v1
-            env:
-              - name: TARGET
-                value: "v4"
+  template:
+    metadata:
+      name: helloworld-v4
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/helloworld:v1
+          env:
+            - name: TARGET
+              value: "v4"
+  traffic:
+  - tag: current
+    revisionName: helloworld-v1
+    percent: 50
+  - tag: candidate
+    revisionName: helloworld-v4
+    percent: 50
+  - tag: latest
+    latestRevision: true
+    percent: 0
 ```
+
 Apply the change:
 
 ```bash
-kubectl apply -f service-v5.yaml
+kubectl apply -f service-v1v4-split.yaml
 ```
+
 You should see roughly 50% of the requests split between revisions:
 
 ```bash
 for i in {1..10}; do curl "http://helloworld.default.$ISTIO_INGRESS.nip.io" ; sleep 1; done
 Hello v1
-Bye v3
+Hello v4
 Hello v1
-Bye v3
+Hello v4
 ```
 
 ## What's Next?
