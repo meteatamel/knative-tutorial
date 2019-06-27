@@ -36,22 +36,17 @@ docker push {username}/translation:v1
 Create a [trigger.yaml](../eventing/translation/trigger.yaml) file.
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1beta1
 kind: Service
 metadata:
   name: translation
+  namespace: default
 spec:
-  runLatest:
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            # Replace {username} with your actual DockerHub
-            image: docker.io/{username}/translation:v1
-        metadata:
-          annotations:
-            # Disable scale to zero with a minScale of 1.
-            autoscaling.knative.dev/minScale: "1"
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/translation:v1
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
