@@ -4,10 +4,6 @@ As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter me
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
 
-Under the covers, Knative creates Channels and Subscriptions and supports direct and fanout delivery options:
-
-![Diagram](https://raw.githubusercontent.com/knative/docs/master/docs/eventing/images/control-plane.png)
-
 Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events. 
 
 ## Install Knative Eventing

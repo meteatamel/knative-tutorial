@@ -39,7 +39,7 @@ data:
 You can then check that the custom domain is applied:
 
 ```
-kubectl get route helloworld-csharp --output jsonpath="{.status.domain}"
+kubectl get route helloworld
 ```
 
 Set `ISTIO_INGRESS` if you haven't done so in the previous step:
