@@ -76,7 +76,7 @@ Change the log level in `appsettings.json` to `Information`:
 ```
 At this point, the sample simply logs out the received messages. 
 
-## Define Cloud Events
+## Handle Cloud Events
 
 Our Knative service will receive Pub/Sub messages from Cloud Storage in the form of [CloudEvents](https://github.com/cloudevents) which roughly has the following form:
 
@@ -91,36 +91,22 @@ Our Knative service will receive Pub/Sub messages from Cloud Storage in the form
 ```
 In this case, the `Attributes` has the bucket and file information that we're interested in.
 
-Create a [CloudEvent.cs](../eventing/vision/csharp/CloudEvent.cs):
+We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
+
+```
+dotnet add package CloudNative.CloudEvent
+```
+Then, parse the `CloudEvent`. You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs) 
 
 ```csharp
-using System;
-using System.Collections.Generic;
-using System.Text;
+var jObject = (JObject)JToken.Parse(content);
+var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
 
-namespace vision
-{
-    public class CloudEvent
-    {
-        public string ID;
-
-        public string Data;
-
-        public Dictionary<string, string> Attributes;
-
-        public string PublishTime;
-
-        public string GetDecodedData() => (
-            string.IsNullOrEmpty(Data) ?
-                string.Empty :
-                Encoding.UTF8.GetString(Convert.FromBase64String(Data)));
-    }
-}
+if (cloudEvent == null) return;  
 ```
-
 ## Add Vision API
 
-Before adding Translation API code to our service, let's make sure Translation API is enabled in our project:
+Before adding Vision API code to our service, let's make sure Vision API is enabled in our project:
 
 ```bash
 gcloud services enable vision.googleapis.com
@@ -130,25 +116,23 @@ And add Vision API NuGet package to our project:
 ```
 dotnet add package Google.Cloud.Vision.V1
 ```
-We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to first extract the `CloudEvent` and then check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
+We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
 
 ```csharp
-var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
-if (cloudEvent == null) return;
-
-var eventType = cloudEvent.Attributes["eventType"];
+var attributes = (dynamic)cloudEvent.GetAttributes()["Attributes"];
+var eventType = attributes.eventType;
 if (eventType == null || eventType != "OBJECT_FINALIZE") return;
 ```
 
 Next, we extract the Cloud Storage URL of the file from the event:
 
 ```csharp
-var storageUrl = ConstructStorageUrl(cloudEvent);
+var storageUrl = (string)ConstructStorageUrl(attributes);
 
-private string ConstructStorageUrl(CloudEvent cloudEvent)
+private string ConstructStorageUrl(dynamic attributes)
 {
-    return cloudEvent == null? null 
-        : string.Format("gs://{0}/{1}", cloudEvent.Attributes["bucketId"], cloudEvent.Attributes["objectId"]);
+    return attributes == null? null 
+        : string.Format("gs://{0}/{1}", attributes.bucketId, attributes.objectId);
 }
 ```
 

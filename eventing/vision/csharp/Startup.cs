@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CloudNative.CloudEvents;
 using Google.Cloud.Vision.V1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace vision
 {
@@ -54,13 +56,16 @@ namespace vision
                         var content = reader.ReadToEnd();
                         _logger.LogInformation($"Received content: {content}");
 
-                        var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
+                        var jObject = (JObject)JToken.Parse(content);
+                        var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
+
                         if (cloudEvent == null) return;
 
-                        var eventType = cloudEvent.Attributes["eventType"];
+                        var attributes = (dynamic)cloudEvent.GetAttributes()["Attributes"];
+                        var eventType = attributes.eventType;
                         if (eventType == null || eventType != "OBJECT_FINALIZE") return;
 
-                        var storageUrl = ConstructStorageUrl(cloudEvent);
+                        var storageUrl = (string)ConstructStorageUrl(attributes);
 
                         var labels = await ExtractLabelsAsync(storageUrl);
 
@@ -77,10 +82,10 @@ namespace vision
             });
         }
 
-        private string ConstructStorageUrl(CloudEvent cloudEvent)
+        private string ConstructStorageUrl(dynamic attributes)
         {
-            return cloudEvent == null? null 
-                : string.Format("gs://{0}/{1}", cloudEvent.Attributes["bucketId"], cloudEvent.Attributes["objectId"]);
+            return attributes == null? null 
+                : string.Format("gs://{0}/{1}", attributes.bucketId, attributes.objectId);
         }
 
         private async Task<string> ExtractLabelsAsync(string storageUrl)
