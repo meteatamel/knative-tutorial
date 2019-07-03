@@ -11,9 +11,9 @@ Since we're making calls to Google Cloud services, you need to make sure that th
 Let's first define the translation protocol we'll use in our sample. The body of Pub/Sub messages will include text and the languages to translate from and to as follows:
 
 ```
-{text = 'Hello World', from='en', to='es'}: English to Spanish
-{text = 'Hello World', from='', to='es'}: Detected language to Spanish
-{text = 'Hello World', from='', to=''}: Error
+{text:'Hello World', from:'en', to:'es'} => English to Spanish
+{text:'Hello World', from:'', to:'es'} => Detected language to Spanish
+{text:'Hello World', from:'', to:''} => Error
 ```
 
 ## Create a Translation Handler
@@ -76,7 +76,7 @@ kubectl get ksvc,trigger
 We can now test our service by sending a translation request message to Pub/Sub topic:
 
 ```bash
-gcloud pubsub topics publish testing --message="{text:'Hello World', from: 'en', to:'es'}"
+gcloud pubsub topics publish testing --message="{text:'Hello World', from:'en', to:'es'}"
 ```
 
 Wait a little and check that a pod is created:
