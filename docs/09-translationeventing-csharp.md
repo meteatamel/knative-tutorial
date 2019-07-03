@@ -93,7 +93,7 @@ namespace translate
     }
 }
 ```
-## Define Cloud Events
+## Handle Cloud Events
 
 Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](https://github.com/cloudevents) which roughly has the following form:
 
@@ -108,31 +108,22 @@ Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](h
 ```
 In this case, the actual translation request will be Base64 encoded in `Data` field and it's the only thing we're interested in. 
 
-Create a [CloudEvent.cs](../eventing/translation/csharp/CloudEvent.cs) class to help us parse CloudEvents and decode `Data` field:
+We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
+
+```
+dotnet add package CloudNative.CloudEvent
+```
+
+Then, parse the `CloudEvent` and decode the base64 encoded `Data` field. You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs) 
 
 ```csharp
-using System;
-using System.Collections.Generic;
-using System.Text;
+var jObject = (JObject)JToken.Parse(content);
+var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
 
-namespace translation
-{
-    public class CloudEvent
-    {
-        public string ID;
+if (cloudEvent == null) return;
 
-        public string Data;
-
-        public Dictionary<string, string> Attributes;
-
-        public string PublishTime;
-
-        public string GetDecodedData() => (
-            string.IsNullOrEmpty(Data) ?
-                string.Empty :
-                Encoding.UTF8.GetString(Convert.FromBase64String(Data)));
-    }
-}
+var decodedData = GetDecodedData((string)cloudEvent.Data);
+_logger.LogInformation($"Decoded data: {decodedData}");    
 ```
 
 ## Add Translation API
@@ -147,14 +138,10 @@ And add Translation API NuGet package to our project:
 ```
 dotnet add package Google.Cloud.Translation.V2
 ```
-Finally, we can change [Startup.cs](../eventing/translation/csharp/Startup.cs) to first extract the `CloudEvent` and then extract `TranslationRequest` out of it.  
+
+Change [Startup.cs](../eventing/translation/csharp/Startup.cs) to extract `TranslationRequest` out of it.  
 
 ```csharp
-var cloudEvent = JsonConvert.DeserializeObject<CloudEvent>(content);
-if (cloudEvent == null) return;
-
-var decodedData = cloudEvent.GetDecodedData();
-_logger.LogInformation($"Decoded data: {decodedData}");
 var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
 ```
 
