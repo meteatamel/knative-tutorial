@@ -42,7 +42,6 @@ Knative Build:
 * [Docker Hub Build](docs/12-dockerbuild.md)
 * [Kaniko Build Template](docs/13-kanikobuildtemplate.md)
 * [Buildpacks Build Template](docs/14-buildpacksbuildtemplate.md)
-* [Automatic Build](docs/15-autobuild.md)
 -------
 
 This is not an official Google product.
