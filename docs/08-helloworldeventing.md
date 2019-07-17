@@ -4,7 +4,7 @@ As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter me
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
 
-Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events. 
+Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events.
 
 ## Install Knative Eventing
 
@@ -16,13 +16,13 @@ kubectl get pods -n knative-eventing
 
 ## Configuring outbound network access
 
-In Knative, the outbound network access is disabled by default. This means that you cannot even call Google Cloud APIs from Knative. 
+In Knative, the outbound network access is disabled by default. This means that you cannot even call Google Cloud APIs from Knative.
 
-In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://www.knative.dev/docs/serving/outbound-network-access/) page to enable access. 
+In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://www.knative.dev/docs/serving/outbound-network-access/) page to enable access.
 
 ## Setup Google Cloud Pub/Sub event source and default Broker
 
-Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source and also have a Broker injected in the default namespace. But don't create the trigger, we'll do that here. 
+Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source and also have a Broker injected in the default namespace. But don't create the trigger, we'll do that here.
 
 In the end, you should have a GCP Pub/Sub source setup:
 
@@ -38,8 +38,8 @@ And a default broker as well:
 ```bash
 kubectl get broker
 
-NAME      READY   REASON   HOSTNAME                                   
-default   True             default-broker.default.svc.cluster.local   
+NAME      READY   REASON   HOSTNAME
+default   True             default-broker.default.svc.cluster.local
 ```
 
 ## Create a Message Dumper
@@ -48,12 +48,11 @@ Follow the instructions for your preferred language to create a service to log o
 
 * [Create Message Dumper - C#](08-helloworldeventing-csharp.md)
 
-
 ## Build and push Docker image
 
-Build and push the Docker image (replace `{username}` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub):
 
-```docker
+```bash
 docker build -t {username}/message-dumper:v1 .
 
 docker push {username}/message-dumper:v1
@@ -99,6 +98,7 @@ Check that the service and trigger are created:
 ```bash
 kubectl get ksvc,trigger
 ```
+
 ## Test the service
 
 We can now test our service by sending a message to Pub/Sub topic:
@@ -112,11 +112,13 @@ Wait a little and check that a pod is created:
 ```bash
 kubectl get pods --selector serving.knative.dev/service=message-dumper
 ```
+
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
 kubectl logs --follow -c user-container <podid>
 ```
+
 You should see something similar to this:
 
 ```bash
@@ -134,8 +136,9 @@ info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
 info: message_dumper.Startup[0]
       C# Message Dumper received message: {"ID":"198012587785403","Data":"SGVsbG8gV29ybGQ=","Attributes":null,"PublishTime":"2019-01-21T15:25:58.25Z"}
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-      Request finished in 29.9881ms 200 
+      Request finished in 29.9881ms 200
 ```
+
 Finally, if you decode the `Data` field, you should see the "Hello World" message:
 
 ```bash
@@ -144,4 +147,5 @@ Hello World
 ```
 
 ## What's Next?
+
 [Integrate with Translation API](09-translationeventing.md)

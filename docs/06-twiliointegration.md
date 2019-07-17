@@ -4,7 +4,7 @@ You can use [Twilio](https://www.twilio.com/) to embed voice, VoIP, and messagin
 
 ## Twilio Setup
 
-You need to [create a Twilio account](https://www.twilio.com/try-twilio) and get a [Twilio phone number](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account#get-your-first-twilio-phone-number). You need to make sure that the Twilio number is SMS enabled. 
+You need to [create a Twilio account](https://www.twilio.com/try-twilio) and get a [Twilio phone number](https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account#get-your-first-twilio-phone-number). You need to make sure that the Twilio number is SMS enabled.
 
 In Twilio [console](https://www.twilio.com/console), click on the phone number and go to `Messaging` section. There's a Webhook defined for when a message comes in. We will change that to our Knative Service later:
 
@@ -15,13 +15,12 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 Follow the instructions for your preferred language to create a service to handle SMS messages to our Twilio number:
 
 * [Create Twilio SMS Handler - C#](06-twiliointegration-csharp.md)
- 
 
 ## Build and push Docker image
 
-Build and push the Docker image (replace `{username}` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub):
 
-```docker
+```bash
 docker build -t {username}/twilio:v1 .
 
 docker push {username}/twilio:v1
@@ -45,7 +44,7 @@ spec:
         - image: docker.io/{username}/twilio:v1
 ```
 
-After the container is pushed, deploy the app. 
+After the container is pushed, deploy the app.
 
 ```bash
 kubectl apply -f service.yaml
@@ -59,6 +58,7 @@ kubectl get ksvc twilio
 NAME            AGE
 twilio   21s  
 ```
+
 ## Test the service
 
 We can finally test our service by sending an SMS to our Twilio number. We need to setup Twilio Webhook first.
@@ -70,4 +70,5 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 Now, you can send an SMS message to your Twilio number and you should get a reply back from the Knative service!
 
 ## What's Next?
+
 [Deploy to Cloud Run](07-deploycloudrun.md)

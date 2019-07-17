@@ -7,6 +7,7 @@ Let's start with creating an empty ASP.NET Core app:
 ```bash
 dotnet new web -o translation
 ```
+
 Inside the `translation/csharp` folder, update [Startup.cs](../eventing/translation/csharp/Startup.cs) to log incoming messages for now:
 
 ```csharp
@@ -62,6 +63,7 @@ namespace translation
     }
 }
 ```
+
 Change the log level in `appsettings.json` to `Information`:
 
 ```json
@@ -74,7 +76,8 @@ Change the log level in `appsettings.json` to `Information`:
   "AllowedHosts": "*"
 }
 ```
-At this point, the sample simply logs out the received messages. 
+
+At this point, the sample simply logs out the received messages.
 
 ## Handle translation protocol
 
@@ -86,13 +89,14 @@ namespace translate
     public class TranslationRequest
     {
         public string From;
-        
+
         public string To;
 
         public string Text;
     }
 }
 ```
+
 ## Handle Cloud Events
 
 Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](https://github.com/cloudevents) which roughly has the following form:
@@ -106,15 +110,16 @@ Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](h
     "PublishTime": ""
 }
 ```
-In this case, the actual translation request will be Base64 encoded in `Data` field and it's the only thing we're interested in. 
+
+In this case, the actual translation request will be Base64 encoded in `Data` field and it's the only thing we're interested in.
 
 We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
 
-```
+```bash
 dotnet add package CloudNative.CloudEvent
 ```
 
-Then, parse the `CloudEvent` and decode the base64 encoded `Data` field. You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs) 
+Then, parse the `CloudEvent` and decode the base64 encoded `Data` field. You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs)
 
 ```csharp
 var jObject = (JObject)JToken.Parse(content);
@@ -123,7 +128,7 @@ var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
 if (cloudEvent == null) return;
 
 var decodedData = GetDecodedData((string)cloudEvent.Data);
-_logger.LogInformation($"Decoded data: {decodedData}");    
+_logger.LogInformation($"Decoded data: {decodedData}");
 ```
 
 ## Add Translation API
@@ -133,9 +138,10 @@ Before adding Translation API code to our service, let's make sure Translation A
 ```bash
 gcloud services enable translate.googleapis.com
 ```
+
 And add Translation API NuGet package to our project:
 
-```
+```bash
 dotnet add package Google.Cloud.Translation.V2
 ```
 
@@ -152,12 +158,13 @@ _logger.LogInformation("Calling Translation API");
 
 var response = await TranslateText(translationRequest);
 _logger.LogInformation($"Translated text: {response.TranslatedText}");
-if (response.DetectedSourceLanguage != null) 
+if (response.DetectedSourceLanguage != null)
 {
     _logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
 }
 await context.Response.WriteAsync(response.TranslatedText);
 ```
+
 You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs).
 
 Before building the Docker image, make sure the app has no compilation errors:
@@ -170,7 +177,7 @@ dotnet build
 
 Create a [Dockerfile](../eventing/translation/csharp/Dockerfile) for the image:
 
-```
+```dockerfile
 FROM microsoft/dotnet:2.2-sdk
 
 WORKDIR /app
@@ -189,4 +196,5 @@ CMD ["dotnet", "out/translation.dll"]
 ```
 
 ## What's Next?
+
 Back to [Integrate with Translation API](09-translationeventing.md)

@@ -1,22 +1,22 @@
 # Buildpacks Build Template
 
-Knative comes with a number of ready-to-use [build-templates](https://github.com/knative/build-templates) and one of my favorites is the [template](https://github.com/knative/build-templates/tree/master/buildpacks) for Cloud Native Buildpacks. 
+Knative comes with a number of ready-to-use [build-templates](https://github.com/knative/build-templates) and one of my favorites is the [template](https://github.com/knative/build-templates/tree/master/buildpacks) for Cloud Native Buildpacks.
 
-[Cloud Native Buildpacks](https://buildpacks.io/) allow you to go from source code to a container image without having to define a `Dockerfile`. Buildpacks does this with auto-detection magic to figure out what language your code is written in and what kind of dependencies it has. In this end, you end up with a runnable app image. 
+[Cloud Native Buildpacks](https://buildpacks.io/) allow you to go from source code to a container image without having to define a `Dockerfile`. Buildpacks does this with auto-detection magic to figure out what language your code is written in and what kind of dependencies it has. In this end, you end up with a runnable app image.
 
-So far, all of the build labs required a `Dockerfile` in order to build and push an image. In this lab, let's use [buildpacks template](https://github.com/knative/build-templates/tree/master/buildpacks) to create and push an image without a `Dockerfile`. 
+So far, all of the build labs required a `Dockerfile` in order to build and push an image. In this lab, let's use [buildpacks template](https://github.com/knative/build-templates/tree/master/buildpacks) to create and push an image without a `Dockerfile`.
 
 ## Install Buildpacks BuildTemplate
 
 First, we need to install Buildpacks Build Template:
 
-```yaml
+```bash
 kubectl apply -f https://raw.githubusercontent.com/knative/build-templates/master/buildpacks/cnb.yaml
 ```
 
 Check that it is installed:
 
-```yaml
+```bash
 kubectl get buildtemplate
 
 NAME             AGE
@@ -25,7 +25,7 @@ buildpacks-cnb   1m
 
 ## Design the build
 
-Let's create a Build now to build a sample Java app on GitHub ([sample-java-app](https://github.com/buildpack/sample-java-app.git)). 
+Let's create a Build now to build a sample Java app on GitHub ([sample-java-app](https://github.com/buildpack/sample-java-app.git)).
 
 Create a [buildtemplate-buildpack-sample-java-app-gcr.yaml](../build/buildtemplate-buildpack-sample-java-app-gcr.yaml) build file:
 
@@ -47,7 +47,7 @@ spec:
         value: gcr.io/{PROJECT_ID}/sample-java-app:buildpack
 ```
 
-One thing you'll notice is that the `sample-java-app` does not define a Dockerfile. Buildpacks will use its auto-detection to build the image and push it to the location specified in `IMAGE` argument. 
+One thing you'll notice is that the `sample-java-app` does not define a Dockerfile. Buildpacks will use its auto-detection to build the image and push it to the location specified in `IMAGE` argument.
 
 ## Run and watch the build
 
@@ -62,7 +62,7 @@ After a few minutes, check the build is succeeded:
 ```bash
 kubectl get build
 
-NAME                                          SUCCEEDED   
+NAME                                          SUCCEEDED
 buildtemplate-buildpack-sample-java-app-gcr    True
 ```
 

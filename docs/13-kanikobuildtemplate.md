@@ -2,7 +2,7 @@
 
 In the [previous lab](10-dockerbuild.md) and the lab before, we created a Build and invoked Kaniko directly, passing all the arguments required for Kaniko in the Build step. This works but a better approach is to utilize [Build Templates](https://knative.dev/docs/build/build-templates/)
 
-Knative comes with a number of ready to use Build Templates that you can use in your Build steps. There is a [build-templates](https://github.com/knative/build-templates) repo with all the templates. 
+Knative comes with a number of ready to use Build Templates that you can use in your Build steps. There is a [build-templates](https://github.com/knative/build-templates) repo with all the templates.
 
 In this lab, we will use [Kaniko Build Template](https://github.com/knative/build-templates/tree/master/kaniko).
 
@@ -10,13 +10,13 @@ In this lab, we will use [Kaniko Build Template](https://github.com/knative/buil
 
 First, we need to install Kaniko Build Template:
 
-```yaml
+```bash
 kubectl apply -f https://raw.githubusercontent.com/knative/build-templates/master/kaniko/kaniko.yaml
 ```
 
 Check that it is installed:
 
-```yaml
+```bash
 kubectl get buildtemplate
 
 NAME      AGE
@@ -45,7 +45,8 @@ spec:
         # Replace {PROJECT_ID} with your GCP Project's ID.
         value: gcr.io/{PROJECT_ID}/helloworld:kaniko
 ```
-Notice how the Build is not creating its own steps anymore but instead refers to the Kaniko template. The Docker image location is passed in via `IMAGE` argument. 
+
+Notice how the Build is not creating its own steps anymore but instead refers to the Kaniko template. The Docker image location is passed in via `IMAGE` argument.
 
 ## Run and watch the build
 
@@ -60,11 +61,12 @@ After a few minutes, check the build is succeeded:
 ```bash
 kubectl get build
 
-NAME                                          SUCCEEDED   
+NAME                                          SUCCEEDED
 buildtemplate-kaniko-helloworld-gcr   True
 ```
 
-At this point, you should see the image pushed to GCR. 
+At this point, you should see the image pushed to GCR.
 
 ## What's Next?
+
 [Buildpacks Build Template](14-buildpacksbuildtemplate.md)

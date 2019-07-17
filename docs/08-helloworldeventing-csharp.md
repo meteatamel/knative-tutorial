@@ -7,6 +7,7 @@ Create an empty ASP.NET Core app:
 ```bash
 dotnet new web -o message-dumper
 ```
+
 Inside the `message-dumper/csharp` folder, update [Startup.cs](../eventing/message-dumper/csharp/Startup.cs) to have a logger to print the contents of the event:
 
 ```csharp
@@ -52,6 +53,7 @@ namespace message_dumper
     }
 }
 ```
+
 Change the log level in `appsettings.json` to `Information`:
 
 ```json
@@ -64,6 +66,7 @@ Change the log level in `appsettings.json` to `Information`:
   "AllowedHosts": "*"
 }
 ```
+
 Before building the Docker image, make sure the app has no compilation errors:
 
 ```bash
@@ -74,7 +77,7 @@ dotnet build
 
 Create a [Dockerfile](../eventing/message-dumper/csharp/Dockerfile) for the image:
 
-```
+```dockerfile
 FROM microsoft/dotnet:2.2-sdk
 
 WORKDIR /app
@@ -93,4 +96,5 @@ CMD ["dotnet", "out/message-dumper.dll"]
 ```
 
 ## What's Next?
+
 Back to [Hello World Eventing](08-helloworldeventing.md)

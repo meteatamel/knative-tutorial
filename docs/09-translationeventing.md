@@ -1,16 +1,16 @@
 # Integrate with Translation API
 
-In the [previous lab](08-helloworldeventing.md), our Knative service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting. 
+In the [previous lab](08-helloworldeventing.md), our Knative service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting.
 
-[Cloud Translation API](https://cloud.google.com/translate/docs/) is one of Machine Learning APIs of Google Cloud. It can dynamically translate text between thousands of language pairs. In this lab, we will use translation requests sent via Pub/Sub messages and use Translation API to translate text between languages. 
+[Cloud Translation API](https://cloud.google.com/translate/docs/) is one of Machine Learning APIs of Google Cloud. It can dynamically translate text between thousands of language pairs. In this lab, we will use translation requests sent via Pub/Sub messages and use Translation API to translate text between languages.
 
-Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described in the previous lab. 
+Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described in the previous lab.
 
 ## Define translation protocol
 
 Let's first define the translation protocol we'll use in our sample. The body of Pub/Sub messages will include text and the languages to translate from and to as follows:
 
-```
+```bash
 {text:'Hello World', from:'en', to:'es'} => English to Spanish
 {text:'Hello World', from:'', to:'es'} => Detected language to Spanish
 {text:'Hello World', from:'', to:''} => Error
@@ -24,13 +24,14 @@ Follow the instructions for your preferred language to create a service to handl
 
 ## Build and push Docker image
 
-Build and push the Docker image (replace `{username}` with your actual DockerHub): 
+Build and push the Docker image (replace `{username}` with your actual DockerHub):
 
-```docker
+```bash
 docker build -t {username}/translation:v1 .
 
 docker push {username}/translation:v1
 ```
+
 ## Deploy the service and trigger
 
 Create a [trigger.yaml](../eventing/translation/trigger.yaml) file.
@@ -59,6 +60,7 @@ spec:
       kind: Service
       name: translation
 ```
+
 This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
 
 ```bash
@@ -84,6 +86,7 @@ Wait a little and check that a pod is created:
 ```bash
 kubectl get pods --selector serving.knative.dev/service=translation
 ```
+
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
@@ -100,8 +103,9 @@ info: translation.Startup[0]
 info: translation.Startup[0]
       Translated text: Hola Mundo
 info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-      Request finished in 767.2586ms 200 
+      Request finished in 767.2586ms 200
 ```
 
 ## What's Next?
+
 [Integrate with Vision API](10-visioneventing.md)

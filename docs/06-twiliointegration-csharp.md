@@ -7,6 +7,7 @@ Start with creating an empty ASP.NET Core app:
 ```bash
 dotnet new web -o twiliosample
 ```
+
 Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use MVC:
 
 ```csharp
@@ -21,7 +22,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
         app.UseDeveloperExceptionPage();
     }
-    
+
     app.UseMvc();
 }
 ```
@@ -29,8 +30,9 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 Next, let's install [twilio-aspnet](https://github.com/twilio/twilio-aspnet) package:
 
 ```bash
-dotnet add package Twilio.AspNet.Core 
+dotnet add package Twilio.AspNet.Core
 ```
+
 Finally, we can create [SmsController.cs](../serving/twilio/csharp/SmsController.cs) to receive SMS messages from Twilio:
 
 ```csharp
@@ -54,7 +56,8 @@ namespace twiliosample
     }
 }
 ```
-`SmsController.cs` simply echoes back the received message. 
+
+`SmsController.cs` simply echoes back the received message.
 
 Make sure the app has no compilation errors:
 
@@ -66,7 +69,7 @@ dotnet build
 
 Create a [Dockerfile](../serving/twilio/csharp/Dockerfile) for the image:
 
-```
+```dockerfile
 FROM microsoft/dotnet:2.2-sdk
 
 WORKDIR /app
@@ -85,4 +88,5 @@ CMD ["dotnet", "out/twiliosample.dll"]
 ```
 
 ## What's Next?
+
 [Back to Integrate with Twilio](06-twiliointegration.md)

@@ -5,13 +5,15 @@ We've been using Knative's default domain `example.com` so far which results in 
 ```bash
 curl -H "Host: helloworld.default.example.com" http://$ISTIO_INGRESS
 ```
-It's possible to setup custom domains with Knative, so that you can have urls like `http://helloworld.default.mydomain.com` for your services. [Setting a custom domain](https://www.knative.dev/docs/serving/using-a-custom-domain/) page explains how. 
+
+It's possible to setup custom domains with Knative, so that you can have urls like `http://helloworld.default.mydomain.com` for your services. [Setting a custom domain](https://www.knative.dev/docs/serving/using-a-custom-domain/) page explains how.
 
 Even if you don't have a registered domain, it's still useful to setup a custom domain via a [NIP.IO](http://nip.io/). This would not only simplify our curl commands but it will also help for the next lab where we use a Knative service as a webhook to a third party service.
 
 ## NIP.IO
 
 NIP.IO is a wildcard DNS matching service. It allows you have mappings like this:
+
 * 10.0.0.1.nip.io maps to 10.0.0.1
 * app.10.0.0.1.nip.io maps to 10.0.0.1
 * customer1.app.10.0.0.1.nip.io maps to 10.0.0.1*
@@ -21,13 +23,15 @@ In our case, we can use the Istio ingress IP and let NIP.IO to map our services.
 ```bash
 curl http://helloworld.default.1.2.3.4.nip.io
 ```
-## Edit domain configuration  
+
+## Edit domain configuration
 
 Edit the domain configuration:
 
 ```bash
 kubectl edit cm config-domain -n knative-serving
 ```
+
 Add your NIP domain (replace `1.2.3.4.` with the ingress IP) right before the `_example` line like this:
 
 ```yaml
@@ -36,9 +40,10 @@ data:
   1.2.3.4.nip.io: ""
   _example: |
 ```
+
 You can then check that the custom domain is applied:
 
-```
+```bash
 kubectl get route helloworld
 ```
 
@@ -54,5 +59,7 @@ Finally, you can test that the domain works with curl:
 curl http://helloworld.default.$ISTIO_INGRESS.nip.io
 Hello v1
 ```
+
 ## What's Next?
+
 [Change configuration](03-changeconfig.md)

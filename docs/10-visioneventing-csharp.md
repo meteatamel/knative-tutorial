@@ -7,6 +7,7 @@ Let's start with creating an empty ASP.NET Core app:
 ```bash
 dotnet new web -o vision
 ```
+
 Inside the `vision/csharp` folder, update [Startup.cs](../eventing/vision/csharp/Startup.cs) to log incoming messages for now:
 
 ```csharp
@@ -62,6 +63,7 @@ namespace vision
     }
 }
 ```
+
 Change the log level in `appsettings.json` to `Information`:
 
 ```json
@@ -74,7 +76,8 @@ Change the log level in `appsettings.json` to `Information`:
   "AllowedHosts": "*"
 }
 ```
-At this point, the sample simply logs out the received messages. 
+
+At this point, the sample simply logs out the received messages.
 
 ## Handle Cloud Events
 
@@ -89,14 +92,16 @@ Our Knative service will receive Pub/Sub messages from Cloud Storage in the form
     "PublishTime": ""
 }
 ```
+
 In this case, the `Attributes` has the bucket and file information that we're interested in.
 
 We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
 
-```
+```bash
 dotnet add package CloudNative.CloudEvent
 ```
-Then, parse the `CloudEvent`. You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs) 
+
+Then, parse the `CloudEvent`. You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs)
 
 ```csharp
 var jObject = (JObject)JToken.Parse(content);
@@ -104,6 +109,7 @@ var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
 
 if (cloudEvent == null) return;  
 ```
+
 ## Add Vision API
 
 Before adding Vision API code to our service, let's make sure Vision API is enabled in our project:
@@ -111,11 +117,13 @@ Before adding Vision API code to our service, let's make sure Vision API is enab
 ```bash
 gcloud services enable vision.googleapis.com
 ```
+
 And add Vision API NuGet package to our project:
 
-```
+```bash
 dotnet add package Google.Cloud.Vision.V1
 ```
+
 We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
 
 ```csharp
@@ -131,7 +139,7 @@ var storageUrl = (string)ConstructStorageUrl(attributes);
 
 private string ConstructStorageUrl(dynamic attributes)
 {
-    return attributes == null? null 
+    return attributes == null? null
         : string.Format("gs://{0}/{1}", attributes.bucketId, attributes.objectId);
 }
 ```
@@ -159,6 +167,7 @@ private async Task<string> ExtractLabelsAsync(string storageUrl)
     return string.Join(",", orderedLabels.ToArray());
 }
 ```
+
 You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs).
 
 Before building the Docker image, make sure the app has no compilation errors:
@@ -171,7 +180,7 @@ dotnet build
 
 Create a [Dockerfile](../eventing/vision/csharp/Dockerfile) for the image:
 
-```
+```dockerfile
 FROM microsoft/dotnet:2.2-sdk
 
 WORKDIR /app
@@ -190,4 +199,5 @@ CMD ["dotnet", "out/vision.dll"]
 ```
 
 ## What's Next?
+
 Back to [Integrate with Vision API](10-visioneventing.md)

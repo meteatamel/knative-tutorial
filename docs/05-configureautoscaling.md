@@ -2,15 +2,16 @@
 
 You might have realized that autoscaler in Knative scales down pods to zero after some time. This is actually configurable through annotations. The type of autoscaler itself is also configurable. [Autoscale Sample](https://knative.dev/docs/serving/samples/autoscale-go/index.html) in Knative docs explains the details of autoscaler but let's recap the main points here as well.
 
-There are two autoscaler classes built into Knative: 
-1. The default concurrency-based autoscaler which is based on the average number of in-flight requests per pod. 
-2. Kubernetes CPU-based autoscaler which autoscales on CPU usage. 
+There are two autoscaler classes built into Knative:
+
+1. The default concurrency-based autoscaler which is based on the average number of in-flight requests per pod.
+2. Kubernetes CPU-based autoscaler which autoscales on CPU usage.
 
 The autoscaling can be bounded with `minScale` and `maxScale` annotations.  
 
 ## Create a 'Sleeping' service
 
-Let's deploy a service to showcase autoscaling. You can look at the code in your language of choice but it essentially sleeps for 4000ms before responding to requests. 
+Let's deploy a service to showcase autoscaling. You can look at the code in your language of choice but it essentially sleeps for 4000ms before responding to requests.
 
 For example, this is [Startup.cs](../serving/sleepingservice/csharp/Startup.cs) in C# sample:
 
@@ -21,17 +22,18 @@ app.Run(async (context) =>
     await context.Response.WriteAsync("Hello World!");
 });
 ```
+
 ## Build and push Docker image
 
 In [sleepingservice](../serving/sleepingservice/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/sleepingservice/csharp/)). In that folder, build and push the container image. Replace `{username}` with your DockerHub username:
 
-```docker
+```bash
 docker build -t {username}/sleepingservice:v1 .
 
 docker push {username}/sleepingservice:v1
 ```
 
-## Configure autoscaling 
+## Configure autoscaling
 
 Take a look at the [service.yaml](../serving/sleepingservice/service.yaml) file:
 
@@ -45,7 +47,7 @@ spec:
   template:
     metadata:
       annotations:
-        # Default: Knative concurrency-based autoscaling with 
+        # Default: Knative concurrency-based autoscaling with
         # 100 requests in-flight per pod.
         autoscaling.knative.dev/class:  kpa.autoscaling.knative.dev
         autoscaling.knative.dev/metric: concurrency
@@ -55,7 +57,7 @@ spec:
         # Alternative: Kubernetes CPU-based autoscaling.
         # autoscaling.knative.dev/class:  hpa.autoscaling.knative.dev
         # autoscaling.knative.dev/metric: cpu
-        
+
         # Disable scale to zero with a minScale of 1.
         autoscaling.knative.dev/minScale: "1"
         # Limit max scaling to 5 pods.
@@ -80,23 +82,25 @@ Check that pod for the service is running:
 kubectl get pods
 
 NAME
-sleepingservice-00001-deployment-5865bc498c-w7qc7      
+sleepingservice-00001-deployment-5865bc498c-w7qc7
 ```
-And this pod will continue to run, even if there's no traffic. 
 
-## Test autoscaling 
+And this pod will continue to run, even if there's no traffic.
 
-Let's now send some traffic to our service to see that it scales up. Download and install [Fortio](https://github.com/fortio/fortio) if you don't have it. 
+## Test autoscaling
+
+Let's now send some traffic to our service to see that it scales up. Download and install [Fortio](https://github.com/fortio/fortio) if you don't have it.
 
 Send some requests to our sleeping service:
 
 ```bash
 fortio load -t 0 http://sleepingservice.default.$ISTIO_INGRESS.nip.io
 ```
+
 After a while, you should see pods scaling up to 5:
 
 ```bash
-kubectl get pods 
+kubectl get pods
 
 sleepingservice-cphdq-deployment-5bf8ddb477-787sq  
 sleepingservice-cphdq-deployment-5bf8ddb477-b6ms9  
@@ -104,7 +108,9 @@ sleepingservice-cphdq-deployment-5bf8ddb477-bmrds
 sleepingservice-cphdq-deployment-5bf8ddb477-g2ssv  
 sleepingservice-cphdq-deployment-5bf8ddb477-kzt5t  
 ```
-Once you kill Fortio, you should also see the sleeping service scale down to 1! 
+
+Once you kill Fortio, you should also see the sleeping service scale down to 1!
 
 ## What's Next?
+
 You can try Kubernetes CPU-based autoscaling or move onto [Integrate with Twilio](06-twiliointegration.md)
