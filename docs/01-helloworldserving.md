@@ -8,7 +8,7 @@
 
 ## Create a 'Hello World' service
 
-You can either create your 'Hello World' service as described in Knative Serving or take a look at the services we already created in [helloworld](../serving/helloworld/) folder for various languages ([csharp](../serving/helloworld/csharp/)).
+You can either create your 'Hello World' service as described in Knative Serving or take a look at the services we already created in [helloworld](../serving/helloworld/) folder for various languages ([csharp](../serving/helloworld/csharp/), [python](../serving/helloworld/python/)).
 
 ## Build and push Docker image
 
@@ -117,7 +117,7 @@ Make a request to your service:
 
 ```bash
 curl -H "Host: helloworld.default.example.com" http://$ISTIO_INGRESS
-Hello World v1
+Hello v1
 ```
 
 ## What's Next?
