@@ -64,11 +64,19 @@ Hello v2
 
 Configuration changes are not limited to environment variables. For example, a new container image would also trigger a new revision and traffic routed to that revision.
 
-To see this in action, change the [Startup.cs](../serving/helloworld/csharp/Startup.cs) to say 'Bye' instead of 'Hello':
+To see this in action, change your main file to say 'Bye' instead of 'Hello':
 
-```csharp
-await context.Response.WriteAsync($"Bye {target}\n");
-```
+- C# [Startup.cs](../serving/helloworld/csharp/Startup.cs)
+
+  ```csharp
+  await context.Response.WriteAsync($"Bye {target}\n");
+  ```
+
+- Python [app.py](../serving/helloworld/python/app.py)
+
+  ```python
+  return f'Bye {target}\n'
+  ```
 
 Build and push the Docker image tagging with `v3`. Replace `{username}` with your actual Docker Hub username:
 
@@ -107,7 +115,6 @@ Test that the route is updated to `v3` with the new container. It prints not onl
 
 ```bash
 curl http://helloworld.default.$ISTIO_INGRESS.nip.io
-
 Bye v3
 ```
 
