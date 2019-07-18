@@ -57,11 +57,22 @@ Check that the service is created:
 ```bash
 kubectl get ksvc twilio
 
-NAME            AGE
-twilio   21s  
+NAME     URL                                    LATESTCREATED   LATESTREADY    READY   REASON
+twilio   http://twilio.default.1.2.3.4.nip.io   twilio-v96ms    twilio-v96ms   True
 ```
 
 ## Test the service
+
+Let's first check that our service works as expected:
+
+```bash
+export TWILIO_URL=$(kubectl get route twilio -o jsonpath="{.status.url}")
+echo $TWILIO_URL
+http://twilio.default.1.2.3.4.nip.io
+
+curl $TWILIO_URL/sms?Body=Hello+World!
+<?xml version="1.0" encoding="UTF-8"?><Response><Message>The Knative copy cat says: Hello World!</Message></Response>
+```
 
 We can finally test our service by sending an SMS to our Twilio number. We need to setup Twilio Webhook first.
 
