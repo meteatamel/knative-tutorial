@@ -60,6 +60,14 @@ curl http://helloworld.default.$ISTIO_INGRESS.nip.io
 Hello v1
 ```
 
+Alternatively, you can also directly get the service URL:
+
+```bash
+export SERVICE_URL=$(kubectl get route helloworld -o jsonpath="{.status.url}")
+curl $SERVICE_URL
+Hello v1
+```
+
 ## What's Next?
 
 [Change configuration](03-changeconfig.md)
