@@ -11,21 +11,30 @@ The autoscaling can be bounded with `minScale` and `maxScale` annotations.
 
 ## Create a 'Sleeping' service
 
-Let's deploy a service to showcase autoscaling. You can look at the code in your language of choice but it essentially sleeps for 4000ms before responding to requests.
+Let's deploy a service to showcase autoscaling, by essentially sleeping for 4,000ms before responding to requests:
 
-For example, this is [Startup.cs](../serving/sleepingservice/csharp/Startup.cs) in C# sample:
+- C# [Startup.cs](../serving/sleepingservice/csharp/Startup.cs)
 
-```csharp
-app.Run(async (context) =>
-{
-    Thread.Sleep(4000);
-    await context.Response.WriteAsync("Hello World!");
-});
-```
+  ```csharp
+  app.Run(async (context) =>
+  {
+      Thread.Sleep(4000);
+      await context.Response.WriteAsync("Hello World!");
+  });
+  ```
+
+- Python [app.py](../serving/sleepingservice/python/app.py)
+
+  ```python
+  @app.route('/')
+  def hello_world():
+      sleep(4)
+      return 'Hello World!'
+  ```
 
 ## Build and push Docker image
 
-In [sleepingservice](../serving/sleepingservice/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/sleepingservice/csharp/)). In that folder, build and push the container image. Replace `{username}` with your DockerHub username:
+In [sleepingservice](../serving/sleepingservice/) folder, go to the folder for the language of your choice ([csharp](../serving/sleepingservice/csharp/), [python](../serving/sleepingservice/python/)). In that folder, build and push the container image. Replace `{username}` with your DockerHub username:
 
 ```bash
 docker build -t {username}/sleepingservice:v1 .
