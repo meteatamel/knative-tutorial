@@ -38,9 +38,7 @@ gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 
 Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](01-helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR.
 
-With these changes in mind, in [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)).
-
-In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)). Run the following command. Replace `{PROJECT_ID}` with your actual Google Cloud project id:
+In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice ([csharp](../serving/helloworld/csharp/), [python](../serving/helloworld/python/)). Run the following command. Replace `{PROJECT_ID}` with your actual Google Cloud project id:
 
 ```bash
 gcloud builds submit --tag gcr.io/{PROJECT_ID}/helloworld:v1
@@ -55,11 +53,10 @@ Let's finally deploy our service to Cloud Run, it's a single gcloud command. Mak
 ```bash
 gcloud beta run deploy --image gcr.io/{PROJECT_ID}/helloworld:v1
 
-Service name: (helloworld):
-Deploying container to Cloud Run service [helloworld] in project [PROJECT_ID] region [us-central1]
-Allow unauthenticated invocations to new service [helloworld]?
-(y/N)?  Y
+Service name (helloworld):
+Allow unauthenticated invocations to [helloworld] (y/N)?  Y
 
+Deploying container to Cloud Run service [helloworld] in project [PROJECT_ID] region [us-central1]
 ✓ Deploying new service... Done.
   ✓ Creating Revision...
   ✓ Routing traffic...
