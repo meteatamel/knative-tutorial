@@ -10,9 +10,9 @@ The main advantage of Cloud Run is that it's fully managed, so no infrastructure
 
 In this lab, we will see what it takes to deploy our [Hello World Knative serving sample](01-helloworldserving.md) from the previous lab and deploy to Cloud Run. You'll be surprised how easy it is!
 
-## Get a project in `us-central1` region
+## Get a project in a Cloud Run region
 
-Cloud Run currently runs only in `us-central1` region (but more regions are coming soon!). Make sure your project is pointing to the right region:
+Cloud Run is currently available in `us-central1`, `us-east1`, `europe-west1`, and `asia-northeast1` regions. Make sure your project is in one of them:
 
 ```bash
 gcloud config list
