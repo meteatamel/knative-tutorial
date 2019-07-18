@@ -30,7 +30,7 @@ In the end, you should have a GCP Pub/Sub source setup:
 kubectl get gcppubsubsource
 
 NAME             AGE
-testing-source   1d
+testing-source   2m
 ```
 
 And a default broker as well:
@@ -38,8 +38,8 @@ And a default broker as well:
 ```bash
 kubectl get broker
 
-NAME      READY   REASON   HOSTNAME
-default   True             default-broker.default.svc.cluster.local
+NAME      READY   REASON   HOSTNAME                                   AGE
+default   True             default-broker.default.svc.cluster.local   12m
 ```
 
 ## Create a Message Dumper
