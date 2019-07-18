@@ -28,7 +28,11 @@ If not, you can set the region with `gcloud config set` command or switch to a c
 gcloud config configurations activate cloudrun-atamel
 ```
 
-You also want to make sure that Cloud Run API is enabled by visiting Cloud Run section in Google Cloud console.
+You also want to make sure that the Cloud Build and Cloud Run APIs are enabled:
+
+```bash
+gcloud services enable cloudbuild.googleapis.com run.googleapis.com
+```
 
 ## Push container image to Google Container Registry
 
