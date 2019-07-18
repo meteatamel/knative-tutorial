@@ -16,6 +16,8 @@ Follow the instructions for your preferred language to create a service to handl
 
 * [Create Twilio SMS Handler - C#](06-twiliointegration-csharp.md)
 
+* [Create Twilio SMS Handler - Python](06-twiliointegration-python.md)
+
 ## Build and push Docker image
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub):
