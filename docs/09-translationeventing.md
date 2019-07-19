@@ -16,10 +16,10 @@ gcloud services enable translate.googleapis.com
 
 Let's first define the translation protocol we'll use in our sample. The body of Pub/Sub messages will include text and the languages to translate from and to as follows:
 
-```bash
-{text:'Hello World', from:'en', to:'es'} => English to Spanish
-{text:'Hello World', from:'', to:'es'} => Detected language to Spanish
-{text:'Hello World', from:'', to:''} => Error
+```text
+{"text":"Hello World", "from":"en", "to":"es"} => English to Spanish
+{"text":"Hello World", "from":"", "to":"es"} => Detected language to Spanish
+{"text":"Hello World", "from":"", "to":""} => Error
 ```
 
 ## Create a Translation Handler
@@ -27,6 +27,8 @@ Let's first define the translation protocol we'll use in our sample. The body of
 Follow the instructions for your preferred language to create a service to handle translation messages:
 
 * [Create Translation Handler - C#](09-translationeventing-csharp.md)
+
+* [Create Translation Handler - Python](09-translationeventing-python.md)
 
 ## Build and push Docker image
 
@@ -84,7 +86,7 @@ kubectl get ksvc,trigger
 We can now test our service by sending a translation request message to Pub/Sub topic:
 
 ```bash
-gcloud pubsub topics publish testing --message="{text:'Hello World', from:'en', to:'es'}"
+gcloud pubsub topics publish testing --message='{"text":"Hello World", "from":"en", "to":"es"}'
 ```
 
 Wait a little and check that a pod is created:
@@ -101,16 +103,29 @@ kubectl logs --follow -c user-container <podid>
 
 You should see something similar to this:
 
-```bash
-info: translation.Startup[0]
-      Decoded data: {text:'Hello World', from: 'en', to:'es'}
-info: translation.Startup[0]
-      Calling Translation API
-info: translation.Startup[0]
-      Translated text: Hola Mundo
-info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-      Request finished in 767.2586ms 200
-```
+* C#
+
+  ```text
+  info: translation.Startup[0]
+        Decoded data: {"text":"Hello World", "from":"en", "to":"es"}
+  info: translation.Startup[0]
+        Calling Translation API
+  info: translation.Startup[0]
+        Translated text: Hola Mundo
+  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+        Request finished in 621.0973ms 200
+  ```
+
+* Python
+
+  ```text
+  [INFO] Starting gunicorn 19.9.0
+  [INFO] Listening at: http://0.0.0.0:8080 (1)
+  [INFO] Using worker: threads
+  [INFO] Booting worker with pid: 8
+  [INFO] Decoded data: {'text': 'Hello World', 'from': 'en', 'to': 'es'}
+  [INFO] Translated text: Hola Mundo
+  ```
 
 ## What's Next?
 
