@@ -69,24 +69,34 @@ Check that the service and trigger are created:
 kubectl get ksvc,trigger
 ```
 
-## Create bucket and enabled notifications
+## Create bucket and enable notifications
 
-Before we can test the service, let's first create a Cloud Storage bucket. You can do this [in many ways](https://cloud.google.com/storage/docs/creating-buckets). We'll use `gsutil` as follows (replace `knative-bucket` with a unique name):
+Before we can test the service, let's first create a Cloud Storage bucket. You can do this [in many ways](https://cloud.google.com/storage/docs/creating-buckets). We'll use `gsutil` as follows:
 
 ```bash
-gsutil mb gs://knative-bucket/
+# Unique bucket name
+export VISION_BUCKET="$(gcloud config get-value core/project)-vision"
+
+gsutil mb gs://$VISION_BUCKET
+
+Creating gs://VISION_BUCKET/...
 ```
 
 Once the bucket is created, enable Pub/Sub notifications on it and link to our `testing` topic we created in earlier labs:
 
 ```bash
-gsutil notification create -t testing -f json gs://knative-bucket/
+gsutil notification create -t testing -f json gs://$VISION_BUCKET
+
+Created notification config projects/_/buckets/VISION_BUCKET/notificationConfigs/1
 ```
 
 Check that the notification is created:
 
 ```bash
-gsutil notification list gs://knative-bucket
+gsutil notification list gs://$VISION_BUCKET
+
+projects/_/buckets/VISION_BUCKET/notificationConfigs/1
+        Cloud Pub/Sub topic: projects/PROJECT_ID/topics/testing
 ```
 
 ## Test the service
@@ -110,7 +120,7 @@ kubectl logs --follow -c user-container <podid>
 Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
 
 ```bash
-gsutil cp pics/beach.jpg gs://knative-bucket/
+gsutil cp pics/beach.jpg gs://$VISION_BUCKET
 ```
 
 This triggers a Pub/Sub message to our Knative service.
@@ -118,11 +128,11 @@ This triggers a Pub/Sub message to our Knative service.
 You should see something similar to this in logs:
 
 ```bash
-info: vision.Startup[0]
-      This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
-info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-      Request finished in 1948.3204ms 200
-```
+  info: vision.Startup[0]
+        This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
+  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+        Request finished in 1948.3204ms 200
+  ```
 
 ## What's Next?
 
