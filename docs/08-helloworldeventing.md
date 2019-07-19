@@ -48,6 +48,8 @@ Follow the instructions for your preferred language to create a service to log o
 
 * [Create Message Dumper - C#](08-helloworldeventing-csharp.md)
 
+* [Create Message Dumper - Python](08-helloworldeventing-python.md)
+
 ## Build and push Docker image
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub):
@@ -105,6 +107,9 @@ We can now test our service by sending a message to Pub/Sub topic:
 
 ```bash
 gcloud pubsub topics publish testing --message="Hello World"
+
+messageIds:
+- '198012587785403'
 ```
 
 Wait a little and check that a pod is created:
@@ -121,23 +126,36 @@ kubectl logs --follow -c user-container <podid>
 
 You should see something similar to this:
 
-```bash
-Hosting environment: Production
-Content root path: /app
-Now listening on: http://0.0.0.0:8080
-Application started. Press Ctrl+C to shut down.
-Application is shutting down...
-Hosting environment: Production
-Content root path: /app
-Now listening on: http://0.0.0.0:8080
-Application started. Press Ctrl+C to shut down.
-info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
-      Request starting HTTP/1.1 POST http://message-dumper.default.svc.cluster.local/ application/json 108
-info: message_dumper.Startup[0]
-      C# Message Dumper received message: {"ID":"198012587785403","Data":"SGVsbG8gV29ybGQ=","Attributes":null,"PublishTime":"2019-01-21T15:25:58.25Z"}
-info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-      Request finished in 29.9881ms 200
-```
+* C#
+
+  ```text
+  Hosting environment: Production
+  Content root path: /app
+  Now listening on: http://0.0.0.0:8080
+  Application started. Press Ctrl+C to shut down.
+  Application is shutting down...
+  Hosting environment: Production
+  Content root path: /app
+  Now listening on: http://0.0.0.0:8080
+  Application started. Press Ctrl+C to shut down.
+  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+        Request starting HTTP/1.1 POST http://message-dumper.default.svc.cluster.local/ application/json 108
+  info: message_dumper.Startup[0]
+        Message Dumper received message: {"ID":"198012587785403","Data":"SGVsbG8gV29ybGQ=","Attributes":null,"PublishTime":"2019-01-21T15:25:58.25Z"}
+  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+        Request finished in 29.9881ms 200
+  ```
+
+* Python
+
+  ```text
+  [INFO] Starting gunicorn 19.9.0
+  [INFO] Listening at: http://0.0.0.0:8080 (1)
+  [INFO] Using worker: threads
+  [INFO] Booting worker with pid: 8
+  [INFO] Message Dumper received message:
+  {'ID': '198012587785403', 'Data': 'SGVsbG8gV29ybGQ=', 'Attributes': None, 'PublishTime': '2019-01-21T15:25:58.25Z'}
+  ```
 
 Finally, if you decode the `Data` field, you should see the "Hello World" message:
 
