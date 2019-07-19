@@ -133,13 +133,7 @@ _logger.LogInformation($"Decoded data: {decodedData}");
 
 ## Add Translation API
 
-Before adding Translation API code to our service, let's make sure Translation API is enabled in our project:
-
-```bash
-gcloud services enable translate.googleapis.com
-```
-
-And add Translation API NuGet package to our project:
+Add Translation API NuGet package to our project:
 
 ```bash
 dotnet add package Google.Cloud.Translation.V2
