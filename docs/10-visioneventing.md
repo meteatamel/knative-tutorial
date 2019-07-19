@@ -14,9 +14,11 @@ gcloud services enable vision.googleapis.com
 
 ## Create a Vision Handler
 
-Follow the instructions for your preferred language to create a service to handle translation messages:
+Follow the instructions for your preferred language to create a service to handle cloud storage notifications:
 
 * [Create Vision Handler - C#](10-visioneventing-csharp.md)
+
+* [Create Vision Handler - Python](10-visioneventing-python.md)
 
 ## Build and push Docker image
 
@@ -109,8 +111,6 @@ First, let's watch the logs of the service. Wait a little and check that a pod i
 kubectl get pods --selector serving.knative.dev/service=vision
 ```
 
-You can inspect the logs of the subscriber:
-
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
@@ -125,13 +125,21 @@ gsutil cp pics/beach.jpg gs://$VISION_BUCKET
 
 This triggers a Pub/Sub message to our Knative service.
 
-You should see something similar to this in logs:
+You should see something similar to this:
 
-```bash
+* C#
+
+  ```text
   info: vision.Startup[0]
         This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
   info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
         Request finished in 1948.3204ms 200
+  ```
+
+* Python
+
+  ```text
+  [INFO] Picture labels: Sky, Body of water, Sea, Nature, Coast, Water, Sunset, Horizon, Cloud, Shore
   ```
 
 ## What's Next?
