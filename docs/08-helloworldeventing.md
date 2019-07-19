@@ -160,7 +160,7 @@ You should see something similar to this:
 Finally, if you decode the `Data` field, you should see the "Hello World" message:
 
 ```bash
-echo "SGVsbG8gV29ybGQ=" | base64 -D
+echo "SGVsbG8gV29ybGQ=" | base64 -d
 Hello World
 ```
 
