@@ -46,7 +46,7 @@ metadata:
 spec:
   subscriber:
     ref:
-      apiVersion: serving.knative.dev/v1alpha1
+      apiVersion: serving.knative.dev/v1beta1
       kind: Service
       name: vision
 ```
