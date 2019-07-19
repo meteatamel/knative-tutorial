@@ -112,13 +112,7 @@ if (cloudEvent == null) return;
 
 ## Add Vision API
 
-Before adding Vision API code to our service, let's make sure Vision API is enabled in our project:
-
-```bash
-gcloud services enable vision.googleapis.com
-```
-
-And add Vision API NuGet package to our project:
+Add Vision API NuGet package to our project:
 
 ```bash
 dotnet add package Google.Cloud.Vision.V1

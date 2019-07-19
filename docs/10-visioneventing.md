@@ -6,6 +6,12 @@ In this lab, we will use a [Cloud Storage](https://cloud.google.com/storage/docs
 
 Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described [here](https://github.com/knative/docs/blob/master/serving/outbound-network-access.md).
 
+You also want to make sure that the Vision API is enabled:
+
+```bash
+gcloud services enable vision.googleapis.com
+```
+
 ## Create a Vision Handler
 
 Follow the instructions for your preferred language to create a service to handle translation messages:
