@@ -6,7 +6,7 @@ There's [Orchestrating a source-to-URL deployment on Kubernetes](https://www.kna
 
 ## Register secrets for Docker Hub
 
-We need to first register a secret in Kubernetes for authentication with Docker Hub. 
+We need to first register a secret in Kubernetes for authentication with Docker Hub.
 
 Create a [docker-secret.yaml](../build/docker-secret.yaml) file for `Secret` manifest, which is used to store your Docker Hub credentials:
 
@@ -37,6 +37,7 @@ metadata:
 secrets:
   - name: basic-user-pass
 ```
+
 Apply the `Secret` and `Service Account`:
 
 ```bash
@@ -70,6 +71,7 @@ spec:
     # Replace {username} with your actual DockerHub
     - "--destination=docker.io/{username}/helloworld:build"
 ```
+
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to Docker Hub tagged with `knativebuild`. Note how we're using `build-bot` as `serviceAccountName`.
 
 ## Run and watch the build
@@ -90,24 +92,28 @@ Soon after, you'll see a pod created for the build:
 
 ```bash
 kubectl get pods
-NAME                                             READY     STATUS    
+NAME                                             READY     STATUS
 build-helloworld-docker-pod-454bd8        0/1       Init:2/3
 ```
+
 You can see the progress of the build with:
 
 ```bash
 kubectl logs --follow --container=build-step-build-and-push <podid>
 ```
+
 When the build is finished, you'll see the pod in `Completed` state:
 
 ```bash
 kubectl get pods
-NAME                                              READY     STATUS 
+NAME                                              READY     STATUS
 build-helloworld-docker-pod-454bd8         0/1       Completed
 ```
+
 At this point, you should see the image pushed to Docker Hub:
 
 ![Docker Hub](./images/dockerhub.png)
 
 ## What's Next?
+
 [Kaniko Build Template](13-kanikobuildtemplate.md)

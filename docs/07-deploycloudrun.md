@@ -10,9 +10,9 @@ The main advantage of Cloud Run is that it's fully managed, so no infrastructure
 
 In this lab, we will see what it takes to deploy our [Hello World Knative serving sample](01-helloworldserving.md) from the previous lab and deploy to Cloud Run. You'll be surprised how easy it is!
 
-## Get a project in `us-central1` region
+## Get a project in a Cloud Run region
 
-Cloud Run currently runs only in `us-central1` region (but more regions are coming soon!). Make sure your project is pointing to the right region:
+Cloud Run is currently available in `us-central1`, `us-east1`, `europe-west1`, and `asia-northeast1` regions. Make sure your project is in one of them:
 
 ```bash
 gcloud config list
@@ -21,26 +21,29 @@ gcloud config list
 region = us-central1
 zone = us-central1a
 ```
+
 If not, you can set the region with `gcloud config set` command or switch to a configuration with a new project in that region:
 
 ```bash
 gcloud config configurations activate cloudrun-atamel
 ```
 
-You also want to make sure that Cloud Run API is enabled by visiting Cloud Run section in Google Cloud console. 
+You also want to make sure that the Cloud Build and Cloud Run APIs are enabled:
+
+```bash
+gcloud services enable cloudbuild.googleapis.com run.googleapis.com
+```
 
 ## Push container image to Google Container Registry
 
-Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](01-helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR. 
+Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](01-helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR.
 
-
-With these changes in mind, in [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)).
-
-In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice (eg. [csharp](../serving/helloworld/csharp/)). Run the following command. Replace `{PROJECT_ID}` with your actual Google Cloud project id:
+In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice ([csharp](../serving/helloworld/csharp/), [python](../serving/helloworld/python/)). Run the following command. Replace `{PROJECT_ID}` with your actual Google Cloud project id:
 
 ```bash
 gcloud builds submit --tag gcr.io/{PROJECT_ID}/helloworld:v1
 ```
+
 This builds and pushes the image to GCR using Cloud Build.  
 
 ## Deploy to Cloud Run
@@ -50,11 +53,10 @@ Let's finally deploy our service to Cloud Run, it's a single gcloud command. Mak
 ```bash
 gcloud beta run deploy --image gcr.io/{PROJECT_ID}/helloworld:v1
 
-Service name: (helloworld):
-Deploying container to Cloud Run service [helloworld] in project [PROJECT_ID] region [us-central1]
-Allow unauthenticated invocations to new service [helloworld]?
-(y/N)?  Y
+Service name (helloworld):
+Allow unauthenticated invocations to [helloworld] (y/N)?  Y
 
+Deploying container to Cloud Run service [helloworld] in project [PROJECT_ID] region [us-central1]
 ✓ Deploying new service... Done.
   ✓ Creating Revision...
   ✓ Routing traffic...
@@ -62,7 +64,8 @@ Allow unauthenticated invocations to new service [helloworld]?
 Done.
 Service [helloworld] revision [helloworld-b6d89666-06c1-4de3-8955-22a1f700af8a] has been deployed and is serving traffic at https://helloworld-u6zaimzeiq-uc.a.run.app
 ```
-This creates a Cloud Run service and a revision for the current configuration. In the end, you get a url that you can browse to. 
+
+This creates a Cloud Run service and a revision for the current configuration. In the end, you get a url that you can browse to.
 
 You can also see the service in Cloud Run console:
 
@@ -74,15 +77,16 @@ We can test the service by visiting the url mentioned during deployment and in C
 
 One thing you might realize is that our service simply prints `Hello World` instead of `Hello v1`. Let's fix that in the last step.
 
-## Set environment variable 
+## Set environment variable
 
-If you remember, in [Hello World Knative serving sample](01-helloworldserving.md), the Knative service definition file, [service-v1.yaml](../serving/helloworld/service-v1.yaml), sets an environment variable `TARGET` and the code prints out the value of that variable: 
+If you remember, in [Hello World Knative serving sample](01-helloworldserving.md), the Knative service definition file, [service-v1.yaml](../serving/helloworld/service-v1.yaml), sets an environment variable `TARGET` and the code prints out the value of that variable:
 
 ```yaml
 env:
   - name: TARGET
   value: "v1"
 ```
+
 That's why our service printed `Hello v1`. We need to set the same environment variable but how do we do that in Cloud Run?
 
 In Cloud Run, you can set environment variables either through the console or command line. Let's try the command line:
@@ -100,6 +104,6 @@ If you visit the url of the service again, you should see `Hello v1` instead!
 
 ## What's Next?
 
-As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing. 
+As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing.
 
 [Hello World Eventing](08-helloworldeventing.md)

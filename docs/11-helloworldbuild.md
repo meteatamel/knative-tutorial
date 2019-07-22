@@ -2,13 +2,13 @@
 
 [Knative Build](https://www.knative.dev/docs/build/) utilizes existing Kubernetes primitives to provide you with the ability to run on-cluster container builds from source. For example, you can write a build that uses Kubernetes-native resources to obtain your source code from a repository, build a container image, then run that image.
 
-The Knative Build API has a [Build](https://www.knative.dev/docs/build/builds/) type that represents a single build job with one or more steps. There's also a [BuildTemplate](https://www.knative.dev/docs/build/build-templates/) that allows you to chain Builds and parameterize them. 
+The Knative Build API has a [Build](https://www.knative.dev/docs/build/builds/) type that represents a single build job with one or more steps. There's also a [BuildTemplate](https://www.knative.dev/docs/build/build-templates/) that allows you to chain Builds and parameterize them.
 
-In the previous labs, we've been building and pushing container images manually to DockerHub. Let's utilize Knative Build and push to Google Container Registry (GCR) instead. 
+In the previous labs, we've been building and pushing container images manually to DockerHub. Let's utilize Knative Build and push to Google Container Registry (GCR) instead.
 
 ## Design the build
 
-[Kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build container images from a Dockerfile, inside a container in Kubernetes cluster. The advantage is that Kaniko doesn't depend on a Docker daemon. We'll use Kaniko in our Build step. 
+[Kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build container images from a Dockerfile, inside a container in Kubernetes cluster. The advantage is that Kaniko doesn't depend on a Docker daemon. We'll use Kaniko in our Build step.
 
 Create a [build-helloworld-gcr.yaml](../build/build-helloworld-gcr.yaml) build file:
 
@@ -31,6 +31,7 @@ spec:
     # Replace {PROJECT_ID} with your GCP Project's ID.
     - "--destination=gcr.io/{PROJECT_ID}l/helloworld:build"
 ```
+
 This uses Knative Build to download the source code in the 'workspace' directory and then use Kaniko to build and push an image to GCR.
 
 ## Run and watch the build
@@ -40,6 +41,7 @@ You can start the build with:
 ```bash
 kubectl apply -f build-helloworld-gcr.yaml
 ```
+
 Check that it is created:
 
 ```bash
@@ -51,25 +53,29 @@ Soon after, you'll see a pod created for the build:
 ```bash
 kubectl get pods
 
-NAME                                             READY     STATUS    
+NAME                                             READY     STATUS
 build-helloworld-gcr-pod-454bd8           0/1       Init:2/3
 ```
+
 You can see the progress of the build with:
 
 ```bash
 kubectl logs --follow --container=build-step-build-and-push <podid>
 ```
+
 When the build is finished, you'll see the pod in `Completed` state:
 
 ```bash
 kubectl get pods
 
-NAME                                              READY     STATUS 
+NAME                                              READY     STATUS
 build-helloworld-gcr-pod-454bd8            0/1       Completed
 ```
+
 At this point, you should see the image pushed to GCR:
 
 ![Google Container Registry](./images/gcr.png)
 
 ## What's Next?
+
 [Docker Hub Build](12-dockerbuild.md)
