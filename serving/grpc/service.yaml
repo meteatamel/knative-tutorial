@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1beta1
+kind: Service
+metadata:
+  name: grpc-greeter
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/grpc-greeter:v1
+          ports:
+          - name: h2c
+            containerPort: 8080

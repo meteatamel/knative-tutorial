@@ -106,4 +106,4 @@ If you visit the url of the service again, you should see `Hello v1` instead!
 
 As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing.
 
-[Hello World Eventing](08-helloworldeventing.md)
+[Serverless gRPC with Knative](07.5-grpc.md)

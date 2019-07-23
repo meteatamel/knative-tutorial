@@ -32,6 +32,7 @@ Knative Serving:
 * [Configure autoscaling](docs/05-configureautoscaling.md)
 * [Integrate with Twilio](docs/06-twiliointegration.md)
 * [Deploy to Cloud Run](docs/07-deploycloudrun.md)
+* [Serverless gRPC with Knative](docs/07.5-grpc.md)
 
 Knative Eventing:
 
