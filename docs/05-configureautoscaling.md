@@ -47,7 +47,7 @@ docker push {username}/sleepingservice:v1
 Take a look at the [service.yaml](../serving/sleepingservice/service.yaml) file:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: sleepingservice

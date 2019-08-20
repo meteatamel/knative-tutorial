@@ -22,7 +22,7 @@ For traffic splitting, it's useful to have meaningful revision names. It's also 
 Create a [service-v1-pinned.yaml](../serving/helloworld/service-v1-pinned.yaml) file as follows:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: helloworld
@@ -85,7 +85,7 @@ Hello v1
 Let's create a new revision. Create a [service-v4.yaml](../serving/helloworld/service-v4.yaml) file that has `TARGET` value of `v4`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: helloworld
@@ -160,7 +160,7 @@ Hello v1
 In this last section, let's split the traffic 50-50 between `helloworld-v1` and `helloworld-v4`. Create a [service-v1v4-split.yaml](../serving/helloworld/service-v1v4-split.yaml) file as follows:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: helloworld

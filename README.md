@@ -1,24 +1,63 @@
 # Knative Tutorial
 
-This tutorial shows how to use different components of [Knative](https://www.knative.dev/docs/): Build, Eventing, and Serving.
+This tutorial shows how to use different parts of [Knative](https://www.knative.dev/docs/).
 
 ## Slides
 
-There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knative) that accompanies the tutorial. Each section (Build, Eventing, Serving) has its own section in the slides.
+There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knative) that accompanies the tutorial.
 
 [![Serverless with Knative](./docs/images/serverless-with-knative.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
 
-## Pre-requisites
-We assume that you have a Kubernetes cluster with Knative (and its dependency Istio) installed already. If you need to install Istio and Knative, see [Knative Installation](https://www.knative.dev/docs/install/) page. For Google Kubernetes Engine specific instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page.
+## Installation
+If you need to install Knative and its dependencies (Istio), see [Knative Installation](https://www.knative.dev/docs/install/) page for your platform. We tested this tutorial on Google Kubernetes Engine (GKE) with Knative version **0.8**. For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. Let's briefly recap the steps of installing Knative on GKE. 
 
-We tested the tutorial on Knative version **0.7** on Google Kubernetes Engine (GKE) with Istio but the samples should work on any Kubernetes cluster with Knative.
+Set some environment variables for the cluster name and zone:
 
-Before going through the tutorial, make sure all Knative components show a `STATUS` of `Running`:
+```bash
+export CLUSTER_NAME=knative
+export CLUSTER_ZONE=europe-west1-b
+``` 
+
+Create a Kubernetes cluster with Istio add-on with the preferred name and zone:
+
+```bash
+gcloud beta container clusters create $CLUSTER_NAME \
+  --addons=HorizontalPodAutoscaling,HttpLoadBalancing,Istio \
+  --machine-type=n1-standard-4 \
+  --cluster-version=latest --zone=$CLUSTER_ZONE \
+  --enable-stackdriver-kubernetes --enable-ip-alias \
+  --enable-autoscaling --min-nodes=1 --max-nodes=10 \
+  --enable-autorepair \
+  --scopes cloud-platform
+```
+
+Grant cluster-admin permissions to the current user:
+
+```bash
+kubectl create clusterrolebinding cluster-admin-binding \
+     --clusterrole=cluster-admin \
+     --user=$(gcloud config get-value core/account)
+```
+
+Install Knative in 2 steps:
+
+```bash
+kubectl apply --selector knative.dev/crd-install=true \
+   --filename https://github.com/knative/serving/releases/download/v0.8.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.8.0/eventing.yaml \
+   --filename https://github.com/knative/serving/releases/download/v0.8.0/monitoring.yaml
+
+kubectl apply --filename https://github.com/knative/serving/releases/download/v0.8.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.8.0/eventing.yaml \
+   --filename https://github.com/knative/serving/releases/download/v0.8.0/monitoring.yaml
+```
+
+If everything worked, all Knative components should show a `STATUS` of `Running`:
 
 ```bash
 kubectl get pods -n knative-serving
 kubectl get pods -n knative-eventing
-kubectl get pods -n knative-build
+kubectl get pods -n knative-monitoring
 ```
 
 ## Steps

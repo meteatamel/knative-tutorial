@@ -11,7 +11,7 @@ To see how Knative reacts to configuration changes, let's change the environment
 Create a [service-v2.yaml](../serving/helloworld/service-v2.yaml) file that changes `TARGET` value to `v2`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: helloworld
@@ -89,7 +89,7 @@ docker push {username}/helloworld:v3
 Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld/service-v3.yaml) file that changes `TARGET` value to `v3` but more importantly, it refers to the new image with tag `v3`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: helloworld

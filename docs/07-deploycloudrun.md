@@ -38,31 +38,42 @@ gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 
 Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](01-helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR.
 
-In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice ([csharp](../serving/helloworld/csharp/), [python](../serving/helloworld/python/)). Run the following command. Replace `{PROJECT_ID}` with your actual Google Cloud project id:
+First, set an environment variable for your project:
 
 ```bash
-gcloud builds submit --tag gcr.io/{PROJECT_ID}/helloworld:v1
+export PROJECT_ID=knative-atamel
+```
+
+In [helloworld](../serving/helloworld/) folder, go to the folder for the language of your choice ([csharp](../serving/helloworld/csharp/), [python](../serving/helloworld/python/)). Run the following command:
+
+```bash
+gcloud builds submit --tag gcr.io/${PROJECT_ID}/helloworld:v1
 ```
 
 This builds and pushes the image to GCR using Cloud Build.  
 
 ## Deploy to Cloud Run
 
-Let's finally deploy our service to Cloud Run, it's a single gcloud command. Make sure you replace `{PROJECT_ID}` with your project id:
+Let's finally deploy our service to Cloud Run, it's a single gcloud command:
 
 ```bash
-gcloud beta run deploy --image gcr.io/{PROJECT_ID}/helloworld:v1
+gcloud beta run deploy --image gcr.io/${PROJECT_ID}/helloworld:v1
+
+Please choose a target platform:
+ [1] gke
+ [2] managed
+ [3] cancel
+Please enter your numeric choice:  2
+
+To specify the platform yourself, pass `--platform managed`. Or, to make this the default target platform, run `gcloud config set run/platform managed`.
 
 Service name (helloworld):
-Allow unauthenticated invocations to [helloworld] (y/N)?  Y
-
-Deploying container to Cloud Run service [helloworld] in project [PROJECT_ID] region [us-central1]
-✓ Deploying new service... Done.
+Deploying container to Cloud Run service [helloworld] in project [knative-atamel] region [europe-west1]
+✓ Deploying... Done.
   ✓ Creating Revision...
   ✓ Routing traffic...
-  ✓ Setting IAM Policy...
 Done.
-Service [helloworld] revision [helloworld-b6d89666-06c1-4de3-8955-22a1f700af8a] has been deployed and is serving traffic at https://helloworld-u6zaimzeiq-uc.a.run.app
+Service [helloworld] revision [helloworld-00005] has been deployed and is serving traffic at https://helloworld-paelpl5x6a-ew.a.run.app
 ```
 
 This creates a Cloud Run service and a revision for the current configuration. In the end, you get a url that you can browse to.
@@ -73,7 +84,7 @@ You can also see the service in Cloud Run console:
 
 ## Test the service
 
-We can test the service by visiting the url mentioned during deployment and in Cloud Run console. In this case, it's `https://helloworld-u6zaimyeiq-uc.a.run.app`.
+We can test the service by visiting the url mentioned during deployment and in Cloud Run console. 
 
 One thing you might realize is that our service simply prints `Hello World` instead of `Hello v1`. Let's fix that in the last step.
 
