@@ -45,7 +45,7 @@ docker push {username}/translation:v1
 Create a [trigger.yaml](../eventing/translation/trigger.yaml) file.
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: translation
@@ -64,7 +64,7 @@ metadata:
 spec:
   subscriber:
     ref:
-      apiVersion: serving.knative.dev/v1beta1
+      apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: translation
 ```
