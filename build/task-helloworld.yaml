@@ -11,20 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: build.knative.dev/v1alpha1
-kind: Build
+apiVersion: tekton.dev/v1alpha1
+kind: Task
 metadata:
-  name: build-helloworld-gcr
+  name: hello-world
 spec:
-  source:
-    git:
-      url: https://github.com/meteatamel/knative-tutorial.git
-      revision: master
-    subPath: serving/helloworld/csharp
   steps:
-  - name: build-and-push
-    image: "gcr.io/kaniko-project/executor:v0.6.0"
-    args:
-    - "--dockerfile=/workspace/Dockerfile"
-    # Replace {PROJECT_ID} with your GCP Project's ID.
-    - "--destination=gcr.io/{PROJECT_ID}l/helloworld:build"
+    - name: echo
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "hello world"

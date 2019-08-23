@@ -144,4 +144,4 @@ You should see something similar to this:
 
 ## What's Next?
 
-[Hello World Build](11-helloworldbuild.md)
+[Hello Tekton](11-hellotekton.md)

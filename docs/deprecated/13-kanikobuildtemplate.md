@@ -1,3 +1,7 @@
+```
+As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipelines. This doc is kept as a reference for pre-0.8 Knative installations. Please refer to Tekton Pipelines section of the tutorial on how to do builds in Knative going forward.
+```
+
 # Kaniko Build Template
 
 In the [previous lab](10-dockerbuild.md) and the lab before, we created a Build and invoked Kaniko directly, passing all the arguments required for Kaniko in the Build step. This works but a better approach is to utilize [Build Templates](https://knative.dev/docs/build/build-templates/)
@@ -25,7 +29,7 @@ kaniko    24m
 
 ## Design the build
 
-Let's create a Build now. Create a [buildtemplate-kaniko-helloworld-gcr.yaml](../build/buildtemplate-kaniko-helloworld-gcr.yaml) build file:
+Let's create a Build now. Create a [buildtemplate-kaniko-helloworld-gcr.yaml](../build/deprecated/buildtemplate-kaniko-helloworld-gcr.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1

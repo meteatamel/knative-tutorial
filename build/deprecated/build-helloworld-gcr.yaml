@@ -11,15 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: Secret
+apiVersion: build.knative.dev/v1alpha1
+kind: Build
 metadata:
-  name: basic-user-pass
-  annotations:
-    tekton.dev/docker-0: https://index.docker.io/v1/
-type: kubernetes.io/basic-auth
-data:
-  # Use 'echo -n "username" | base64' to generate this string
-  username: dXNlcm5hbWU=
-  # Use 'echo -n "password" | base64' to generate this string
-  password: cGFzc3dvcmQ=
+  name: build-helloworld-gcr
+spec:
+  source:
+    git:
+      url: https://github.com/meteatamel/knative-tutorial.git
+      revision: master
+    subPath: serving/helloworld/csharp
+  steps:
+  - name: build-and-push
+    image: "gcr.io/kaniko-project/executor:v0.6.0"
+    args:
+    - "--dockerfile=/workspace/Dockerfile"
+    # Replace {PROJECT_ID} with your GCP Project's ID.
+    - "--destination=gcr.io/{PROJECT_ID}/helloworld:build"

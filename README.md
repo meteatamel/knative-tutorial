@@ -44,7 +44,7 @@ Install Knative in 2 steps:
 ```bash
 kubectl apply --selector knative.dev/crd-install=true \
    --filename https://github.com/knative/serving/releases/download/v0.8.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.8.0/eventing.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.8.0/release.yaml \
    --filename https://github.com/knative/serving/releases/download/v0.8.0/monitoring.yaml
 
 kubectl apply --filename https://github.com/knative/serving/releases/download/v0.8.0/serving.yaml \
@@ -62,8 +62,7 @@ kubectl get pods -n knative-monitoring
 
 ## Steps
 
-Knative Serving:
-
+Knative Serving
 * [Hello World Serving](docs/01-helloworldserving.md)
 * [Configure domain](docs/02-configuredomain.md)
 * [Change configuration](docs/03-changeconfig.md)
@@ -73,18 +72,21 @@ Knative Serving:
 * [Deploy to Cloud Run](docs/07-deploycloudrun.md)
 * [Serverless gRPC with Knative](docs/07.5-grpc.md)
 
-Knative Eventing:
-
+Knative Eventing
 * [Hello World Eventing](docs/08-helloworldeventing.md)
 * [Integrate with Translation API](docs/09-translationeventing.md)
 * [Integrate with Vision API](docs/10-visioneventing.md)
 
-Knative Build:
-
-* [Hello World Build](docs/11-helloworldbuild.md)
-* [Docker Hub Build](docs/12-dockerbuild.md)
-* [Kaniko Build Template](docs/13-kanikobuildtemplate.md)
-* [Buildpacks Build Template](docs/14-buildpacksbuildtemplate.md)
+Build
+* Tekton Pipelines
+   * [Hello Tekton](docs/11-hellotekton.md)
+   * [Hello World Build](docs/12-tekton-helloworldbuild.md)
+   * [Docker Hub Build](docs/13-tekton-dockerbuild.md)
+* Knative Build (Deprecated) 
+   * [Hello World Build](docs/deprecated/11-helloworldbuild.md)
+   * [Docker Hub Build](docs/deprecated/12-dockerbuild.md)
+   * [Kaniko Build Template](docs/deprecaeted/13-kanikobuildtemplate.md)
+   * [Buildpacks Build Template](docs/deprecated/14-buildpacksbuildtemplate.md)
 
 -------
 

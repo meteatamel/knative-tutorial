@@ -1,3 +1,7 @@
+```
+As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipelines. This doc is kept as a reference for pre-0.8 Knative installations. Please refer to Tekton Pipelines section of the tutorial on how to do builds in Knative going forward.
+```
+
 # Docker Hub Build
 
 In the [previous lab](09-helloworldbuild.md), we built and pushed a container image to Google Cloud Registry (GCR). In this lab, we will push to Docker Hub instead. It's more involved as we need to register secrets for Docker Hub.
@@ -8,7 +12,7 @@ There's [Orchestrating a source-to-URL deployment on Kubernetes](https://www.kna
 
 We need to first register a secret in Kubernetes for authentication with Docker Hub.
 
-Create a [docker-secret.yaml](../build/docker-secret.yaml) file for `Secret` manifest, which is used to store your Docker Hub credentials:
+Create a [docker-secret.yaml](../build/deprecated/docker-secret.yaml) file for `Secret` manifest, which is used to store your Docker Hub credentials:
 
 ```yaml
 apiVersion: v1
@@ -27,7 +31,7 @@ data:
 
 Make sure to replace `BASE64_ENCODED_USERNAME` and `BASE64_ENCODED_PASSWORD` with your Base64 encoded DockerHub username and password.
 
-Create a [service-account.yaml](../build/service-account.yaml) for `Service Account` used to link the build process to the secret:
+Create a [service-account.yaml](../build/deprecated/service-account.yaml) for `Service Account` used to link the build process to the secret:
 
 ```yaml
 apiVersion: v1
@@ -49,7 +53,7 @@ serviceaccount "build-bot" created
 
 ## Design the build
 
-We will use [Kaniko](https://github.com/GoogleContainerTools/kaniko) again in our Build. Create a [build-helloworld-docker.yaml](../build/build-helloworld-docker.yaml) build file:
+We will use [Kaniko](https://github.com/GoogleContainerTools/kaniko) again in our Build. Create a [build-helloworld-docker.yaml](../build/deprecated/build-helloworld-docker.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1

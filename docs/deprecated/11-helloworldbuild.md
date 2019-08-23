@@ -1,4 +1,6 @@
-# Hello World Build
+```
+As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipelines. This doc is kept as a reference for pre-0.8 Knative installations. Please refer to Tekton Pipelines section of the tutorial on how to do builds in Knative going forward.
+```
 
 [Knative Build](https://www.knative.dev/docs/build/) utilizes existing Kubernetes primitives to provide you with the ability to run on-cluster container builds from source. For example, you can write a build that uses Kubernetes-native resources to obtain your source code from a repository, build a container image, then run that image.
 
@@ -10,7 +12,7 @@ In the previous labs, we've been building and pushing container images manually 
 
 [Kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build container images from a Dockerfile, inside a container in Kubernetes cluster. The advantage is that Kaniko doesn't depend on a Docker daemon. We'll use Kaniko in our Build step.
 
-Create a [build-helloworld-gcr.yaml](../build/build-helloworld-gcr.yaml) build file:
+Create a [build-helloworld-gcr.yaml](../build/deprecated/build-helloworld-gcr.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1

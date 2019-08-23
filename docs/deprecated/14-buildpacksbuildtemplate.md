@@ -1,3 +1,7 @@
+```
+As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipelines. This doc is kept as a reference for pre-0.8 Knative installations. Please refer to Tekton Pipelines section of the tutorial on how to do builds in Knative going forward.
+```
+
 # Buildpacks Build Template
 
 Knative comes with a number of ready-to-use [build-templates](https://github.com/knative/build-templates) and one of my favorites is the [template](https://github.com/knative/build-templates/tree/master/buildpacks) for Cloud Native Buildpacks.
@@ -27,7 +31,7 @@ buildpacks-cnb   1m
 
 Let's create a Build now to build a sample Java app on GitHub ([sample-java-app](https://github.com/buildpack/sample-java-app.git)).
 
-Create a [buildtemplate-buildpack-sample-java-app-gcr.yaml](../build/buildtemplate-buildpack-sample-java-app-gcr.yaml) build file:
+Create a [buildtemplate-buildpack-sample-java-app-gcr.yaml](../build/deprecated/buildtemplate-buildpack-sample-java-app-gcr.yaml) build file:
 
 ```yaml
 apiVersion: build.knative.dev/v1alpha1

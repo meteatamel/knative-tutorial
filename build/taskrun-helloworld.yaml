@@ -11,15 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: Secret
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
 metadata:
-  name: basic-user-pass
-  annotations:
-    tekton.dev/docker-0: https://index.docker.io/v1/
-type: kubernetes.io/basic-auth
-data:
-  # Use 'echo -n "username" | base64' to generate this string
-  username: dXNlcm5hbWU=
-  # Use 'echo -n "password" | base64' to generate this string
-  password: cGFzc3dvcmQ=
+  name: hello-world
+spec:
+  taskRef:
+    name: hello-world
