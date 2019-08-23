@@ -72,6 +72,6 @@ buildtemplate-buildpack-sample-java-app-gcr    True
 
 At this point, you should see the image pushed to GCR:
 
-![Java App on GCR](./images/gcr-javaapp.png)
+![Java App on GCR](../images/gcr-javaapp.png)
 
 ## What's Next?

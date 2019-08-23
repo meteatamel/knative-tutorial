@@ -76,7 +76,7 @@ build-helloworld-gcr-pod-454bd8            0/1       Completed
 
 At this point, you should see the image pushed to GCR:
 
-![Google Container Registry](./images/gcr.png)
+![Google Container Registry](../images/gcr.png)
 
 ## What's Next?
 

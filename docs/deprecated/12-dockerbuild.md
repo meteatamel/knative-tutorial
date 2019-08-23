@@ -116,7 +116,7 @@ build-helloworld-docker-pod-454bd8         0/1       Completed
 
 At this point, you should see the image pushed to Docker Hub:
 
-![Docker Hub](./images/dockerhub.png)
+![Docker Hub](../images/dockerhub.png)
 
 ## What's Next?
 
