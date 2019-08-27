@@ -79,5 +79,3 @@ build-kaniko-helloworld-gcr   True
 At this point, you should see the image pushed to GCR.
 
 ## What's Next?
-
-[Buildpacks Build Template](14-buildpacksbuildtemplate.md)
