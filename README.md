@@ -82,10 +82,11 @@ Build
    * [Hello Tekton](docs/11-hellotekton.md)
    * [Hello World Build](docs/12-tekton-helloworldbuild.md)
    * [Docker Hub Build](docs/13-tekton-dockerbuild.md)
+   * [Kaniko Task Build](docs/14-tekton-kanikotaskbuild.md)
 * Knative Build (Deprecated) 
    * [Hello World Build](docs/deprecated/11-helloworldbuild.md)
    * [Docker Hub Build](docs/deprecated/12-dockerbuild.md)
-   * [Kaniko Build Template](docs/deprecaeted/13-kanikobuildtemplate.md)
+   * [Kaniko Build Template](docs/deprecated/13-kanikobuildtemplate.md)
    * [Buildpacks Build Template](docs/deprecated/14-buildpacksbuildtemplate.md)
 
 -------

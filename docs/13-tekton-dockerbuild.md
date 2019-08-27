@@ -150,3 +150,5 @@ At this point, you should see the image pushed to Docker Hub:
 ![Docker Hub](./images/dockerhub.png)
 
 ## What's Next?
+
+[Kaniko Task Build](14-tekton-kanikotaskbuild.md)
