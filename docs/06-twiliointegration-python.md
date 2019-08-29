@@ -30,14 +30,12 @@ if __name__ == '__main__':
 Create a [Dockerfile](../serving/twilio/python/Dockerfile) for the image:
 
 ```dockerfile
-FROM python:3.7
+FROM python:3.7-slim
 
-ENV APP_HOME /app
-WORKDIR $APP_HOME
-COPY . .
-
-# Install production dependencies.
 RUN pip install Flask gunicorn twilio
+
+WORKDIR /app
+COPY . .
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app
 ```
