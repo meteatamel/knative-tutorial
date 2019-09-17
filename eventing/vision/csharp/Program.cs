@@ -23,8 +23,13 @@ namespace vision
         {
             CreateWebHostBuilder(args).Build().Run();
         }
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            string url = String.Concat("http://0.0.0.0:", port);
+
+            return WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>().UseUrls(url);
+        }
     }
 }

@@ -1,24 +1,25 @@
-# Use Microsoft's official .NET image.
-# https://hub.docker.com/r/microsoft/dotnet
-FROM microsoft/dotnet:2.2-sdk
+# Use Microsoft's official lightweight build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
+WORKDIR /app
 
 # Install production dependencies.
 # Copy csproj and restore as distinct layers.
-WORKDIR /app
-COPY *.csproj .
+COPY *.csproj ./
 RUN dotnet restore
 
 # Copy local code to the container image.
-COPY . .
+COPY . ./
+WORKDIR /app
 
 # Build a release artifact.
 RUN dotnet publish -c Release -o out
 
-# Configure and document the service HTTP port.
-ENV PORT 8080
-
-# Make sure the app binds to $PORT
-ENV ASPNETCORE_URLS http://*:${PORT}
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
 # Run the web service on container startup.
-CMD ["dotnet", "out/twiliosample.dll"]
+ENTRYPOINT ["dotnet", "twiliosample.dll"]

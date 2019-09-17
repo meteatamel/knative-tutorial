@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -23,8 +24,13 @@ namespace sleepingservice
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            string url = String.Concat("http://0.0.0.0:", port);
+
+            return WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>().UseUrls(url);
+        }
     }
 }
