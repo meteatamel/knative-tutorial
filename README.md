@@ -71,6 +71,7 @@ Knative Serving
 * [Integrate with Twilio](docs/06-twiliointegration.md)
 * [Deploy to Cloud Run](docs/07-deploycloudrun.md)
 * [Serverless gRPC with Knative](docs/07.5-grpc.md)
+* [Cluster local services](docs/07.6-clusterlocal.md)
 
 Knative Eventing
 * [Hello World Eventing](docs/08-helloworldeventing.md)
