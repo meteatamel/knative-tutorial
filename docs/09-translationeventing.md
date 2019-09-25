@@ -1,6 +1,6 @@
 # Integrate with Translation API
 
-In the [previous lab](08-helloworldeventing.md), our Knative service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting.
+In the [previous lab](08-helloworldeventing.md), our service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting.
 
 [Cloud Translation API](https://cloud.google.com/translate/docs/) is one of Machine Learning APIs of Google Cloud. It can dynamically translate text between thousands of language pairs. In this lab, we will use translation requests sent via Pub/Sub messages and use Translation API to translate text between languages.
 
@@ -40,45 +40,79 @@ docker build -t {username}/translation:v1 .
 docker push {username}/translation:v1
 ```
 
-## Deploy the service and trigger
+## Deploy the Translation service
 
-Create a [trigger.yaml](../eventing/translation/trigger.yaml) file.
+Create a [service.yaml](../eventing/translation/service.yaml):
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: translation
+spec:
+  selector:
+    matchLabels:
+      app: translation
+  template:
+    metadata:
+      labels:
+        app: translation
+    spec:
+      containers:
+      - name: user-container
+        # Replace {username} with your actual DockerHub
+        image: docker.io/{username}/translation:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: translation
-  namespace: default
 spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/translation:v1
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
+  selector:
+    app: translation
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+```
+
+This defines a Kubernetes Deployment and Service to receive messages. 
+
+```bash
+kubectl apply -f service.yaml
+
+deployment.apps/translation created
+service/translation created
+```
+
+## Create PullSubscription
+
+Last but not least, we need connect Translation service to Pub/Sub messages with a PullSubscription. 
+
+Create a [pullsubscription.yaml](../eventing/translation/pullsubscription.yaml):
+
+```yaml
+apiVersion: pubsub.cloud.run/v1alpha1
+kind: PullSubscription
 metadata:
-  name: translation
+  name: testing-source-translation
 spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: translation
+  topic: testing
+  sink:
+    apiVersion: v1
+    kind: Service
+    name: translation
 ```
+This connects the `testing` topic to `translation` Service. 
 
-This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
+Create the PullSubscription:
 
 ```bash
-kubectl apply -f trigger.yaml
-```
+kubectl apply -f pullsubscription.yaml
 
-Check that the service and trigger are created:
-
-```bash
-kubectl get ksvc,trigger
+pullsubscription.pubsub.cloud.run/testing-source-translation created
 ```
 
 ## Test the service
@@ -92,7 +126,7 @@ gcloud pubsub topics publish testing --message='{"text":"Hello World", "from":"e
 Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=translation
+kubectl get pods
 ```
 
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
@@ -103,29 +137,11 @@ kubectl logs --follow -c user-container <podid>
 
 You should see something similar to this:
 
-* C#
+```text
+Received content: {"text":"Hello World", "from":"en", "to":"es"}
 
-  ```text
-  info: translation.Startup[0]
-        Decoded data: {"text":"Hello World", "from":"en", "to":"es"}
-  info: translation.Startup[0]
-        Calling Translation API
-  info: translation.Startup[0]
-        Translated text: Hola Mundo
-  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-        Request finished in 621.0973ms 200
-  ```
-
-* Python
-
-  ```text
-  [INFO] Starting gunicorn 19.9.0
-  [INFO] Listening at: http://0.0.0.0:8080 (1)
-  [INFO] Using worker: threads
-  [INFO] Booting worker with pid: 8
-  [INFO] Decoded data: {'text': 'Hello World', 'from': 'en', 'to': 'es'}
-  [INFO] Translated text: Hola Mundo
-  ```
+Translated text: Hola Mundo
+```
 
 ## What's Next?
 

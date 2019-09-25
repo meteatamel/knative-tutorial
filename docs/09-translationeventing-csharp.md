@@ -97,40 +97,6 @@ namespace translate
 }
 ```
 
-## Handle Cloud Events
-
-Our Knative service will receive Pub/Sub messages in the form of [CloudEvents](https://github.com/cloudevents) which roughly has the following form:
-
-```json
-{
-    "ID": "",
-    "Data": "",
-    "Attributes": {
-    },
-    "PublishTime": ""
-}
-```
-
-In this case, the actual translation request will be Base64 encoded in `Data` field and it's the only thing we're interested in.
-
-We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
-
-```bash
-dotnet add package CloudNative.CloudEvent
-```
-
-Then, parse the `CloudEvent` and decode the base64 encoded `Data` field. You can see the full code in [Startup.cs](../eventing/translation/csharp/Startup.cs)
-
-```csharp
-var jObject = (JObject)JToken.Parse(content);
-var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
-
-if (cloudEvent == null) return;
-
-var decodedData = GetDecodedData((string)cloudEvent.Data);
-_logger.LogInformation($"Decoded data: {decodedData}");
-```
-
 ## Add Translation API
 
 Add Translation API NuGet package to our project:
@@ -172,21 +138,31 @@ dotnet build
 Create a [Dockerfile](../eventing/translation/csharp/Dockerfile) for the image:
 
 ```dockerfile
-FROM microsoft/dotnet:2.2-sdk
-
+# Use Microsoft's official lightweight build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
 WORKDIR /app
-COPY *.csproj .
+
+# Install production dependencies.
+# Copy csproj and restore as distinct layers.
+COPY *.csproj ./
 RUN dotnet restore
 
-COPY . .
+# Copy local code to the container image.
+COPY . ./
+WORKDIR /app
 
+# Build a release artifact.
 RUN dotnet publish -c Release -o out
 
-ENV PORT 8080
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
-ENV ASPNETCORE_URLS http://*:${PORT}
-
-CMD ["dotnet", "out/translation.dll"]
+# Run the web service on container startup.
+ENTRYPOINT ["dotnet", "translation.dll"]
 ```
 
 ## What's Next?
