@@ -23,6 +23,15 @@ kubectl get pods -n knative-eventing
 kubectl apply -f https://github.com/google/knative-gcp/releases/download/v0.9.0/cloud-run-events.yaml
 ```
 
+You can double check that there's a `cloud-run-events` namespace created:
+
+```bash
+kubectl get ns
+
+NAME                 STATUS
+cloud-run-events     Active
+```
+
 Knative with GCP implements a few difference sources (Storage, Scheduler, Channel, PullSubscription, Topic). We're interested in [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md) to listen for Pub/Sub messages directly from GCP. 
 
 ## Create a Service Account and a Pub/Sub Topic

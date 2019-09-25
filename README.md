@@ -9,7 +9,7 @@ There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knat
 [![Serverless with Knative](./docs/images/serverless-with-knative.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
 
 ## Installation
-If you need to install Knative and its dependencies (Istio), see [Knative Installation](https://www.knative.dev/docs/install/) page for your platform. We tested this tutorial on Google Kubernetes Engine (GKE) with Knative version **0.8**. For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. Let's briefly recap the steps of installing Knative on GKE. 
+If you need to install Knative and its dependencies (Istio), see [Knative Installation](https://www.knative.dev/docs/install/) page for your platform. We tested this tutorial on Google Kubernetes Engine (GKE) with Knative version **0.9**. For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. Let's briefly recap the steps of installing Knative on GKE. 
 
 Set some environment variables for the cluster name and zone:
 

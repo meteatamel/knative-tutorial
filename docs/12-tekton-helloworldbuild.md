@@ -119,7 +119,7 @@ This TaskRun defines the source code to build, the location of the image to push
 You can start the TaskRun with:
 
 ```bash
-kubectl apply -f taskrun-build-helloworld-docker.yaml
+kubectl apply -f taskrun-build-helloworld-gcr.yaml
 
 pipelineresource.tekton.dev/git-knative-tutorial unchanged
 pipelineresource.tekton.dev/image-docker-knative-tutorial created
@@ -137,7 +137,6 @@ pipelineresource.tekton.dev/image-docker-knative-tutorial   22s
 pipelineresource.tekton.dev/image-gcr-knative-tutorial      12m
 
 NAME                                         SUCCEEDED   REASON      STARTTIME   COMPLETIONTIME
-taskrun.tekton.dev/build-helloworld-docker   Unknown     Building    22s
 taskrun.tekton.dev/build-helloworld-gcr      True        Succeeded   12m         10m
 
 NAME                                                 AGE
