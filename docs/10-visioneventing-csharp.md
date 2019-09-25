@@ -79,37 +79,6 @@ Change the log level in `appsettings.json` to `Information`:
 
 At this point, the sample simply logs out the received messages.
 
-## Handle Cloud Events
-
-Our Knative service will receive Pub/Sub messages from Cloud Storage in the form of [CloudEvents](https://github.com/cloudevents) which roughly has the following form:
-
-```json
-{
-    "ID": "",
-    "Data": "",
-    "Attributes": {
-    },
-    "PublishTime": ""
-}
-```
-
-In this case, the `Attributes` has the bucket and file information that we're interested in.
-
-We'll use [Cloud Events C# SDK](https://github.com/cloudevents/sdk-csharp) to parse CloudEvents. Add `CloudNative.CloudEvent` package to our project:
-
-```bash
-dotnet add package CloudNative.CloudEvent
-```
-
-Then, parse the `CloudEvent`. You can see the full code in [Startup.cs](../eventing/vision/csharp/Startup.cs)
-
-```csharp
-var jObject = (JObject)JToken.Parse(content);
-var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
-
-if (cloudEvent == null) return;  
-```
-
 ## Add Vision API
 
 Add Vision API NuGet package to our project:
@@ -118,23 +87,25 @@ Add Vision API NuGet package to our project:
 dotnet add package Google.Cloud.Vision.V1
 ```
 
-We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to check for `OBJECT_FINALIZE` events. These events are emitted by Cloud Storage when a file is uploaded.  
+We can now update [Startup.cs](../eventing/vision/csharp/Startup.cs) to check for `storage#object` events. These events are emitted by Cloud Storage when a file is uploaded.  
 
 ```csharp
-var attributes = (dynamic)cloudEvent.GetAttributes()["Attributes"];
-var eventType = attributes.eventType;
-if (eventType == null || eventType != "OBJECT_FINALIZE") return;
+dynamic json = JValue.Parse(content);
+if (json == null) return;
+
+var kind = json.kind;
+if (kind == null || kind != "storage#object") return;
 ```
 
 Next, we extract the Cloud Storage URL of the file from the event:
 
 ```csharp
-var storageUrl = (string)ConstructStorageUrl(attributes);
+var storageUrl = (string)ConstructStorageUrl(json);
 
-private string ConstructStorageUrl(dynamic attributes)
+private string ConstructStorageUrl(dynamic json)
 {
-    return attributes == null? null
-        : string.Format("gs://{0}/{1}", attributes.bucketId, attributes.objectId);
+    return json == null? null 
+        : string.Format("gs://{0}/{1}", json.bucket, json.name);
 }
 ```
 
@@ -175,21 +146,31 @@ dotnet build
 Create a [Dockerfile](../eventing/vision/csharp/Dockerfile) for the image:
 
 ```dockerfile
-FROM microsoft/dotnet:2.2-sdk
-
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
 WORKDIR /app
-COPY *.csproj .
+
+# Install production dependencies.
+# Copy csproj and restore as distinct layers.
+COPY *.csproj ./
 RUN dotnet restore
 
-COPY . .
+# Copy local code to the container image.
+COPY . ./
+WORKDIR /app
 
+# Build a release artifact.
 RUN dotnet publish -c Release -o out
 
-ENV PORT 8080
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+# TODO: aspnet:2.2-alpine does not work for some reason
+# FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
-ENV ASPNETCORE_URLS http://*:${PORT}
-
-CMD ["dotnet", "out/vision.dll"]
+# Run the web service on container startup.
+ENTRYPOINT ["dotnet", "vision.dll"]
 ```
 
 ## What's Next?

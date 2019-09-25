@@ -2,11 +2,9 @@
 
 [Cloud Vision API](https://cloud.google.com/vision/docs) is another Machine Learning API of Google Cloud. You can use it to derive insight from your images with powerful pre-trained API models or easily train custom vision models with AutoML Vision.
 
-In this lab, we will use a [Cloud Storage](https://cloud.google.com/storage/docs/) bucket to store our images. We will also enable [Pub/Sub notifications](https://cloud.google.com/storage/docs/pubsub-notifications) on our bucket. This way, every time we add an image to the bucket, it will trigger a Pub/Sub message. This in turn will trigger our Knative service where we will use Vision API to analyze the image. Pretty cool!
+In this lab, we will use a [Cloud Storage](https://cloud.google.com/storage/docs/) bucket to store our images. We will also enable [Pub/Sub notifications](https://cloud.google.com/storage/docs/pubsub-notifications) on our bucket. This way, every time we add an image to the bucket, it will trigger a Pub/Sub message. This in turn will trigger our service where we will use Vision API to analyze the image.
 
-Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described [here](https://github.com/knative/docs/blob/master/serving/outbound-network-access.md).
-
-You also want to make sure that the Vision API is enabled:
+You want to make sure that the Vision API is enabled:
 
 ```bash
 gcloud services enable vision.googleapis.com
@@ -30,45 +28,81 @@ docker build -t {username}/vision:v1 .
 docker push {username}/vision:v1
 ```
 
-## Deploy the service and trigger
+## Create Vision Service
 
-Create a [trigger.yaml](../eventing/vision/trigger.yaml) file.
+Create a [service.yaml](../eventing/vision/service.yaml) file.
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vision
+spec:
+  selector:
+    matchLabels:
+      app: vision
+  template:
+    metadata:
+      labels:
+        app: vision
+    spec:
+      containers:
+      - name: user-container
+        # Replace {username} with your actual DockerHub
+        image: docker.io/{username}/vision:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: vision
-  namespace: default
 spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/vision:v1
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
+  selector:
+    app: vision
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+```
+
+This defines a Kubernetes Deployment and Service to receive messages. 
+
+Create the Vision service:
+
+```bash
+kubectl apply -f service.yaml
+
+deployment.apps/vision created
+service/vision created
+```
+
+## Create PullSubscription
+
+We need connect Vision service to Pub/Sub messages with a PullSubscription. 
+
+Create a [pullsubscription.yaml](../eventing/vision/pullsubscription.yaml):
+
+```yaml
+apiVersion: pubsub.cloud.run/v1alpha1
+kind: PullSubscription
 metadata:
-  name: vision
+  name: testing-source-vision
 spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: vision
+  topic: testing
+  sink:
+    apiVersion: v1
+    kind: Service
+    name: vision
 ```
+This connects the `testing` topic to `vision` service. 
 
-This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages.
+Create the PullSubscription:
 
 ```bash
-kubectl apply -f trigger.yaml
-```
+kubectl apply -f pullsubscription.yaml
 
-Check that the service and trigger are created:
-
-```bash
-kubectl get ksvc,trigger
+pullsubscription.pubsub.cloud.run/testing-source-vision created
 ```
 
 ## Create bucket and enable notifications
@@ -108,7 +142,7 @@ We can finally test our Knative service by uploading an image to the bucket.
 First, let's watch the logs of the service. Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=vision
+kubectl get pods
 ```
 
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
@@ -123,24 +157,13 @@ Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the
 gsutil cp pics/beach.jpg gs://$VISION_BUCKET
 ```
 
-This triggers a Pub/Sub message to our Knative service.
+This triggers a Pub/Sub message to our service.
 
 You should see something similar to this:
 
-* C#
-
-  ```text
-  info: vision.Startup[0]
-        This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
-  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-        Request finished in 1948.3204ms 200
-  ```
-
-* Python
-
-  ```text
-  [INFO] Picture labels: Sky, Body of water, Sea, Nature, Coast, Water, Sunset, Horizon, Cloud, Shore
-  ```
+```text
+This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
+```
 
 ## What's Next?
 
