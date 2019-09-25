@@ -11,26 +11,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: message-dumper
-  namespace: default
+  name: vision
 spec:
+  selector:
+    matchLabels:
+      app: vision
   template:
+    metadata:
+      labels:
+        app: vision
     spec:
       containers:
+      - name: user-container
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/message-dumper:v1
+        image: docker.io/{username}/vision:v3
+        ports:
+        - containerPort: 8080
 ---
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
+apiVersion: v1
+kind: Service
 metadata:
-  name: message-dumper
+  name: vision
 spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: message-dumper
-
+  selector:
+    app: vision
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

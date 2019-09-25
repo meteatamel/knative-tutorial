@@ -1,11 +1,10 @@
-# Create Message Dumper - Python
+# Create Event Display - Python
 
-## Create Message Dumper
+## Create Event Display
 
-Create a Flask app ([app.py](../eventing/message-dumper/python/app.py)) responding to `POST` requests to have a logger to print the contents of the event:
+Create a Flask app ([app.py](../eventing/event-display/python/app.py)) responding to `POST` requests to have a logger to print the contents of the event:
 
 ```python
-import base64
 import json
 import logging
 import os
@@ -18,9 +17,7 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def pubsub_push():
     message = json.loads(request.data.decode('utf-8'))
-    info(f'Message Dumper received message:\n{message}')
-    data = base64.b64decode(message['Data'])
-    info(f'Data: {data}')
+    info(f'Event Display received message:\n{message}')
     return 'OK', 200
 
 
@@ -39,7 +36,7 @@ else:
 
 ## Create a Dockerfile
 
-Create a [Dockerfile](../eventing/message-dumper/python/Dockerfile) for the image:
+Create a [Dockerfile](../eventing/event-display/python/Dockerfile) for the image:
 
 ```dockerfile
 FROM python:3.7-slim

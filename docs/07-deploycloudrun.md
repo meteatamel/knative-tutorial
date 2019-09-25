@@ -60,10 +60,11 @@ Let's finally deploy our service to Cloud Run, it's a single gcloud command:
 gcloud beta run deploy --image gcr.io/${PROJECT_ID}/helloworld:v1
 
 Please choose a target platform:
- [1] gke
- [2] managed
- [3] cancel
-Please enter your numeric choice:  2
+ [1] Cloud Run (fully managed)
+ [2] Cloud Run on GKE
+ [3] a Kubernetes cluster
+ [4] cancel
+Please enter your numeric choice:  1
 
 To specify the platform yourself, pass `--platform managed`. Or, to make this the default target platform, run `gcloud config set run/platform managed`.
 
@@ -73,7 +74,7 @@ Deploying container to Cloud Run service [helloworld] in project [knative-atamel
   ✓ Creating Revision...
   ✓ Routing traffic...
 Done.
-Service [helloworld] revision [helloworld-00005] has been deployed and is serving traffic at https://helloworld-paelpl5x6a-ew.a.run.app
+Service [helloworld] revision [helloworld-00011] has been deployed and is serving 100 percent of traffic at https://helloworld-paelpl5x6a-ew.a.run.app
 ```
 
 This creates a Cloud Run service and a revision for the current configuration. In the end, you get a url that you can browse to.

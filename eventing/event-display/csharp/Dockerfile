@@ -22,4 +22,4 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # Run the web service on container startup.
-ENTRYPOINT ["dotnet", "message-dumper.dll"]
+ENTRYPOINT ["dotnet", "event-display.dll"]

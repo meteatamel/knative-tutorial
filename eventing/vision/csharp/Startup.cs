@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CloudNative.CloudEvents;
 using Google.Cloud.Vision.V1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -55,17 +53,15 @@ namespace vision
                     {
                         var content = reader.ReadToEnd();
                         _logger.LogInformation($"Received content: {content}");
+                        
+                        dynamic json = JValue.Parse(content);
+                        if (json == null) return;
 
-                        var jObject = (JObject)JToken.Parse(content);
-                        var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
+                        var kind = json.kind;
+                        if (kind == null || kind != "storage#object") return;
 
-                        if (cloudEvent == null) return;
-
-                        var attributes = (dynamic)cloudEvent.GetAttributes()["Attributes"];
-                        var eventType = attributes.eventType;
-                        if (eventType == null || eventType != "OBJECT_FINALIZE") return;
-
-                        var storageUrl = (string)ConstructStorageUrl(attributes);
+                        var storageUrl = (string)ConstructStorageUrl(json);
+                        _logger.LogInformation($"Storage url: {storageUrl}");
 
                         var labels = await ExtractLabelsAsync(storageUrl);
 
@@ -82,10 +78,10 @@ namespace vision
             });
         }
 
-        private string ConstructStorageUrl(dynamic attributes)
+        private string ConstructStorageUrl(dynamic json)
         {
-            return attributes == null? null 
-                : string.Format("gs://{0}/{1}", attributes.bucketId, attributes.objectId);
+            return json == null? null 
+                : string.Format("gs://{0}/{1}", json.bucket, json.name);
         }
 
         private async Task<string> ExtractLabelsAsync(string storageUrl)

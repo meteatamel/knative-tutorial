@@ -11,26 +11,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: translation
+spec:
+  selector:
+    matchLabels:
+      app: translation
+  template:
+    metadata:
+      labels:
+        app: translation
+    spec:
+      containers:
+      - name: user-container
+        # Replace {username} with your actual DockerHub
+        image: docker.io/{username}/translation:v2
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: translation
-  namespace: default
 spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/translation:v1
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: translation
-spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: translation
-
+  selector:
+    app: translation
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace message_dumper
+namespace event_display
 {
     public class Program
     {

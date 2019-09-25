@@ -11,26 +11,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: vision
-  namespace: default
+  name: event-display
 spec:
+  selector:
+    matchLabels:
+      app: event-display
   template:
+    metadata:
+      labels:
+        app: event-display
     spec:
       containers:
+      - name: user-container
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/vision:v2
+        image: docker.io/{username}/event-display:v1
+        ports:
+        - containerPort: 8080
 ---
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
+apiVersion: v1
+kind: Service
 metadata:
-  name: vision
+  name: event-display
 spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: vision
-
+  selector:
+    app: event-display
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

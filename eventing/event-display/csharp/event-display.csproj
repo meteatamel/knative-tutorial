@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <RootNamespace>message_dumper_csharp</RootNamespace>
+    <RootNamespace>event_display</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

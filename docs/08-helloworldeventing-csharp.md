@@ -1,14 +1,14 @@
-# Create Message Dumper - C#
+# Create Event Display - C#
 
-## Create Message Dumper
+## Create Event Display
 
 Create an empty ASP.NET Core app:
 
 ```bash
-dotnet new web -o message-dumper
+dotnet new web -o event-display
 ```
 
-Inside the `message-dumper/csharp` folder, update [Startup.cs](../eventing/message-dumper/csharp/Startup.cs) to have a logger to print the contents of the event:
+Inside the `event-display/csharp` folder, update [Startup.cs](../eventing/event-display/csharp/Startup.cs) to have a logger to print the contents of the event:
 
 ```csharp
 using System.IO;
@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace message_dumper
+namespace event_display
 {
     public class Startup
     {
@@ -45,7 +45,7 @@ namespace message_dumper
                 using (var reader = new StreamReader(context.Request.Body))
                 {
                     var content = reader.ReadToEnd();
-                    _logger.LogInformation("Message Dumper received message: " + content);
+                    _logger.LogInformation("Event Display received message: " + content);
                     await context.Response.WriteAsync(content);
                 }
             });
@@ -75,24 +75,34 @@ dotnet build
 
 ## Create a Dockerfile
 
-Create a [Dockerfile](../eventing/message-dumper/csharp/Dockerfile) for the image:
+Create a [Dockerfile](../eventing/event-display/csharp/Dockerfile) for the image:
 
 ```dockerfile
-FROM microsoft/dotnet:2.2-sdk
-
+# Use Microsoft's official lightweight build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
 WORKDIR /app
-COPY *.csproj .
+
+# Install production dependencies.
+# Copy csproj and restore as distinct layers.
+COPY *.csproj ./
 RUN dotnet restore
 
-COPY . .
+# Copy local code to the container image.
+COPY . ./
+WORKDIR /app
 
+# Build a release artifact.
 RUN dotnet publish -c Release -o out
 
-ENV PORT 8080
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
-ENV ASPNETCORE_URLS http://*:${PORT}
-
-CMD ["dotnet", "out/message-dumper.dll"]
+# Run the web service on container startup.
+ENTRYPOINT ["dotnet", "event-display.dll"]
 ```
 
 ## What's Next?

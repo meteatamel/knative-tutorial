@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace message_dumper
+namespace event_display
 {
     public class Startup
     {
@@ -48,7 +48,7 @@ namespace message_dumper
                 using (var reader = new StreamReader(context.Request.Body))
                 {
                     var content = reader.ReadToEnd();
-                    _logger.LogInformation("Message Dumper received message: " + content);
+                    _logger.LogInformation("Event Display received message: " + content);
                     await context.Response.WriteAsync(content);
                 }
             });

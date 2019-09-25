@@ -21,8 +21,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using CloudNative.CloudEvents;
-using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace translation
@@ -55,16 +53,8 @@ namespace translation
                     {
                         var content = reader.ReadToEnd();
                         _logger.LogInformation($"Received content: {content}");
-
-                        var jObject = (JObject)JToken.Parse(content);
-                        var cloudEvent = new JsonEventFormatter().DecodeJObject(jObject);
-
-                        if (cloudEvent == null) return;
-
-                        var decodedData = GetDecodedData((string)cloudEvent.Data);
-                        _logger.LogInformation($"Decoded data: {decodedData}");
-    
-                        var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
+   
+                        var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(content);
                         _logger.LogInformation($"Calling Translation API with request: {translationRequest}");
                         
                         var response = await TranslateText(translationRequest);

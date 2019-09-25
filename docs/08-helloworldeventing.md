@@ -4,7 +4,7 @@ As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter me
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
 
-Knative Eventing has a few different types of event sources (Kubernetes, GitHub, GCP Pub/Sub etc.). In this tutorial, we will focus on GCP Pub/Sub events.
+Knative Eventing has a few different types of [event sources](https://knative.dev/docs/eventing/sources/) (Kubernetes, GitHub, GCP Pub/Sub etc.) that it can listen. In this tutorial, we will focus on listening Google Cloud related event sources such as Google Cloud Pub/Sub. 
 
 ## Install Knative Eventing
 
@@ -13,92 +13,131 @@ You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/
 ```bash
 kubectl get pods -n knative-eventing
 ```
+## Install Knative with GCP 
 
-## Configuring outbound network access
+[Knative with GCP](https://github.com/google/knative-gcp) builds on Kubernetes to enable easy configuration and consumption of Google Cloud Platform events and services. From Knative v0.9 onwards, this is the preferred method to receive Google Cloud events into Knative. 
 
-In Knative, the outbound network access is disabled by default. This means that you cannot even call Google Cloud APIs from Knative.
-
-In our samples, we want to call Google Cloud APIs, so make sure you follow instructions on [Configuring outbound network access](https://www.knative.dev/docs/serving/outbound-network-access/) page to enable access.
-
-## Setup Google Cloud Pub/Sub event source and default Broker
-
-Follow the instructions on [GCP Cloud Pub/Sub source](https://www.knative.dev/docs/eventing/samples/gcp-pubsub-source/) page to setup Google Cloud Pub/Sub event source and also have a Broker injected in the default namespace. But don't create the trigger, we'll do that here.
-
-In the end, you should have a GCP Pub/Sub source setup:
+[Installing Knative with GCP](https://github.com/google/knative-gcp/blob/master/docs/install/README.md) page has instructions but it essentially involves pointing to `cloud-run-events.yaml`:
 
 ```bash
-kubectl get gcppubsubsource
-
-NAME             AGE
-testing-source   2m
+kubectl apply -f https://github.com/google/knative-gcp/releases/download/v0.9.0/cloud-run-events.yaml
 ```
 
-And a default broker as well:
+Knative with GCP implements a few difference sources (Storage, Scheduler, Channel, PullSubscription, Topic). We're interested in [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md) to listen for Pub/Sub messages directly from GCP. 
+
+## Create a Service Account and a Pub/Sub Topic
+
+In order to use [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md), we need a Pub/Sub enabled Service Account and instructions on how to set that up on Google Cloud is [here](https://github.com/google/knative-gcp/tree/master/docs/pubsub). 
+
+Once you have it setup, you should have a `google-cloud-key` secret in Kubernetes:
 
 ```bash
-kubectl get broker
+kubectl get secret
 
-NAME      READY   REASON   HOSTNAME                                   AGE
-default   True             default-broker.default.svc.cluster.local   12m
+NAME                  TYPE                                  DATA   AGE
+google-cloud-key      Opaque                                1      20h
 ```
+You should also create a Pub/Sub Topic to send messages too:
 
-## Create a Message Dumper
+```bash
+export TOPIC_NAME=testing
+gcloud pubsub topics create $TOPIC_NAME
+```
+We're finally ready to receive Pub/Sub messages into Knative! 
+
+## Create an Event Display
 
 Follow the instructions for your preferred language to create a service to log out messages:
 
-* [Create Message Dumper - C#](08-helloworldeventing-csharp.md)
+* [Create Event Display - C#](08-helloworldeventing-csharp.md)
 
-* [Create Message Dumper - Python](08-helloworldeventing-python.md)
+* [Create Event Display - Python](08-helloworldeventing-python.md)
 
 ## Build and push Docker image
 
 Build and push the Docker image (replace `{username}` with your actual DockerHub):
 
 ```bash
-docker build -t {username}/message-dumper:v1 .
+docker build -t {username}/event-display:v1 .
 
-docker push {username}/message-dumper:v1
+docker push {username}/event-display:v1
 ```
 
-## Deploy the service and create a trigger
+## Create Event Display
 
-Create a [trigger.yaml](../eventing/message-dumper/trigger.yaml) file.
+Create a [service.yaml](../eventing/event-display/service.yaml) file:
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: message-dumper
-  namespace: default
+  name: event-display
 spec:
+  selector:
+    matchLabels:
+      app: event-display
   template:
+    metadata:
+      labels:
+        app: event-display
     spec:
       containers:
+      - name: user-container
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/message-dumper:v1
+        image: docker.io/{username}/event-display:v1
+        ports:
+        - containerPort: 8080
 ---
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
+apiVersion: v1
+kind: Service
 metadata:
-  name: message-dumper
+  name: event-display
 spec:
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: message-dumper
+  selector:
+    app: event-display
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
 ```
 
-This defines the Knative Service that will run our code and Trigger to connect to Pub/Sub messages to the Service.
+This defines a Kubernetes Deployment and Service to receive messages. 
+
+Create the Event Display service:
 
 ```bash
-kubectl apply -f trigger.yaml
+kubectl apply -f service.yaml
+
+deployment.apps/event-display created
+service/event-display created
 ```
 
-Check that the service and trigger are created:
+## Create PullSubscription
+
+Last but not least, we need connect Event Display service to Pub/Sub messages with a PullSubscription. 
+
+Create a [pullsubscription.yaml](../eventing/event-display/pullsubscription.yaml):
+
+```yaml
+apiVersion: pubsub.cloud.run/v1alpha1
+kind: PullSubscription
+metadata:
+  name: testing-source-event-display
+spec:
+  topic: testing
+  sink:
+    apiVersion: v1
+    kind: Service
+    name: event-display
+```
+This connects the `testing` topic to `event-display` Service. 
+
+Create the PullSubscription:
 
 ```bash
-kubectl get ksvc,trigger
+kubectl apply -f pullsubscription.yaml
+
+pullsubscription.pubsub.cloud.run/testing-source-event-display created
 ```
 
 ## Test the service
@@ -115,10 +154,10 @@ messageIds:
 Wait a little and check that a pod is created:
 
 ```bash
-kubectl get pods --selector serving.knative.dev/service=message-dumper
+kubectl get pods
 ```
 
-You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
+You can inspect the logs of the pod (replace `<podid>` with actual pod id):
 
 ```bash
 kubectl logs --follow -c user-container <podid>
@@ -126,42 +165,8 @@ kubectl logs --follow -c user-container <podid>
 
 You should see something similar to this:
 
-* C#
-
-  ```text
-  Hosting environment: Production
-  Content root path: /app
-  Now listening on: http://0.0.0.0:8080
-  Application started. Press Ctrl+C to shut down.
-  Application is shutting down...
-  Hosting environment: Production
-  Content root path: /app
-  Now listening on: http://0.0.0.0:8080
-  Application started. Press Ctrl+C to shut down.
-  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
-        Request starting HTTP/1.1 POST http://message-dumper.default.svc.cluster.local/ application/json 108
-  info: message_dumper.Startup[0]
-        Message Dumper received message: {"ID":"198012587785403","Data":"SGVsbG8gV29ybGQ=","Attributes":null,"PublishTime":"2019-01-21T15:25:58.25Z"}
-  info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
-        Request finished in 29.9881ms 200
-  ```
-
-* Python
-
-  ```text
-  [INFO] Starting gunicorn 19.9.0
-  [INFO] Listening at: http://0.0.0.0:8080 (1)
-  [INFO] Using worker: threads
-  [INFO] Booting worker with pid: 8
-  [INFO] Message Dumper received message:
-  {'ID': '198012587785403', 'Data': 'SGVsbG8gV29ybGQ=', 'Attributes': None, 'PublishTime': '2019-01-21T15:25:58.25Z'}
-  ```
-
-Finally, if you decode the `Data` field, you should see the "Hello World" message:
-
-```bash
-echo "SGVsbG8gV29ybGQ=" | base64 -d
-Hello World
+```text
+Event Display received message: Hello World
 ```
 
 ## What's Next?
