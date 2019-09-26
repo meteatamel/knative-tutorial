@@ -24,6 +24,7 @@ spec:
   topic: testing
   sink:
     apiVersion: v1
+    #apiVersion: serving.knative.dev/v1alpha1
     kind: Service
     name: translation
 

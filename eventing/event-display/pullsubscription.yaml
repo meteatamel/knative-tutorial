@@ -22,8 +22,10 @@ metadata:
   name: testing-source-event-display
 spec:
   topic: testing
+  # mode: CloudEventsBinary, CloudEventsStructured, PushCompatible
   sink:
     apiVersion: v1
+    #apiVersion: serving.knative.dev/v1alpha1
     kind: Service
     name: event-display
 

@@ -43,12 +43,14 @@ namespace event_display
                 app.UseDeveloperExceptionPage();
             }
 
+            _logger.LogInformation("Event Display starting");
+
             app.Run(async (context) =>
             {
                 using (var reader = new StreamReader(context.Request.Body))
                 {
                     var content = reader.ReadToEnd();
-                    _logger.LogInformation("Event Display received message: " + content);
+                    _logger.LogInformation("Event Display received event: " + content);
                     await context.Response.WriteAsync(content);
                 }
             });
