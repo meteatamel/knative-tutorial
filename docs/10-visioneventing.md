@@ -118,10 +118,10 @@ gsutil mb gs://$VISION_BUCKET
 Creating gs://VISION_BUCKET/...
 ```
 
-Once the bucket is created, enable Pub/Sub notifications on it and link to our `testing` topic we created in earlier labs:
+Once the bucket is created, enable Pub/Sub notifications on it for object updates and link to our `testing` topic we created in earlier labs:
 
 ```bash
-gsutil notification create -t testing -f json gs://$VISION_BUCKET
+gsutil notification create -t testing -f json -e OBJECT_FINALIZE gs://knative-bucket
 
 Created notification config projects/_/buckets/VISION_BUCKET/notificationConfigs/1
 ```
