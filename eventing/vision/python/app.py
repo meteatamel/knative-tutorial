@@ -13,9 +13,12 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def storage_event():
-    attr = json.loads(request.data)['Attributes']
-    if attr['eventType'] == 'OBJECT_FINALIZE':
-        analyze_image(attr['bucketId'], attr['objectId'])
+    content = request.data
+    info(f'Vision received event: {content}')
+
+    obj = json.loads(content)
+    if obj['kind'] == 'storage#object':
+        analyze_image(obj['bucket'], obj['name'])
     return 'OK', 200
 
 
@@ -39,5 +42,6 @@ if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
+    info('Vision starting...')
 else:
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

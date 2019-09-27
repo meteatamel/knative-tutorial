@@ -1,7 +1,6 @@
 # Copyright 2019 Google LLC
 # SPDX-License-Identifier: Apache-2.0
 
-import base64
 import json
 import logging
 import os
@@ -24,10 +23,10 @@ def info(msg):
 
 
 def get_translation_request():
-    message = json.loads(request.data.decode('utf-8'))
-    data = base64.b64decode(message['Data'])
-    translation_request = json.loads(data)
-    info(f'Decoded data: {translation_request}')
+    content = request.data.decode('utf-8')
+    info(f'Translation received event: {content}')
+
+    translation_request = json.loads(content)
     return translation_request
 
 
@@ -49,5 +48,6 @@ if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
+    info('Translation starting...')
 else:
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
