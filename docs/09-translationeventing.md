@@ -42,49 +42,28 @@ docker push {username}/translation:v1
 
 ## Deploy the Translation service
 
-Create a [service.yaml](../eventing/translation/service.yaml):
+Create a [kservice.yaml](../eventing/translation/kservice.yaml):
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: translation
-spec:
-  selector:
-    matchLabels:
-      app: translation
-  template:
-    metadata:
-      labels:
-        app: translation
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/translation:v1
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: translation
+  name: event-display
+  namespace: default
 spec:
-  selector:
-    app: translation
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/translation:v1
 ```
 
-This defines a Kubernetes Deployment and Service to receive messages. 
+This defines a Knative Service to receive messages. 
 
 ```bash
-kubectl apply -f service.yaml
+kubectl apply -f kservice.yaml
 
-deployment.apps/translation created
-service/translation created
+service.serving.knative.dev/translation created
 ```
 
 ## Create PullSubscription
@@ -101,7 +80,7 @@ metadata:
 spec:
   topic: testing
   sink:
-    apiVersion: v1
+    apiVersion: serving.knative.dev/v1alpha1
     kind: Service
     name: translation
 ```

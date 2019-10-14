@@ -34,6 +34,35 @@ cloud-run-events     Active
 
 Knative with GCP implements a few difference sources (Storage, Scheduler, Channel, PullSubscription, Topic). We're interested in [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md) to listen for Pub/Sub messages directly from GCP. 
 
+## (Optional) Updating your install to use cluster local gateway
+
+If you want to use Kubernetes Services as event sinks in PullSubscription, you don't have to do anything extra. However, to have Knative Services as event sinks, you need to have them only visible within the cluster by adding Istio cluster local gateway as detailed [here](https://knative.dev/docs/install/installing-istio/#updating-your-install-to-use-cluster-local-gateway). 
+
+Knative Serving comes with some yaml files to install cluster local gateway. 
+
+First, you'd need to find the version of your Istio via something like this:
+
+```bash
+kubectl get pod istio-ingressgateway-f659695c4-lg8sm -n istio-system -oyaml | grep image
+
+    image: gke.gcr.io/istio/proxyv2:1.1.13-gke.0
+```
+
+In this case, it's `1.1.13`. Then, you need to point to the Istio version close enough to your version under [third_party](https://github.com/knative/serving/tree/master/third_party) folder of Knative Serving. In this case, I used `1.2.7`:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/knative/serving/master/third_party/
+istio-1.2.7/istio-knative-extras.yaml
+
+serviceaccount/cluster-local-gateway-service-account created
+serviceaccount/istio-multi configured
+clusterrole.rbac.authorization.k8s.io/istio-reader configured
+clusterrolebinding.rbac.authorization.k8s.io/istio-multi configured
+service/cluster-local-gateway created
+deployment.apps/cluster-local-gateway created
+```
+At this point, you can use Knative Services as event sinks in PullSubscription. 
+
 ## Create a Service Account and a Pub/Sub Topic
 
 In order to use [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md), we need a Pub/Sub enabled Service Account and instructions on how to set that up on Google Cloud is [here](https://github.com/google/knative-gcp/tree/master/docs/pubsub). 
@@ -73,6 +102,10 @@ docker push {username}/event-display:v1
 ```
 
 ## Create Event Display
+
+You can have any kind of addressable as event sinks in Knative eventing. In this part, I'll show you how to use both a Kubernetes Service and a Knative Service as event sinks. Normally, you'd choose one or the other. 
+
+### Create Kubernetes Service 
 
 Create a [service.yaml](../eventing/event-display/service.yaml) file:
 
@@ -121,6 +154,34 @@ deployment.apps/event-display created
 service/event-display created
 ```
 
+### Create Knative Service 
+
+Create a [kservice.yaml](../eventing/event-display/kservice.yaml) file:
+
+```yaml
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: event-display
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/eventdisplay:v1
+```
+
+This defines a Knative Service to receive messages. 
+
+Create the Event Display service:
+
+```bash
+kubectl apply -f kservice.yaml
+
+service.serving.knative.dev/event-display created
+```
+
 ## Create PullSubscription
 
 Last but not least, we need connect Event Display service to Pub/Sub messages with a PullSubscription. 
@@ -135,11 +196,12 @@ metadata:
 spec:
   topic: testing
   sink:
-    apiVersion: v1
+    # apiVersion: v1
+    apiVersion: serving.knative.dev/v1alpha1
     kind: Service
     name: event-display
 ```
-This connects the `testing` topic to `event-display` Service. 
+This connects the `testing` topic to `event-display` Service. Make sure you use the right `apiVersion` depending on whether you defined a Kubernetes or Knative service. In this case, we're using a Knative Service. 
 
 Create the PullSubscription:
 

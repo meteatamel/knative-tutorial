@@ -30,51 +30,30 @@ docker push {username}/vision:v1
 
 ## Create Vision Service
 
-Create a [service.yaml](../eventing/vision/service.yaml) file.
+Create a [kservice.yaml](../eventing/vision/kservice.yaml) file.
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vision
-spec:
-  selector:
-    matchLabels:
-      app: vision
-  template:
-    metadata:
-      labels:
-        app: vision
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/vision:v1
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: vision
+  namespace: default
 spec:
-  selector:
-    app: vision
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
+  template:
+    spec:
+      containers:
+        # Replace {username} with your actual DockerHub
+        - image: docker.io/{username}/vision:v1
 ```
 
-This defines a Kubernetes Deployment and Service to receive messages. 
+This defines a Knative Service to receive messages. 
 
 Create the Vision service:
 
 ```bash
-kubectl apply -f service.yaml
+kubectl apply -f kservice.yaml
 
-deployment.apps/vision created
-service/vision created
+service.serving.knative.dev/vision created
 ```
 
 ## Create PullSubscription
@@ -91,7 +70,7 @@ metadata:
 spec:
   topic: testing
   sink:
-    apiVersion: v1
+    apiVersion: serving.knative.dev/v1alpha1
     kind: Service
     name: vision
 ```
