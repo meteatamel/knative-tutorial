@@ -27,7 +27,8 @@ spec:
       containers:
       - name: user-container
         # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/vision:v3
+        image: docker.io/{username}/vision:v1
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
 ---
