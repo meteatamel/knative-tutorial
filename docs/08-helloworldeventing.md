@@ -6,37 +6,13 @@ As of v0.5, Knative Eventing defines Broker and Trigger to receive and filter me
 
 Knative Eventing has a few different types of [event sources](https://knative.dev/docs/eventing/sources/) (Kubernetes, GitHub, GCP Pub/Sub etc.) that it can listen. In this tutorial, we will focus on listening Google Cloud related event sources such as Google Cloud Pub/Sub. 
 
-## Install Knative Eventing
+## GCP PubSub event source
 
-You probably installed [Knative Eventing](https://www.knative.dev/docs/eventing/) when you [installed Knative](https://www.knative.dev/docs/install/). If not, follow the Knative installation instructions and take a look at the installation section in [Knative Eventing](https://www.knative.dev/docs/eventing/) page. In the end, you should have pods running in `knative-eventing`. Double check that this is the case:
+Follow the [GCP Cloud Pub/Sub source](https://knative.dev/docs/eventing/samples/gcp-pubsub-source/) docs page to set Knative Eventing with GCP Pub/Sub up until where you need to create an event display. We'll create our own event display and trigger to connect to it.  
 
-```bash
-kubectl get pods -n knative-eventing
-```
-## Install Knative with GCP 
+## Update your install to use cluster local gateway
 
-[Knative with GCP](https://github.com/google/knative-gcp) builds on Kubernetes to enable easy configuration and consumption of Google Cloud Platform events and services. From Knative v0.9 onwards, this is the preferred method to receive Google Cloud events into Knative. 
-
-[Installing Knative with GCP](https://github.com/google/knative-gcp/blob/master/docs/install/README.md) page has instructions but it essentially involves pointing to `cloud-run-events.yaml`:
-
-```bash
-kubectl apply -f https://github.com/google/knative-gcp/releases/download/v0.9.0/cloud-run-events.yaml
-```
-
-You can double check that there's a `cloud-run-events` namespace created:
-
-```bash
-kubectl get ns
-
-NAME                 STATUS
-cloud-run-events     Active
-```
-
-Knative with GCP implements a few difference sources (Storage, Scheduler, Channel, PullSubscription, Topic). We're interested in [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md) to listen for Pub/Sub messages directly from GCP. 
-
-## (Optional) Updating your install to use cluster local gateway
-
-If you want to use Kubernetes Services as event sinks in PullSubscription, you don't have to do anything extra. However, to have Knative Services as event sinks, you need to have them only visible within the cluster by adding Istio cluster local gateway as detailed [here](https://knative.dev/docs/install/installing-istio/#updating-your-install-to-use-cluster-local-gateway). 
+If you want to use Kubernetes Services as event sinks, you don't have to do anything extra. However, to have Knative Services as event sinks, you need to have them only visible within the cluster by adding Istio cluster local gateway as detailed [here](https://knative.dev/docs/install/installing-istio/#updating-your-install-to-use-cluster-local-gateway). 
 
 Knative Serving comes with some yaml files to install cluster local gateway. 
 
@@ -62,26 +38,6 @@ service/cluster-local-gateway created
 deployment.apps/cluster-local-gateway created
 ```
 At this point, you can use Knative Services as event sinks in PullSubscription. 
-
-## Create a Service Account and a Pub/Sub Topic
-
-In order to use [PullSubscription](https://github.com/google/knative-gcp/blob/master/docs/pullsubscription/README.md), we need a Pub/Sub enabled Service Account and instructions on how to set that up on Google Cloud is [here](https://github.com/google/knative-gcp/tree/master/docs/pubsub). 
-
-Once you have it setup, you should have a `google-cloud-key` secret in Kubernetes:
-
-```bash
-kubectl get secret
-
-NAME                  TYPE                                  DATA   AGE
-google-cloud-key      Opaque                                1      20h
-```
-You should also create a Pub/Sub Topic to send messages too:
-
-```bash
-export TOPIC_NAME=testing
-gcloud pubsub topics create $TOPIC_NAME
-```
-We're finally ready to receive Pub/Sub messages into Knative! 
 
 ## Create an Event Display
 
@@ -182,33 +138,33 @@ kubectl apply -f kservice.yaml
 service.serving.knative.dev/event-display created
 ```
 
-## Create PullSubscription
+## Create a trigger
 
-Last but not least, we need connect Event Display service to Pub/Sub messages with a PullSubscription. 
+Last but not least, we need connect Event Display service to Pub/Sub messages with a trigger. 
 
-Create a [pullsubscription.yaml](../eventing/event-display/pullsubscription.yaml):
+Create a [trigger.yaml](../eventing/event-display/trigger.yaml):
 
 ```yaml
-apiVersion: pubsub.cloud.run/v1alpha1
-kind: PullSubscription
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
 metadata:
-  name: testing-source-event-display
+  name: trigger-event-display
 spec:
-  topic: testing
-  sink:
-    # apiVersion: v1
-    apiVersion: serving.knative.dev/v1alpha1
-    kind: Service
-    name: event-display
+  subscriber:
+    ref:
+      # apiVersion: v1
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: event-display
 ```
-This connects the `testing` topic to `event-display` Service. Make sure you use the right `apiVersion` depending on whether you defined a Kubernetes or Knative service. In this case, we're using a Knative Service. 
+This connects the messages from the broker to `event-display` service. Make sure you use the right `apiVersion` depending on whether you defined a Kubernetes or Knative service. In this case, we're using a Knative Service. 
 
-Create the PullSubscription:
+Create the trigger:
 
 ```bash
-kubectl apply -f pullsubscription.yaml
+kubectl apply -f trigger.yaml
 
-pullsubscription.pubsub.cloud.run/testing-source-event-display created
+trigger.eventing.knative.dev/trigger-gcp-pubsub created
 ```
 
 ## Test the service

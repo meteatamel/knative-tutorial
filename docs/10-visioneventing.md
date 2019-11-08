@@ -40,6 +40,9 @@ metadata:
   namespace: default
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
     spec:
       containers:
         # Replace {username} with your actual DockerHub
@@ -56,32 +59,32 @@ kubectl apply -f kservice.yaml
 service.serving.knative.dev/vision created
 ```
 
-## Create PullSubscription
+## Create a trigger
 
 We need connect Vision service to Pub/Sub messages with a PullSubscription. 
 
-Create a [pullsubscription.yaml](../eventing/vision/pullsubscription.yaml):
+Create a [trigger.yaml](../eventing/vision/trigger.yaml):
 
 ```yaml
-apiVersion: pubsub.cloud.run/v1alpha1
-kind: PullSubscription
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
 metadata:
-  name: testing-source-vision
+  name: trigger-vision
 spec:
-  topic: testing
-  sink:
-    apiVersion: serving.knative.dev/v1alpha1
-    kind: Service
-    name: vision
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: vision
 ```
 This connects the `testing` topic to `vision` service. 
 
-Create the PullSubscription:
+Create the trigger:
 
 ```bash
-kubectl apply -f pullsubscription.yaml
+kubectl apply -f trigger.yaml
 
-pullsubscription.pubsub.cloud.run/testing-source-vision created
+trigger.eventing.knative.dev/trigger-vision created
 ```
 
 ## Create bucket and enable notifications

@@ -48,10 +48,13 @@ Create a [kservice.yaml](../eventing/translation/kservice.yaml):
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: event-display
+  name: translation
   namespace: default
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
     spec:
       containers:
         # Replace {username} with your actual DockerHub
@@ -66,32 +69,32 @@ kubectl apply -f kservice.yaml
 service.serving.knative.dev/translation created
 ```
 
-## Create PullSubscription
+## Create a trigger
 
-Last but not least, we need connect Translation service to Pub/Sub messages with a PullSubscription. 
+Last but not least, we need connect Translation service to Pub/Sub messages with a trigger. 
 
-Create a [pullsubscription.yaml](../eventing/translation/pullsubscription.yaml):
+Create a [trigger.yaml](../eventing/translation/trigger.yaml):
 
 ```yaml
-apiVersion: pubsub.cloud.run/v1alpha1
-kind: PullSubscription
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
 metadata:
-  name: testing-source-translation
+  name: trigger-translation
 spec:
-  topic: testing
-  sink:
-    apiVersion: serving.knative.dev/v1alpha1
-    kind: Service
-    name: translation
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: translation
 ```
-This connects the `testing` topic to `translation` Service. 
+This connects the `testing` topic to `translation` service. 
 
-Create the PullSubscription:
+Create the trigger:
 
 ```bash
-kubectl apply -f pullsubscription.yaml
+kubectl apply -f trigger.yaml
 
-pullsubscription.pubsub.cloud.run/testing-source-translation created
+trigger.eventing.knative.dev/trigger-translation created
 ```
 
 ## Test the service
