@@ -18,7 +18,6 @@ using Twilio.TwiML;
 
 namespace twiliosample
 {
-    [Route("[controller]")]
     public class SmsController : TwilioController
     {
         [HttpGet]
