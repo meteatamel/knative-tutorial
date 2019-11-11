@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
@@ -27,54 +28,54 @@ namespace vision
 {
     public class Startup
     {
-        private readonly ILogger _logger;
-
-        public Startup(ILogger<Startup> logger)
-        {
-            _logger = logger;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            logger.LogInformation("Vision service is starting...");
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                using (var reader = new StreamReader(context.Request.Body))
+                endpoints.MapPost("/", async context =>
                 {
-                    try
+                    using (var reader = new StreamReader(context.Request.Body))
                     {
-                        var content = reader.ReadToEnd();
-                        _logger.LogInformation($"Received content: {content}");
-                        
-                        dynamic json = JValue.Parse(content);
-                        if (json == null) return;
+                        try
+                        {
+                            var content = await reader.ReadToEndAsync();
+                            logger.LogInformation($"Received content: {content}");
+                            
+                            dynamic json = JValue.Parse(content);
+                            if (json == null) return;
 
-                        var kind = json.kind;
-                        if (kind == null || kind != "storage#object") return;
+                            var kind = json.kind;
+                            if (kind == null || kind != "storage#object") return;
 
-                        var storageUrl = (string)ConstructStorageUrl(json);
-                        _logger.LogInformation($"Storage url: {storageUrl}");
+                            var storageUrl = (string)ConstructStorageUrl(json);
+                            logger.LogInformation($"Storage url: {storageUrl}");
 
-                        var labels = await ExtractLabelsAsync(storageUrl);
+                            var labels = await ExtractLabelsAsync(storageUrl);
 
-                        var message = "This picture is labelled: " + labels;
-                        _logger.LogInformation(message);
-                        await context.Response.WriteAsync(message);
+                            var message = "This picture is labelled: " + labels;
+                            logger.LogInformation(message);
+                            await context.Response.WriteAsync(message);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError("Something went wrong: " + e.Message);
+                            await context.Response.WriteAsync(e.Message);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogError("Something went wrong: " + e.Message);
-                        await context.Response.WriteAsync(e.Message);
-                    }
-                }
+                });
             });
         }
 

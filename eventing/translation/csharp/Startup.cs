@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
@@ -27,50 +28,50 @@ namespace translation
 {
     public class Startup
     {
-        private readonly ILogger _logger;
-
-        public Startup(ILogger<Startup> logger)
-        {
-            _logger = logger;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            logger.LogInformation("Translation service is starting...");
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                using (var reader = new StreamReader(context.Request.Body))
+                endpoints.MapPost("/", async context =>
                 {
-                    try
+                    using (var reader = new StreamReader(context.Request.Body))
                     {
-                        var content = reader.ReadToEnd();
-                        _logger.LogInformation($"Received content: {content}");
-   
-                        var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(content);
-                        _logger.LogInformation($"Calling Translation API with request: {translationRequest}");
-                        
-                        var response = await TranslateText(translationRequest);
-                        _logger.LogInformation($"Translated text: {response.TranslatedText}");
-                        if (response.DetectedSourceLanguage != null) 
+                        try
                         {
-                            _logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
+                            var content = await reader.ReadToEndAsync();
+                            logger.LogInformation($"Received content: {content}");
+    
+                            var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(content);
+                            logger.LogInformation($"Calling Translation API with request: {translationRequest}");
+                            
+                            var response = await TranslateText(translationRequest);
+                            logger.LogInformation($"Translated text: {response.TranslatedText}");
+                            if (response.DetectedSourceLanguage != null) 
+                            {
+                                logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
+                            }
+                            await context.Response.WriteAsync(response.TranslatedText);
                         }
-                        await context.Response.WriteAsync(response.TranslatedText);
+                        catch (Exception e)
+                        {
+                            logger.LogError("Something went wrong: " + e.Message);
+                            await context.Response.WriteAsync(e.Message);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogError("Something went wrong: " + e.Message);
-                        await context.Response.WriteAsync(e.Message);
-                    }
-                }
+                });
             });
         }
 

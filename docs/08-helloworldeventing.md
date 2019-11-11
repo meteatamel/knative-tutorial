@@ -125,7 +125,7 @@ spec:
     spec:
       containers:
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/eventdisplay:v1
+        - image: docker.io/{username}/event-display:v1
 ```
 
 This defines a Knative Service to receive messages. 

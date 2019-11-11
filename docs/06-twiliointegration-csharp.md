@@ -8,22 +8,27 @@ Start with creating an empty ASP.NET Core app:
 dotnet new web -o twiliosample
 ```
 
-Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use MVC:
+Inside the `twilio` folder, change [Startup.cs](../serving/twilio/csharp/Startup.cs) to use controllers:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvc();
+    services.AddControllers();
 }
 
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
     if (env.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
     }
 
-    app.UseMvc();
+    app.UseRouting();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapDefaultControllerRoute();
+    });
 }
 ```
 
@@ -43,7 +48,7 @@ using Twilio.TwiML;
 
 namespace twiliosample
 {
-    [Route("[controller]")]
+
     public class SmsController : TwilioController
     {
         [HttpGet]
@@ -70,21 +75,32 @@ dotnet build
 Create a [Dockerfile](../serving/twilio/csharp/Dockerfile) for the image:
 
 ```dockerfile
-FROM microsoft/dotnet:2.2-sdk
-
+# Use Microsoft's official build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine AS build
 WORKDIR /app
-COPY *.csproj .
+
+# Install production dependencies.
+# Copy csproj and restore as distinct layers.
+COPY *.csproj ./
 RUN dotnet restore
 
-COPY . .
+# Copy local code to the container image.
+COPY . ./
+WORKDIR /app
 
+# Build a release artifact.
 RUN dotnet publish -c Release -o out
 
-ENV PORT 8080
 
-ENV ASPNETCORE_URLS http://*:${PORT}
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
-CMD ["dotnet", "out/twiliosample.dll"]
+# Run the web service on container startup.
+ENTRYPOINT ["dotnet", "twiliosample.dll"]
 ```
 
 ## What's Next?

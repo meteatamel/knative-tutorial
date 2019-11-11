@@ -27,7 +27,7 @@ spec:
       containers:
       - name: user-container
         # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/eventdisplay:v1
+        image: docker.io/{username}/event-display:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

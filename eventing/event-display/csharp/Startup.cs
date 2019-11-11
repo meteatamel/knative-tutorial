@@ -34,17 +34,17 @@ namespace event_display
                 app.UseDeveloperExceptionPage();
             }
 
-            logger.LogInformation("Event Display starting");
+            logger.LogInformation("Event Display is starting...");
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapPost("/", async context =>
                 {
                     using (var reader = new StreamReader(context.Request.Body))
                     {
-                        var content = reader.ReadToEnd();
+                        var content = await reader.ReadToEndAsync();
                         logger.LogInformation("Event Display received event: " + content);
                         await context.Response.WriteAsync(content);
                     }
