@@ -57,7 +57,7 @@ This builds and pushes the image to GCR using Cloud Build.
 Let's finally deploy our service to Cloud Run, it's a single gcloud command:
 
 ```bash
-gcloud beta run deploy --image gcr.io/${PROJECT_ID}/helloworld:v1
+gcloud run deploy --image gcr.io/${PROJECT_ID}/helloworld:v1
 
 Please choose a target platform:
  [1] Cloud Run (fully managed)
@@ -104,7 +104,7 @@ That's why our service printed `Hello v1`. We need to set the same environment v
 In Cloud Run, you can set environment variables either through the console or command line. Let's try the command line:
 
 ```bash
-gcloud beta run services update helloworld --update-env-vars TARGET='v1'
+gcloud run services update helloworld --update-env-vars TARGET='v1'
 
 ✓ Deploying... Done.
   ✓ Creating Revision...
