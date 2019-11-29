@@ -30,38 +30,57 @@ docker push {username}/vision:v1
 
 ## Create Vision Service
 
-Create a [kservice.yaml](../eventing/vision/kservice.yaml) file.
+Create a [service.yaml](../eventing/vision/service.yaml) file.
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vision
+spec:
+  selector:
+    matchLabels:
+      app: vision
+  template:
+    metadata:
+      labels:
+        app: vision
+    spec:
+      containers:
+      - name: user-container
+        # Replace {username} with your actual DockerHub
+        image: docker.io/{username}/vision:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: vision
-  namespace: default
 spec:
-  template:
-    metadata:
-      annotations:
-        autoscaling.knative.dev/minScale: "1"
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/vision:v1
+  selector:
+    app: vision
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
 ```
 
-This defines a Knative Service to receive messages. 
+This defines a Kubernetes Service to receive messages. 
 
 Create the Vision service:
 
 ```bash
-kubectl apply -f kservice.yaml
+kubectl apply -f service.yaml
 
-service.serving.knative.dev/vision created
+deployment.apps/vision created
+service/vision created
 ```
 
 ## Create a trigger
 
-We need connect Vision service to Pub/Sub messages with a PullSubscription. 
+We need connect Vision service to the Broker/ 
 
 Create a [trigger.yaml](../eventing/vision/trigger.yaml):
 
@@ -73,11 +92,11 @@ metadata:
 spec:
   subscriber:
     ref:
-      apiVersion: serving.knative.dev/v1
+      #apiVersion: serving.knative.dev/v1
+      apiVersion: v1
       kind: Service
       name: vision
 ```
-This connects the `testing` topic to `vision` service. 
 
 Create the trigger:
 
@@ -119,7 +138,7 @@ projects/_/buckets/VISION_BUCKET/notificationConfigs/1
 
 ## Test the service
 
-We can finally test our Knative service by uploading an image to the bucket.
+We can finally test our service by uploading an image to the bucket.
 
 First, let's watch the logs of the service. Wait a little and check that a pod is created:
 
@@ -130,7 +149,7 @@ kubectl get pods
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
-kubectl logs --follow -c user-container <podid>
+kubectl logs --follow <podid>
 ```
 
 Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:

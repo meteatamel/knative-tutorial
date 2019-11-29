@@ -197,6 +197,7 @@ SSH into the pod:
 
 ```bash
 kubectl -n event-example attach curl -it
+
 Defaulting container name to curl.
 Use 'kubectl describe pod/ -n event-example' to see all of the containers in this pod.
 If you don't see a command prompt, try pressing enter.

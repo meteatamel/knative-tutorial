@@ -24,33 +24,38 @@ In our case, we can use the Istio ingress IP and let NIP.IO to map our services.
 curl http://helloworld.default.1.2.3.4.nip.io
 ```
 
-## Edit domain configuration
+## Change domain configuration
 
-Edit the domain configuration:
+Set `ISTIO_INGRESS` if you haven't done so in the previous step:
 
 ```bash
-kubectl edit cm config-domain -n knative-serving
+export ISTIO_INGRESS=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-Add your NIP domain (replace `1.2.3.4.` with the ingress IP) right before the `_example` line like this:
+Create a file named `custom-domain.yaml` containing the following:
 
-```yaml
+```bash
+cat <<EOF > custom-domain.yaml
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-domain
+  namespace: knative-serving
 data:
-  1.2.3.4.nip.io: ""
-  _example: |
+  $ISTIO_INGRESS.nip.io: ""
+EOF
+```
+
+Apply the config:
+
+```bash
+kubectl apply -f custom-domain.yaml
 ```
 
 You can then check that the custom domain is applied:
 
 ```bash
 kubectl get route helloworld
-```
-
-Set `ISTIO_INGRESS` if you haven't done so in the previous step:
-
-```bash
-export ISTIO_INGRESS=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 Finally, you can test that the domain works with curl:

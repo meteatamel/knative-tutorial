@@ -15,7 +15,6 @@ apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: translation
-  namespace: default
 spec:
   template:
     metadata:

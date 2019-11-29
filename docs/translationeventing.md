@@ -42,36 +42,55 @@ docker push {username}/translation:v1
 
 ## Deploy the Translation service
 
-Create a [kservice.yaml](../eventing/translation/kservice.yaml):
+Create a [service.yaml](../eventing/translation/service.yaml):
 
 ```yaml
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: translation
+spec:
+  selector:
+    matchLabels:
+      app: translation
+  template:
+    metadata:
+      labels:
+        app: translation
+    spec:
+      containers:
+      - name: user-container
+        # Replace {username} with your actual DockerHub
+        image: docker.io/{username}/translation:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: translation
-  namespace: default
 spec:
-  template:
-    metadata:
-      annotations:
-        autoscaling.knative.dev/minScale: "1"
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/translation:v1
+  selector:
+    app: translation
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
 ```
 
-This defines a Knative Service to receive messages. 
+This defines a Kubernetes Service to receive messages. 
 
 ```bash
-kubectl apply -f kservice.yaml
+kubectl apply -f service.yaml
 
-service.serving.knative.dev/translation created
+deployment.apps/translation created
+service/translation created
 ```
 
 ## Create a trigger
 
-Last but not least, we need connect Translation service to Pub/Sub messages with a trigger. 
+Last but not least, we need connect Translation service to Broker with a trigger. 
 
 Create a [trigger.yaml](../eventing/translation/trigger.yaml):
 
@@ -83,7 +102,8 @@ metadata:
 spec:
   subscriber:
     ref:
-      apiVersion: serving.knative.dev/v1
+      #apiVersion: serving.knative.dev/v1
+      apiVersion: v1
       kind: Service
       name: translation
 ```
@@ -114,7 +134,7 @@ kubectl get pods
 You can inspect the logs of the subscriber (replace `<podid>` with actual pod id):
 
 ```bash
-kubectl logs --follow -c user-container <podid>
+kubectl logs --follow <podid>
 ```
 
 You should see something similar to this:
