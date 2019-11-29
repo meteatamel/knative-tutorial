@@ -14,9 +14,9 @@ In Twilio [console](https://www.twilio.com/console), click on the phone number a
 
 Follow the instructions for your preferred language to create a service to handle SMS messages to our Twilio number:
 
-* [Create Twilio SMS Handler - C#](06-twiliointegration-csharp.md)
+* [Create Twilio SMS Handler - C#](twiliointegration-csharp.md)
 
-* [Create Twilio SMS Handler - Python](06-twiliointegration-python.md)
+* [Create Twilio SMS Handler - Python](twiliointegration-python.md)
 
 ## Build and push Docker image
 
@@ -84,4 +84,4 @@ Now, you can send an SMS message to your Twilio number and you should get a repl
 
 ## What's Next?
 
-[Deploy to Cloud Run](07-deploycloudrun.md)
+[Deploy to Cloud Run](deploycloudrun.md)

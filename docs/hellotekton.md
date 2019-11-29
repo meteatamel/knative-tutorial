@@ -98,4 +98,4 @@ You can see that the TaskRun was successful. This confirms that Tekton is instal
 
 ## What's Next?
 
-[Hello World Build](12-tekton-helloworldbuild.md)
+[Hello World Build](tekton-helloworldbuild.md)

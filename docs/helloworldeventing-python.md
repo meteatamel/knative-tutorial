@@ -51,4 +51,4 @@ CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app
 
 ## What's Next?
 
-Back to [Hello World Eventing](08-helloworldeventing.md)
+Back to [Hello World Eventing](helloworldeventing.md)

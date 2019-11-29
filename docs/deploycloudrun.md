@@ -8,7 +8,7 @@ Cloud Run is built from Knative, letting you choose to run your containers eithe
 
 The main advantage of Cloud Run is that it's fully managed, so no infrastructure to worry about. It also comes with a simple command-line and user interface to quickly deploy and manage your serverless containers.
 
-In this lab, we will see what it takes to deploy our [Hello World Knative serving sample](01-helloworldserving.md) from the previous lab and deploy to Cloud Run. You'll be surprised how easy it is!
+In this lab, we will see what it takes to deploy our [Hello World Knative serving sample](helloworldserving.md) from the previous lab and deploy to Cloud Run. You'll be surprised how easy it is!
 
 ## Get a project in a Cloud Run region
 
@@ -36,7 +36,7 @@ gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 
 ## Push container image to Google Container Registry
 
-Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](01-helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR.
+Cloud Run currently deploys images from Google Container Registry (GCR) only. In [Hello World Knative serving sample](helloworldserving.md), we built and pushed the container image to Docker Hub. We need to push the same image to GCR.
 
 First, set an environment variable for your project:
 
@@ -91,7 +91,7 @@ One thing you might realize is that our service simply prints `Hello World` inst
 
 ## Set environment variable
 
-If you remember, in [Hello World Knative serving sample](01-helloworldserving.md), the Knative service definition file, [service-v1.yaml](../serving/helloworld/service-v1.yaml), sets an environment variable `TARGET` and the code prints out the value of that variable:
+If you remember, in [Hello World Knative serving sample](helloworldserving.md), the Knative service definition file, [service-v1.yaml](../serving/helloworld/service-v1.yaml), sets an environment variable `TARGET` and the code prints out the value of that variable:
 
 ```yaml
 env:
@@ -118,4 +118,4 @@ If you visit the url of the service again, you should see `Hello v1` instead!
 
 As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing.
 
-[Serverless gRPC with Knative](07.5-grpc.md)
+[Serverless gRPC with Knative](grpc.md)

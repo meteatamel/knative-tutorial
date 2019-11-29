@@ -122,4 +122,4 @@ Once you kill Fortio, you should also see the sleeping service scale down to 1!
 
 ## What's Next?
 
-You can try Kubernetes CPU-based autoscaling or move onto [Integrate with Twilio](06-twiliointegration.md)
+You can try Kubernetes CPU-based autoscaling or move onto [Integrate with Twilio](twiliointegration.md)

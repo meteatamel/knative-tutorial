@@ -122,4 +122,4 @@ Hello v1
 
 ## What's Next?
 
-[Configure Domain](02-configuredomain.md)
+[Configure Domain](configuredomain.md)

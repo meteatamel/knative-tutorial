@@ -91,4 +91,4 @@ Create a [Dockerfile](../eventing/vision/csharp/Dockerfile) for the image.
 
 ## What's Next?
 
-Back to [Integrate with Vision API](10-visioneventing.md)
+Back to [Integrate with Vision API](visioneventing.md)

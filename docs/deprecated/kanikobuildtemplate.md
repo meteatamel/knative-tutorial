@@ -4,7 +4,7 @@ As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipeline
 
 # Kaniko Build Template
 
-In the [previous lab](10-dockerbuild.md) and the lab before, we created a Build and invoked Kaniko directly, passing all the arguments required for Kaniko in the Build step. This works but a better approach is to utilize [Build Templates](https://knative.dev/docs/build/build-templates/)
+In the [previous lab](dockerbuild.md) and the lab before, we created a Build and invoked Kaniko directly, passing all the arguments required for Kaniko in the Build step. This works but a better approach is to utilize [Build Templates](https://knative.dev/docs/build/build-templates/)
 
 Knative comes with a number of ready to use Build Templates that you can use in your Build steps. There is a [build-templates](https://github.com/knative/build-templates) repo with all the templates.
 
@@ -73,4 +73,4 @@ At this point, you should see the image pushed to GCR.
 
 ## What's Next?
 
-[Buildpacks Build Template](14-buildpacksbuildtemplate.md)
+[Buildpacks Build Template](buildpacksbuildtemplate.md)

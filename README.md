@@ -72,32 +72,32 @@ kubectl get pods -n knative-monitoring
 ## Steps
 
 Knative Serving
-* [Hello World Serving](docs/01-helloworldserving.md)
-* [Configure domain](docs/02-configuredomain.md)
-* [Change configuration](docs/03-changeconfig.md)
-* [Traffic splitting](docs/04-trafficsplitting.md)
-* [Configure autoscaling](docs/05-configureautoscaling.md)
-* [Integrate with Twilio](docs/06-twiliointegration.md)
-* [Deploy to Cloud Run](docs/07-deploycloudrun.md)
-* [Serverless gRPC with Knative](docs/07.5-grpc.md)
-* [Cluster local services](docs/07.6-clusterlocal.md)
+* [Hello World Serving](docs/helloworldserving.md)
+* [Configure domain](docs/configuredomain.md)
+* [Change configuration](docs/changeconfig.md)
+* [Traffic splitting](docs/trafficsplitting.md)
+* [Configure autoscaling](docs/configureautoscaling.md)
+* [Integrate with Twilio](docs/twiliointegration.md)
+* [Deploy to Cloud Run](docs/deploycloudrun.md)
+* [Serverless gRPC with Knative](docs/grpc.md)
+* [Cluster local services](docs/clusterlocal.md)
 
 Knative Eventing
-* [Hello World Eventing](docs/08-helloworldeventing.md)
-* [Integrate with Translation API](docs/09-translationeventing.md)
-* [Integrate with Vision API](docs/10-visioneventing.md)
+* [Hello World Eventing](docs/helloworldeventing.md)
+* [Integrate with Translation API](docs/translationeventing.md)
+* [Integrate with Vision API](docs/visioneventing.md)
 
 Build
 * Tekton Pipelines
-   * [Hello Tekton](docs/11-hellotekton.md)
-   * [Hello World Build](docs/12-tekton-helloworldbuild.md)
-   * [Docker Hub Build](docs/13-tekton-dockerbuild.md)
-   * [Kaniko Task Build](docs/14-tekton-kanikotaskbuild.md)
+   * [Hello Tekton](docs/hellotekton.md)
+   * [Hello World Build](docs/tekton-helloworldbuild.md)
+   * [Docker Hub Build](docs/tekton-dockerbuild.md)
+   * [Kaniko Task Build](docs/tekton-kanikotaskbuild.md)
 * Knative Build (Deprecated) 
-   * [Hello World Build](docs/deprecated/11-helloworldbuild.md)
-   * [Docker Hub Build](docs/deprecated/12-dockerbuild.md)
-   * [Kaniko Build Template](docs/deprecated/13-kanikobuildtemplate.md)
-   * [Buildpacks Build Template](docs/deprecated/14-buildpacksbuildtemplate.md)
+   * [Hello World Build](docs/deprecated/helloworldbuild.md)
+   * [Docker Hub Build](docs/deprecated/dockerbuild.md)
+   * [Kaniko Build Template](docs/deprecated/kanikobuildtemplate.md)
+   * [Buildpacks Build Template](docs/deprecated/buildpacksbuildtemplate.md)
 
 -------
 

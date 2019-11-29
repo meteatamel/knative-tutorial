@@ -43,9 +43,9 @@ At this point, you can use Knative Services as event sinks in PullSubscription.
 
 Follow the instructions for your preferred language to create a service to log out messages:
 
-* [Create Event Display - C#](08-helloworldeventing-csharp.md)
+* [Create Event Display - C#](helloworldeventing-csharp.md)
 
-* [Create Event Display - Python](08-helloworldeventing-python.md)
+* [Create Event Display - Python](helloworldeventing-python.md)
 
 ## Build and push Docker image
 
@@ -198,4 +198,4 @@ Event Display received message: Hello World
 
 ## What's Next?
 
-[Integrate with Translation API](09-translationeventing.md)
+[Integrate with Translation API](translationeventing.md)

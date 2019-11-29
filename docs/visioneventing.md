@@ -14,9 +14,9 @@ gcloud services enable vision.googleapis.com
 
 Follow the instructions for your preferred language to create a service to handle cloud storage notifications:
 
-* [Create Vision Handler - C#](10-visioneventing-csharp.md)
+* [Create Vision Handler - C#](visioneventing-csharp.md)
 
-* [Create Vision Handler - Python](10-visioneventing-python.md)
+* [Create Vision Handler - Python](visioneventing-python.md)
 
 ## Build and push Docker image
 
@@ -149,4 +149,4 @@ This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizo
 
 ## What's Next?
 
-[Hello Tekton](11-hellotekton.md)
+[Hello Tekton](hellotekton.md)

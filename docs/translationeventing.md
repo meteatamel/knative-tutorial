@@ -1,6 +1,6 @@
 # Integrate with Translation API
 
-In the [previous lab](08-helloworldeventing.md), our service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting.
+In the [previous lab](helloworldeventing.md), our service simply logged out the received Pub/Sub event. While this might be useful for debugging, it's not terribly exciting.
 
 [Cloud Translation API](https://cloud.google.com/translate/docs/) is one of Machine Learning APIs of Google Cloud. It can dynamically translate text between thousands of language pairs. In this lab, we will use translation requests sent via Pub/Sub messages and use Translation API to translate text between languages.
 
@@ -26,9 +26,9 @@ Let's first define the translation protocol we'll use in our sample. The body of
 
 Follow the instructions for your preferred language to create a service to handle translation messages:
 
-* [Create Translation Handler - C#](09-translationeventing-csharp.md)
+* [Create Translation Handler - C#](translationeventing-csharp.md)
 
-* [Create Translation Handler - Python](09-translationeventing-python.md)
+* [Create Translation Handler - Python](translationeventing-python.md)
 
 ## Build and push Docker image
 
@@ -127,4 +127,4 @@ Translated text: Hola Mundo
 
 ## What's Next?
 
-[Integrate with Vision API](10-visioneventing.md)
+[Integrate with Vision API](visioneventing.md)

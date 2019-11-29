@@ -173,4 +173,4 @@ At this point, you should see the image pushed to GCR:
 
 ## What's Next?
 
-[Docker Hub Build](13-tekton-dockerbuild.md)
+[Docker Hub Build](tekton-dockerbuild.md)

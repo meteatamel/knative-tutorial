@@ -54,4 +54,4 @@ Note: `google.cloud.vision` client library is specified in addition to `Flask` &
 
 ## What's Next?
 
-Back to [Integrate with Vision API](10-visioneventing.md)
+Back to [Integrate with Vision API](visioneventing.md)

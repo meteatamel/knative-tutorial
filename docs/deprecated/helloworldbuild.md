@@ -80,4 +80,4 @@ At this point, you should see the image pushed to GCR:
 
 ## What's Next?
 
-[Docker Hub Build](12-dockerbuild.md)
+[Docker Hub Build](dockerbuild.md)

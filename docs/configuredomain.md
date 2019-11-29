@@ -70,4 +70,4 @@ Hello v1
 
 ## What's Next?
 
-[Change configuration](03-changeconfig.md)
+[Change configuration](changeconfig.md)

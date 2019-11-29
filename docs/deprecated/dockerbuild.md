@@ -4,7 +4,7 @@ As of Knative 0.8, Knative Build has been deprecated in favor of Tekton Pipeline
 
 # Docker Hub Build
 
-In the [previous lab](09-helloworldbuild.md), we built and pushed a container image to Google Cloud Registry (GCR). In this lab, we will push to Docker Hub instead. It's more involved as we need to register secrets for Docker Hub.
+In the [previous lab](helloworldbuild.md), we built and pushed a container image to Google Cloud Registry (GCR). In this lab, we will push to Docker Hub instead. It's more involved as we need to register secrets for Docker Hub.
 
 There's [Orchestrating a source-to-URL deployment on Kubernetes](https://www.knative.dev/docs/serving/samples/source-to-url-go/) tutorial in Knative docs that explains how to do this and more but we will go through the steps here as well.
 
@@ -120,4 +120,4 @@ At this point, you should see the image pushed to Docker Hub:
 
 ## What's Next?
 
-[Kaniko Build Template](13-kanikobuildtemplate.md)
+[Kaniko Build Template](kanikobuildtemplate.md)

@@ -206,4 +206,4 @@ Hello v4
 
 ## What's Next?
 
-[Configure autoscaling](05-configureautoscaling.md)
+[Configure autoscaling](configureautoscaling.md)

@@ -1,6 +1,6 @@
 # Kaniko Task Build
 
-In the [previous lab](12-tekton-helloworldbuild.md), we created a Task to invoke Kaniko with all the required parameters for Kaniko and then we created a TaskRun to invoke that Task. This works but a better approach is to use a Task from the [Tekton Catalog](https://github.com/tektoncd/catalog) which is a repository of ready to use Tasks and Pipelines. 
+In the [previous lab](tekton-helloworldbuild.md), we created a Task to invoke Kaniko with all the required parameters for Kaniko and then we created a TaskRun to invoke that Task. This works but a better approach is to use a Task from the [Tekton Catalog](https://github.com/tektoncd/catalog) which is a repository of ready to use Tasks and Pipelines. 
 
 In this lab, we will use [Kaniko Task](https://github.com/tektoncd/catalog/tree/master/kaniko).
 

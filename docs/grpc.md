@@ -10,9 +10,9 @@ In this lab, we will deploy a 'serverless' gRPC service with Knative.
 
 Follow the instructions for your preferred language to create a simple gRPC server and client:
 
-* [Create gRPC server & client - C#](07.5-grpc-csharp.md)
+* [Create gRPC server & client - C#](grpc-csharp.md)
 
-* [Create gRPC server & client - Python](07.5-grpc-python.md)
+* [Create gRPC server & client - Python](grpc-python.md)
 
 ## Build and push Docker image
 
@@ -109,4 +109,4 @@ Voilà! The gRPC client is now talking to a serverless gRPC service on Knative.
 
 ## What's Next?
 
-[Cluster local services](07.6-clusterlocal.md)
+[Cluster local services](clusterlocal.md)

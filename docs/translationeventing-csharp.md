@@ -69,4 +69,4 @@ Create a [Dockerfile](../eventing/translation/csharp/Dockerfile) for the image.
 
 ## What's Next?
 
-Back to [Integrate with Translation API](09-translationeventing.md)
+Back to [Integrate with Translation API](translationeventing.md)

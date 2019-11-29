@@ -1,6 +1,6 @@
 # Docker Hub Build
 
-In the [previous lab](12-tekton-helloworldbuild.md), we built and pushed a container image to Google Cloud Registry (GCR). In this lab, we will push to Docker Hub instead. It's more involved as we need to register secrets for Docker Hub.
+In the [previous lab](tekton-helloworldbuild.md), we built and pushed a container image to Google Cloud Registry (GCR). In this lab, we will push to Docker Hub instead. It's more involved as we need to register secrets for Docker Hub.
 
 ## Register secrets for Docker Hub
 
@@ -151,4 +151,4 @@ At this point, you should see the image pushed to Docker Hub:
 
 ## What's Next?
 
-[Kaniko Task Build](14-tekton-kanikotaskbuild.md)
+[Kaniko Task Build](tekton-kanikotaskbuild.md)

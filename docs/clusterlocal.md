@@ -83,4 +83,4 @@ And, curl should work again now.
 
 ## What's Next?
 
-[Hello World Eventing](08-helloworldeventing.md)
+[Hello World Eventing](helloworldeventing.md)

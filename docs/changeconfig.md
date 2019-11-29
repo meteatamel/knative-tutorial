@@ -120,4 +120,4 @@ Bye v3
 
 ## What's Next?
 
-[Traffic Splitting](04-trafficsplitting.md)
+[Traffic Splitting](trafficsplitting.md)

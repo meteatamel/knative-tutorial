@@ -188,4 +188,4 @@ CMD python greet_server.py -p $PORT
 
 ## What's Next?
 
-[Back to Serverless gRPC with Knative](07.5-grpc.md)
+[Back to Serverless gRPC with Knative](grpc.md)
