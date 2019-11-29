@@ -1,14 +1,14 @@
-# The PubSub source output goes to the default Broker. This Trigger subscribes to events in the
-# default Broker.
-
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
   name: trigger-event-display
 spec:
+  filter:
+    attributes:
+      type: event-display
   subscriber:
     ref:
-      apiVersion: serving.knative.dev/v1
+      apiVersion: v1
       kind: Service
       name: event-display
 
