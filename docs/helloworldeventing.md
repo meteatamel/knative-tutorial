@@ -238,4 +238,4 @@ If you send another message without `event-display` type, that won't trigger the
 
 ## What's Next?
 
-[Hello World Eventing with GCP Pub/Sub](helloworldeventingpubsub.md)
+[Pub/Sub triggered service](pubsubeventing.md)

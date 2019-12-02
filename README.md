@@ -84,7 +84,8 @@ Knative Serving
 
 Knative Eventing
 * [Hello World Eventing](docs/helloworldeventing.md)
-* [Hello World Eventing with GCP Pub/Sub](docs/helloworldeventingpubsub.md)
+* [Pub/Sub triggered service](docs/pubsubeventing.md)
+* [Scheduled service](docs/scheduledeventing.md)
 * [Integrate with Translation API](docs/translationeventing.md)
 * [Integrate with Vision API](docs/visioneventing.md)
 

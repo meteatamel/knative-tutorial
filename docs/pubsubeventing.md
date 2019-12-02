@@ -1,4 +1,6 @@
-# Hello World Eventing with GCP Pub/Sub
+# Pub/Sub triggered service
+
+In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a service with Knative Eventing.
 
 ## GCP PubSub event source
 
@@ -6,74 +8,7 @@ Follow the [GCP Cloud Pub/Sub source](https://knative.dev/docs/eventing/samples/
 
 ## Consumer
 
-### Event Display
-
-Follow the instructions for your preferred language to create a service to log out messages:
-
-* [Create Event Display - C#](helloworldeventing-csharp.md)
-
-* [Create Event Display - Python](helloworldeventing-python.md)
-
-### Docker image
-
-Build and push the Docker image (replace `{username}` with your actual DockerHub):
-
-```bash
-docker build -t {username}/event-display:v1 .
-
-docker push {username}/event-display:v1
-```
-
-### Kubernetes Service 
-
-You can have any kind of addressable as event sinks (Kubernetes Service, Knative Service etc.). For this part, let's use a Kubernetes Service.
-
-Create a [service.yaml](../eventing/event-display/service.yaml) file:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: event-display
-spec:
-  selector:
-    matchLabels:
-      app: event-display
-  template:
-    metadata:
-      labels:
-        app: event-display
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/event-display:v1
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: event-display
-spec:
-  selector:
-    app: event-display
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-```
-
-This defines a Kubernetes Deployment and Service to receive messages. 
-
-Create the Event Display service:
-
-```bash
-kubectl apply -f service.yaml
-
-deployment.apps/event-display created
-service/event-display created
-```
+For the event consumer, we can use the Event Display service in [Hello World Eventing](helloworldeventing.md) sample. Go through the steps mentioned there to create and deploy the Event Display service. 
 
 ## Trigger
 
@@ -143,4 +78,4 @@ Event Display received message: Hello World
 
 ## What's Next?
 
-[Integrate with Translation API](translationeventing.md)
+[Scheduled service](scheduledeventing.md)

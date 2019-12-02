@@ -1,0 +1,12 @@
+apiVersion: sources.eventing.knative.dev/v1alpha1
+kind: CronJobSource
+metadata:
+  name: test-cronjob-source
+spec:
+  schedule: "* * * * *"
+  data: '{"message": "Hello world from cron!"}'
+  sink:
+    #apiVersion: serving.knative.dev/v1alpha1
+    apiVersion: v1
+    kind: Service
+    name: event-display
