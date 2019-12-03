@@ -86,6 +86,7 @@ Knative Eventing
 * [Hello World Eventing](docs/helloworldeventing.md)
 * [Pub/Sub triggered service](docs/pubsubeventing.md)
 * [Scheduled service](docs/scheduledeventing.md)
+* [Event registry](docs/eventregistry.md)
 * [Integrate with Translation API](docs/translationeventing.md)
 * [Integrate with Vision API](docs/visioneventing.md)
 
