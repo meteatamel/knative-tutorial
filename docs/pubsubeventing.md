@@ -4,7 +4,19 @@ In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a se
 
 ## GCP PubSub event source
 
-Follow the [GCP Cloud Pub/Sub source](https://knative.dev/docs/eventing/samples/gcp-pubsub-source/) docs page to set Knative Eventing with GCP Pub/Sub up until where you need to create an event display. We'll create our own event display and trigger to connect to it.  
+Follow the [GCP Cloud Pub/Sub source](https://knative.dev/docs/eventing/samples/gcp-pubsub-source/) docs page to set Knative Eventing with GCP Pub/Sub up until where you need to create an event display. We'll create our own event display and trigger to connect to it.
+
+Before you continue, you need to make sure GCP PubSub source is setup:
+
+```bash
+kubectl get pubsub
+
+NAME                                            READY   REASON   AGE
+pubsub.events.cloud.google.com/testing-source   True             52s
+
+NAME                                                      READY   REASON   AGE
+pullsubscription.pubsub.cloud.google.com/testing-source   True             52s
+```
 
 ## Consumer
 
@@ -14,7 +26,7 @@ For the event consumer, we can use the Event Display service in [Hello World Eve
 
 Let's connect the Event Display service to the Broker with a Trigger. 
 
-Create a [trigger-event-display-pubsub.yaml](../eventing/event-display/trigger-event-display-pubsub.yaml):
+Create a [trigger-event-display-pubsub.yaml](../eventing/pubsub/trigger-event-display-pubsub.yaml):
 
 ```yaml
 apiVersion: eventing.knative.dev/v1alpha1
