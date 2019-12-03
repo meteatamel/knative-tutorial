@@ -203,7 +203,3 @@ Hello v4
 Hello v1
 Hello v4
 ```
-
-## What's Next?
-
-[Configure autoscaling](configureautoscaling.md)

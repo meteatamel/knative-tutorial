@@ -87,7 +87,3 @@ You should see something similar to this:
 ```text
 Event Display received message: Hello World
 ```
-
-## What's Next?
-
-[Scheduled service](scheduledeventing.md)

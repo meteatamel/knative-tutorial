@@ -106,7 +106,3 @@ To test your service, go to the greeter client and change the url from localhost
   ```
 
 Voilà! The gRPC client is now talking to a serverless gRPC service on Knative.
-
-## What's Next?
-
-[Cluster local services](clusterlocal.md)

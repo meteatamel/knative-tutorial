@@ -105,6 +105,3 @@ trigger.eventing.knative.dev/trigger-event-display created
 
 At this point, you should see CronJob events in the Event Display. 
 
-## What's Next?
-
-[Integrate with Translation API](translationeventing.md)

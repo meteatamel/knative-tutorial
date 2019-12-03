@@ -69,7 +69,7 @@ kubectl get pods -n knative-eventing
 kubectl get pods -n knative-monitoring
 ```
 
-## Steps
+## Samples
 
 Knative Serving
 * [Hello World Serving](docs/helloworldserving.md)
@@ -77,10 +77,10 @@ Knative Serving
 * [Change configuration](docs/changeconfig.md)
 * [Traffic splitting](docs/trafficsplitting.md)
 * [Configure autoscaling](docs/configureautoscaling.md)
-* [Integrate with Twilio](docs/twiliointegration.md)
 * [Deploy to Cloud Run](docs/deploycloudrun.md)
-* [Serverless gRPC with Knative](docs/grpc.md)
+* [gRPC with Knative](docs/grpc.md)
 * [Cluster local services](docs/clusterlocal.md)
+* [Integrate with Twilio](docs/twiliointegration.md)
 
 Knative Eventing
 * [Hello World Eventing](docs/helloworldeventing.md)

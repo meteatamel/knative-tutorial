@@ -81,6 +81,3 @@ service.serving.knative.dev/helloworld labeled
 ```
 And, curl should work again now. 
 
-## What's Next?
-
-[Hello World Eventing](helloworldeventing.md)

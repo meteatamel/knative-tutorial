@@ -95,7 +95,3 @@ task.tekton.dev/hello-world   13s
 ```
 
 You can see that the TaskRun was successful. This confirms that Tekton is installed properly and everything is working. In the next step, we'll design and run the first build. 
-
-## What's Next?
-
-[Hello World Build](tekton-helloworldbuild.md)

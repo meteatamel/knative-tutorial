@@ -119,7 +119,3 @@ Make a request to your service:
 curl -H "Host: helloworld.default.example.com" http://$ISTIO_INGRESS
 Hello v1
 ```
-
-## What's Next?
-
-[Configure Domain](configuredomain.md)

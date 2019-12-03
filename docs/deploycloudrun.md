@@ -113,9 +113,3 @@ Done.
 ```
 
 If you visit the url of the service again, you should see `Hello v1` instead!
-
-## What's Next?
-
-As you've discovered, taking a Knative service and deploying to fully Cloud Run is quite easy! Next, let's take a look at Knative Eventing.
-
-[Serverless gRPC with Knative](grpc.md)

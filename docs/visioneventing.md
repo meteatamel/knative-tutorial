@@ -165,7 +165,3 @@ You should see something similar to this:
 ```text
 This picture is labelled: Sky,Body of water,Sea,Nature,Coast,Water,Sunset,Horizon,Cloud,Shore
 ```
-
-## What's Next?
-
-[Hello Tekton](hellotekton.md)

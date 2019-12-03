@@ -170,7 +170,3 @@ build-helloworld-gcr-pod-3ed981            0/4       Completed
 At this point, you should see the image pushed to GCR:
 
 ![Google Container Registry](./images/gcr.png)
-
-## What's Next?
-
-[Docker Hub Build](tekton-dockerbuild.md)

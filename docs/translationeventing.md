@@ -144,7 +144,3 @@ Received content: {"text":"Hello World", "from":"en", "to":"es"}
 
 Translated text: Hola Mundo
 ```
-
-## What's Next?
-
-[Integrate with Vision API](visioneventing.md)

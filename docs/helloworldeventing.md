@@ -235,7 +235,3 @@ info: event_display.Startup[0]
 ```
 
 If you send another message without `event-display` type, that won't trigger the Event Display. 
-
-## What's Next?
-
-[Pub/Sub triggered service](pubsubeventing.md)

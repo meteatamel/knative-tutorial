@@ -117,7 +117,3 @@ Test that the route is updated to `v3` with the new container. It prints not onl
 curl http://helloworld.default.$ISTIO_INGRESS.nip.io
 Bye v3
 ```
-
-## What's Next?
-
-[Traffic Splitting](trafficsplitting.md)

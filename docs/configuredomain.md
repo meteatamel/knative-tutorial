@@ -72,7 +72,3 @@ export SERVICE_URL=$(kubectl get route helloworld -o jsonpath="{.status.url}")
 curl $SERVICE_URL
 Hello v1
 ```
-
-## What's Next?
-
-[Change configuration](changeconfig.md)

@@ -148,7 +148,3 @@ build-helloworld-docker-pod-a1d405        0/4       Completed
 At this point, you should see the image pushed to Docker Hub:
 
 ![Docker Hub](./images/dockerhub.png)
-
-## What's Next?
-
-[Kaniko Task Build](tekton-kanikotaskbuild.md)
