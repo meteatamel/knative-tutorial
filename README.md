@@ -14,9 +14,8 @@ If you need to install Knative and its dependencies (Istio), see [Knative Instal
 For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. 
 
 We tested this tutorial on:
-* Google Kubernetes Engine (GKE): 1.14.6-gke.1
-* Istio: 1.1.13-gke.0
-* Knative: 0.9.0
+* Google Kubernetes Engine (GKE): 1.15.4-gke.22 with Istio add-on: 1.2.10-gke.0
+* Knative: 0.11.0
 
 Let's briefly recap the steps of installing Knative on GKE. 
 
@@ -52,13 +51,13 @@ Install Knative in 2 steps:
 
 ```bash
 kubectl apply --selector knative.dev/crd-install=true \
-   --filename https://github.com/knative/serving/releases/download/v0.10.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.10.0/release.yaml \
-   --filename https://github.com/knative/serving/releases/download/v0.10.0/monitoring.yaml
+   --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml \
+   --filename https://github.com/knative/serving/releases/download/v0.11.0/monitoring.yaml
 
-kubectl apply --filename https://github.com/knative/serving/releases/download/v0.10.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.10.0/release.yaml \
-   --filename https://github.com/knative/serving/releases/download/v0.10.0/monitoring.yaml
+kubectl apply --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml \
+   --filename https://github.com/knative/serving/releases/download/v0.11.0/monitoring.yaml
 ```
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:

@@ -13,7 +13,7 @@ In this tutorial, we will create our own events using an event producer and list
 First, make sure Knative Eventing is installed:
 
 ```bash
-kubectl get pods -ns knative-eventing
+kubectl get pods -n knative-eventing
 
 NAME                                   READY   STATUS    RESTARTS   AGE
 eventing-controller-7d75cd8598-brsnv   1/1     Running   0          14d
