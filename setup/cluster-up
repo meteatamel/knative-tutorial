@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -v
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+# Enable APIs
+gcloud services enable \
+  cloudapis.googleapis.com \
+  container.googleapis.com \
+  containerregistry.googleapis.com
+
+# Create Cluster
+gcloud beta container clusters create $CLUSTER_NAME \
+  --addons HorizontalPodAutoscaling,HttpLoadBalancing,Istio \
+  --zone $CLUSTER_ZONE \
+  --cluster-version $CLUSTER_MASTER_VERSION \
+  --machine-type $CLUSTER_NODE_MACHINE_TYPE \
+  --num-nodes $CLUSTER_START_NODE_SIZE \
+  --min-nodes 1 \
+  --max-nodes $CLUSTER_MAX_NODE_SIZE \
+  --enable-ip-alias \
+  --enable-stackdriver-kubernetes \
+  --enable-autoscaling \
+  --enable-autorepair \
+  --scopes cloud-platform
+
+# Credentials
+gcloud container clusters get-credentials $CLUSTER_NAME \
+    --zone $CLUSTER_ZONE
+
+# Cluster role binding
+kubectl create clusterrolebinding cluster-admin-binding \
+    --clusterrole=cluster-admin \
+    --user=$(gcloud config get-value core/account)

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+# Install Eventing CRDs
+kubectl apply -l knative.dev/crd-install=true \
+-f "https://github.com/knative/eventing/releases/download/${KN_VERSION}/release.yaml"
+
+# Install Eventing
+kubectl apply \
+-f "https://github.com/knative/eventing/releases/download/${KN_VERSION}/release.yaml"
+
+# Check all eventing pods have STATUS 'Running' (CTRL-C when done)
+watch kubectl get pods -n knative-eventing

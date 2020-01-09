@@ -1,0 +1,4 @@
+#!/bin/bash
+set -v
+# Check Istio version by looking at the image version
+kubectl get pod -l app=istio-ingressgateway -n istio-system -oyaml | grep image -m 1
