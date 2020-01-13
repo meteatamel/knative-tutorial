@@ -8,57 +8,16 @@ There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knat
 
 [![Serverless with Knative](./docs/images/serverless-with-knative.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
 
-## Installation
-If you need to install Knative and its dependencies (Istio), see [Knative Installation](https://www.knative.dev/docs/install/) page for your platform. 
+## Setup
 
-For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page. 
+You need to install Knative and its dependencies (Istio). See [Knative Installation](https://www.knative.dev/docs/install/) page for your platform. For detailed GKE instructions, see [Install on Google Kubernetes Engine](https://www.knative.dev/docs/install/knative-with-gke/) page.
 
 We tested this tutorial on:
-* Google Kubernetes Engine (GKE): 1.15.4-gke.22 with Istio add-on: 1.2.10-gke.0
+* GKE: 1.15.4-gke.22
+* Istio: 1.4.2
 * Knative: 0.11.0
 
-Let's briefly recap the steps of installing Knative on GKE. 
-
-Set some environment variables for the cluster name and zone:
-
-```bash
-export CLUSTER_NAME=knative
-export CLUSTER_ZONE=europe-west1-b
-``` 
-
-Create a Kubernetes cluster with Istio add-on with the preferred name and zone:
-
-```bash
-gcloud beta container clusters create $CLUSTER_NAME \
-  --addons=HorizontalPodAutoscaling,HttpLoadBalancing,Istio \
-  --machine-type=n1-standard-4 \
-  --cluster-version=latest --zone=$CLUSTER_ZONE \
-  --enable-stackdriver-kubernetes --enable-ip-alias \
-  --enable-autoscaling --min-nodes=1 --max-nodes=10 \
-  --enable-autorepair \
-  --scopes cloud-platform
-```
-
-Grant cluster-admin permissions to the current user:
-
-```bash
-kubectl create clusterrolebinding cluster-admin-binding \
-     --clusterrole=cluster-admin \
-     --user=$(gcloud config get-value core/account)
-```
-
-Install Knative in 2 steps:
-
-```bash
-kubectl apply --selector knative.dev/crd-install=true \
-   --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml \
-   --filename https://github.com/knative/serving/releases/download/v0.11.0/monitoring.yaml
-
-kubectl apply --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml \
-   --filename https://github.com/knative/serving/releases/download/v0.11.0/monitoring.yaml
-```
+Alternatively, we have scripts in [setup] folder to install everything. Follow the instructions there.
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 

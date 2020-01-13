@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -v
+
+# Check Kubernetes version
+kubectl version --short | grep server -i
+
+# Check Istio version by looking at the image version
+kubectl get pod -l app=istio-ingressgateway -n istio-system -oyaml | grep image -m 1
+
+# Check Knative Serving version
+kubectl get namespace knative-serving -o 'go-template={{index .metadata.labels "serving.knative.dev/release"}}'
+
+# Check Knative Eventing version
+kubectl get namespace knative-eventing -o 'go-template={{index .metadata.labels "eventing.knative.dev/release"}}'
