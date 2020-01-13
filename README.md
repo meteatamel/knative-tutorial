@@ -17,7 +17,7 @@ We tested this tutorial on:
 * Istio: 1.4.2
 * Knative: 0.11.0
 
-Alternatively, we have scripts in [setup] folder to install everything. Follow the instructions there.
+Alternatively, we have scripts in [setup](setup) folder to install everything. Follow the instructions there.
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 

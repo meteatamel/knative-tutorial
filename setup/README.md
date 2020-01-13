@@ -4,7 +4,7 @@ These are the steps to set Knative and its dependencies.
 
 ## Configuration
 
-Edit [config] file for your setup.
+Edit [config](config) file for your setup.
 
 ## Create a GKE cluster
 
