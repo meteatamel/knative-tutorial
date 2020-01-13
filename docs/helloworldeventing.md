@@ -210,7 +210,7 @@ Send the event. Notice that we're sending with event type `event-display`:
 curl -v "http://default-broker.event-example.svc.cluster.local" \
   -X POST \
   -H "Ce-Id: say-hello" \
-  -H "Ce-Specversion: 0.3" \
+  -H "Ce-Specversion: 1.0" \
   -H "Ce-Type: event-display" \
   -H "Ce-Source: curl-pod" \
   -H "Content-Type: application/json" \
