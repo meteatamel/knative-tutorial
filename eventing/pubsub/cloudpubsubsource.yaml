@@ -1,13 +1,14 @@
 apiVersion: events.cloud.google.com/v1alpha1
-kind: PubSub
+kind: CloudPubSubSource
 metadata:
-  name: testing-source
+  name: cloudpubsubsource-test
 spec:
   topic: testing
   sink:
     ref:
+    #   apiVersion: v1
+    #   kind: Service
+    #   name: vision
       apiVersion: eventing.knative.dev/v1alpha1
       kind: Broker
       name: default
-  # If running in GKE, we will ask the metadata server for the project.
-  #project: MY_GCP_PROJECT

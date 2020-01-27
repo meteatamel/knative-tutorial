@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# GCP project id. Replace with yours.
+export PROJECT_ID="knative-atamel"
+
 export CLUSTER_NAME="knative"
 
 export CLUSTER_REGION="europe-west1"
@@ -22,4 +25,4 @@ export CLUSTER_MASTER_VERSION="latest"
 export ISTIO_VERSION="1.4.2"
 
 # knative version
-export KNATIVE_VERSION="0.11.0"
+export KNATIVE_VERSION="0.12.0"

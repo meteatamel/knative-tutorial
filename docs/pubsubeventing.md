@@ -1,30 +1,79 @@
 # Pub/Sub triggered service
 
-In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a service with Knative Eventing.
+In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a service with Knative Eventing. We'll roughly be following [CloudPubSubSource Example](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/README.md) docs page with slight modifications to make it easier to understand.
 
-## GCP PubSub event source
+## Knative with GCP & PubSub Topic
 
-Follow the [GCP Cloud Pub/Sub source](https://knative.dev/docs/eventing/samples/gcp-pubsub-source/) docs page to set Knative Eventing with GCP Pub/Sub up until where you need to create an event display. We'll create our own event display and trigger to connect to it.
+We're assuming that you already have Knative Serving and Eventing installed.
 
-Before you continue, you need to make sure GCP PubSub source is setup:
+First, follow [Installing Knative with GCP](https://github.com/google/knative-gcp/blob/master/docs/install/README.md) page to install Knative with GCP.
+
+Or, you can try the script we provided:
 
 ```bash
-kubectl get pubsub
+./install-knative-gcp
+```
 
-NAME                                            READY   REASON   AGE
-pubsub.events.cloud.google.com/testing-source   True             52s
+Second, follow [Installing Pub/Sub Enabled Service Account](https://github.com/google/knative-gcp/blob/master/docs/install/pubsub-service-account.md) page to configure a Pub/Sub enabled Service Account.
 
-NAME                                                      READY   REASON   AGE
-pullsubscription.pubsub.cloud.google.com/testing-source   True             52s
+Third, create a Pub/Sub topic where messages will be sent:
+
+```bash
+gcloud pubsub topics create testing
+```
+
+## CloudPubSubSource
+
+Create a CloudPubSubSource to connect PubSub messages to Knative Eventing. The default [cloudpubsubsource.yaml](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/cloudpubsubsource.yaml) connects Pub/Sub messages to a service directly.
+
+Instead, create the following [cloudpubsubsource.yaml](../eventing/pubsub/cloudpubsubsource.yaml) to connect Pub/Sub messages to a Broker, so, we can have multiple triggers to invoke multiple services on the same message:
+
+```yaml
+apiVersion: events.cloud.google.com/v1alpha1
+kind: CloudPubSubSource
+metadata:
+  name: cloudpubsubsource-test
+spec:
+  topic: testing
+  sink:
+    ref:
+      apiVersion: eventing.knative.dev/v1alpha1
+      kind: Broker
+      name: default
+```
+
+Create the CloudPubSubSource:
+
+```bash
+kubectl apply -f cloudpubsubsource.yaml
+
+cloudpubsubsource.events.cloud.google.com/cloudpubsubsource-test created
+```
+
+## Broker
+
+If there's no Broker in the default namespace already, label the namespace:
+
+```bash
+kubectl label namespace default knative-eventing-injection=enabled
+```
+
+You should see a Broker in the namespace:
+
+```bash
+kubectl get broker
+
+NAME      READY   REASON   URL                                               AGE
+default   True             http://default-broker.default.svc.cluster.local   52m
 ```
 
 ## Consumer
 
-For the event consumer, we can use the Event Display service in [Hello World Eventing](helloworldeventing.md) sample. Go through the steps mentioned there to create and deploy the Event Display service. 
+For the event consumer, we can use the Event Display service in [Hello World Eventing](helloworldeventing.md) sample. Go through the steps mentioned there to create and deploy the Event Display service.
 
 ## Trigger
 
-Let's connect the Event Display service to the Broker with a Trigger. 
+Connect the Event Display service to the Broker with a Trigger. 
 
 Create a [trigger-event-display-pubsub.yaml](../eventing/pubsub/trigger-event-display-pubsub.yaml):
 

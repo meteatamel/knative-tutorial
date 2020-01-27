@@ -1,0 +1,42 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+set -v
+
+# Reference:
+# https://github.com/google/knative-gcp/blob/master/docs/install/README.md
+
+# Create the cloud-run-events namespace
+kubectl create namespace cloud-run-events
+
+# Create a new Service Account named cloud-run-events
+gcloud iam service-accounts create cloud-run-events
+
+# Give that Service Account roles/owner permissions on your project.
+# Note: You probably need something more fine-grained than roles/owner
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member=serviceAccount:cloud-run-events@${PROJECT_ID}.iam.gserviceaccount.com \
+  --role roles/owner
+
+# Download a new JSON private key for that Service Account
+# Be sure not to check this key into source control!
+gcloud iam service-accounts keys create cloud-run-events.json \
+--iam-account=cloud-run-events@${PROJECT_ID}.iam.gserviceaccount.com
+
+# Create a Secret on the Kubernetes cluster in the cloud-run-events namespace with the downloaded key:
+kubectl --namespace cloud-run-events create secret \
+generic google-cloud-key --from-file=key.json=cloud-run-events.json
+
+# Install Cloud Run Eventing CRDs
+kubectl apply --selector pubsub.cloud.google.com/crd-install=true \
+--filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+kubectl apply --selector messaging.cloud.google.com/crd-install=true \
+--filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+kubectl apply --selector events.cloud.google.com/crd-install=true \
+--filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+
+# Install Cloud Run Eventing
+kubectl apply \
+--filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml

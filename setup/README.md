@@ -34,12 +34,6 @@ Install Istio and also the cluster local gateway that's needed to have Knative S
 ./install-eventing
 ```
 
-### Install Cloud Run Events
-
-```shell
-./install-cloudrun-eventing
-```
-
 -------
 
 Thanks to [Mark Chmarny](https://github.com/mchmarny) for the idea and initial scripts.

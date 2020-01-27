@@ -4,7 +4,7 @@ Knative Eventing defines Broker and Trigger to receive and filter messages. This
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
 
-Knative Eventing has a few different types of [event sources](https://knative.dev/docs/eventing/sources/) (Kubernetes, GitHub, GCP Pub/Sub etc.) that it can listen. 
+Knative Eventing has a few different types of [event sources](https://knative.dev/docs/eventing/sources/) (Kubernetes, GitHub, GCP Pub/Sub etc.) that it can listen.
 
 In this tutorial, we will create our own events using an event producer and listen and log the messages in an event consumer. This tutorial is based on [Getting Started with Knative Eventing](https://knative.dev/docs/eventing/getting-started/) with slight modifications to make it easier.
 
@@ -23,7 +23,7 @@ imc-dispatcher-794f546c85-5pqgt        1/1     Running   0          14d
 sources-controller-67788d5b86-c5bjf    1/1     Running   0          14d
 ```
 
-If not, you can follow the instructions on Knative Eventing Installation [page](https://knative.dev/docs/eventing/getting-started/#installing-knative-eventing). 
+If not, you can follow the instructions on Knative Eventing Installation [page](https://knative.dev/docs/eventing/getting-started/#installing-knative-eventing).
 
 ## Broker
 
@@ -64,7 +64,7 @@ docker build -t {username}/event-display:v1 .
 docker push {username}/event-display:v1
 ```
 
-### Kubernetes Service 
+### Kubernetes Service
 
 You can have any kind of addressable as event sinks (Kubernetes Service, Knative Service etc.). For this part, let's use a Kubernetes Service.
 
@@ -104,7 +104,7 @@ spec:
     targetPort: 8080
 ```
 
-This defines a Kubernetes Deployment and Service to receive messages. 
+This defines a Kubernetes Deployment and Service to receive messages.
 
 Create the Event Display service:
 
@@ -117,7 +117,7 @@ service/event-display created
 
 ## Trigger
 
-Let's connect the Event Display service to the Broker with a Trigger. 
+Let's connect the Event Display service to the Broker with a Trigger.
 
 Create a [trigger-event-display.yaml](../eventing/event-display/trigger-event-display.yaml):
 
@@ -137,7 +137,7 @@ spec:
       name: event-display
 ```
 
-Notice that we're filtering with the required attribute `type` with value `event-display`. Only messages with this attribute will be sent to the `event-display` service. 
+Notice that we're filtering with the required attribute `type` with value `event-display`. Only messages with this attribute will be sent to the `event-display` service.
 
 Create the trigger:
 
@@ -158,7 +158,7 @@ trigger-event-display   True             default   http://event-display.event-ex
 
 ## Producer
 
-You can only access the Broker from within your Eventing cluster. Normally, you would create a Pod within that cluster to act as your event producer. In this case, we'll simply create a Pod with curl installed and use curl to manually send messages. 
+You can only access the Broker from within your Eventing cluster. Normally, you would create a Pod within that cluster to act as your event producer. In this case, we'll simply create a Pod with curl installed and use curl to manually send messages.
 
 ### Curl Pod
 
