@@ -16,6 +16,12 @@ Or, you can try the script we provided:
 
 Second, follow [Installing Pub/Sub Enabled Service Account](https://github.com/google/knative-gcp/blob/master/docs/install/pubsub-service-account.md) page to configure a Pub/Sub enabled Service Account.
 
+Or, you can try the script wr provided:
+
+```bash
+./install-pubsub-serviceaccount
+```
+
 Third, create a Pub/Sub topic where messages will be sent:
 
 ```bash
