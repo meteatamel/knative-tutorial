@@ -22,16 +22,38 @@ Install Istio and also the cluster local gateway that's needed to have Knative S
 ./install-istio
 ```
 
-### Install Knative Serving
+## Install Knative Serving
 
 ```shell
 ./install-serving
 ```
 
-### Install Knative Eventing
+## Install Knative Eventing
 
 ```shell
 ./install-eventing
+```
+
+## Install Knative with GCP
+
+If you intend to read GCP Pub/Sub messages, go through these steps.
+
+Install Knative with GCP:
+
+```bash
+./install-knative-gcp
+```
+
+Configure a Pub/Sub enabled Service Account:
+
+```bash
+./install-pubsub-serviceaccount
+```
+
+Create a Pub/Sub topic where messages will be sent:
+
+```bash
+gcloud pubsub topics create testing
 ```
 
 -------

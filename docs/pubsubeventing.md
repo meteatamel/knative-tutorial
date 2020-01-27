@@ -4,29 +4,7 @@ In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a se
 
 ## Knative with GCP & PubSub Topic
 
-We're assuming that you already have Knative Serving and Eventing installed.
-
-First, follow [Installing Knative with GCP](https://github.com/google/knative-gcp/blob/master/docs/install/README.md) page to install Knative with GCP.
-
-Or, you can try the script we provided:
-
-```bash
-./install-knative-gcp
-```
-
-Second, follow [Installing Pub/Sub Enabled Service Account](https://github.com/google/knative-gcp/blob/master/docs/install/pubsub-service-account.md) page to configure a Pub/Sub enabled Service Account.
-
-Or, you can try the script wr provided:
-
-```bash
-./install-pubsub-serviceaccount
-```
-
-Third, create a Pub/Sub topic where messages will be sent:
-
-```bash
-gcloud pubsub topics create testing
-```
+We're assuming that you already went through [Install Knative with GCP](../setup/README.md) section of the setup.
 
 ## CloudPubSubSource
 
