@@ -47,6 +47,7 @@ Knative Eventing
 * [Simple Delivery](docs/simpledelivery.md)
 * [Complex Delivery](docs/complexdelivery.md)
 * [Complex Delivery with reply](docs/complexdeliverywithreply.md)
+* [Broker and Trigger Delivery](docs/brokertrigger.md)
 * [Pub/Sub triggered service](docs/pubsubeventing.md)
 * [Scheduled service](docs/scheduledeventing.md)
 * [Event registry](docs/eventregistry.md)
