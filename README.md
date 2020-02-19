@@ -30,6 +30,7 @@ kubectl get pods -n knative-monitoring
 ## Samples
 
 Knative Serving
+
 * [Hello World Serving](docs/helloworldserving.md)
 * [Configure domain](docs/configuredomain.md)
 * [Change configuration](docs/changeconfig.md)
@@ -41,9 +42,11 @@ Knative Serving
 * [Integrate with Twilio](docs/twiliointegration.md)
 
 Knative Eventing
+
 * [Hello World Eventing](docs/helloworldeventing.md)
 * [Simple Delivery](docs/simpledelivery.md)
 * [Complex Delivery](docs/complexdelivery.md)
+* [Complex Delivery with reply](docs/complexdeliverywithreply.md)
 * [Pub/Sub triggered service](docs/pubsubeventing.md)
 * [Scheduled service](docs/scheduledeventing.md)
 * [Event registry](docs/eventregistry.md)

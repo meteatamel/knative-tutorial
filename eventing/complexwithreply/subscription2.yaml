@@ -1,0 +1,19 @@
+apiVersion: messaging.knative.dev/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription2
+spec:
+  channel:
+    apiVersion: messaging.knative.dev/v1alpha1
+    kind: InMemoryChannel
+    name: channel1
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: service2
+  reply:
+    ref:
+      apiVersion: messaging.knative.dev/v1alpha1
+      kind: InMemoryChannel
+      name: channel2
