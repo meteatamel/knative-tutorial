@@ -12,7 +12,7 @@ Knative supports a number of [Event Sources](https://knative.dev/docs/eventing/s
 
 For this example, let's use CronJobSource, an in-memory Event Source that fires events based on given cron schedule:
 
-Create a [source.yaml](../eventing/simple/source.yaml) file:
+Define [source.yaml](../eventing/simple/source.yaml):
 
 ```yaml
 apiVersion: sources.eventing.knative.dev/v1alpha1
@@ -40,9 +40,9 @@ cronjobsource.sources.eventing.knative.dev/source created
 
 ## Service
 
-Next, let's create the Kubernetes or Knative service that CronJobSource is targeting.
+Next, create the Knative service that CronJobSource will target.
 
-Create a [service.yaml](../eventing/simple/service.yaml) file:
+Define [service.yaml](../eventing/simple/service.yaml):
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -56,7 +56,7 @@ spec:
         - image: docker.io/meteatamel/event-display:v1
 ```
 
-This is a Knative Service that simply logs out received messages.
+It's a Knative Service that simply logs out received messages.
 
 Create the service:
 

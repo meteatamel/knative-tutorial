@@ -1,6 +1,6 @@
 # Broker and Trigger Delivery
 
-In [Complex Delivery with reply](complexdeliverywithreply.md) example, we saw how an Event Source can fan out a message to multiple Services using Channels and Subscriptions. A Service can also reply to an event with another event for further delivery with other Channels and Subscriptions.
+In [Complex Delivery with reply](complexdeliverywithreply.md) example, we see how an Event Source can fan out a message to multiple Services using Channels and Subscriptions. A Service can also reply to an event with another event for further delivery with other Channels and Subscriptions.
 
 This model works but it's hard to maintain multiple Channels and Subscriptions. It also does not have the concept for filtering, so Services have to filter all messages themselves.
 
@@ -40,7 +40,7 @@ inmemorychannel.messaging.knative.dev/default-kne-trigger
 
 ## Source
 
-Create a CronJobSource to target the Broker. Define a [source.yaml](../eventing/brokertrigger/source.yaml):
+Create a `CronJobSource` to target the Broker. Define [source.yaml](../eventing/brokertrigger/source.yaml):
 
 ```yaml
 apiVersion: sources.eventing.knative.dev/v1alpha1
@@ -68,11 +68,11 @@ cronjobsource.sources.eventing.knative.dev/source created
 
 Create Knative services that will subscribe to the Broker.
 
-Define a [service1.yaml](../eventing/brokertrigger/service1.yaml) and [service3.yaml](../eventing/brokertrigger/service3.yaml) which are services that log out received messages.
+Define [service1.yaml](../eventing/brokertrigger/service1.yaml) and [service3.yaml](../eventing/brokertrigger/service3.yaml) which are services that log out received messages.
 
-Create another [service2.yaml](../eventing/brokertrigger/service2.yaml) for the second service logs the received message and replies back with another CloudEvent with type `dev.knative.samples.hifromknative`. You can check out the source in [event-display-with-reply](../eventing/event-display-with-reply/csharp) folder.
+Define another [service2.yaml](../eventing/brokertrigger/service2.yaml) for the second service logs the received message and replies back with another CloudEvent with type `dev.knative.samples.hifromknative`. You can check out the source in [event-display-with-reply](../eventing/event-display-with-reply/csharp) folder.
 
-Create the services:
+Create services:
 
 ```bash
 kubectl apply -f service1.yaml -f service2.yaml -f service3.yaml
@@ -86,7 +86,7 @@ service.serving.knative.dev/service3 created
 
 Connect services to the Broker with Triggers.
 
-Create [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml). This filters CronJob events and sends them to service1:
+Define [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml). This filters CronJob events and sends them to service1:
 
 ```yaml
 apiVersion: eventing.knative.dev/v1alpha1
@@ -104,9 +104,9 @@ spec:
       name: service1
 ```
 
-Create [trigger2.yaml](../eventing/brokertrigger/trigger2.yaml) for service2.
+Define [trigger2.yaml](../eventing/brokertrigger/trigger2.yaml) for service2.
 
-Create [trigger3.yaml](../eventing/brokertrigger/trigger3.yaml). This filters `dev.knative.samples.hifromknative` events and sends them to service3:
+Define [trigger3.yaml](../eventing/brokertrigger/trigger3.yaml). This filters `dev.knative.samples.hifromknative` events and sends them to service3:
 
 ```yaml
 apiVersion: eventing.knative.dev/v1alpha1
@@ -124,7 +124,7 @@ spec:
       name: service3
 ```
 
-Create the triggers:
+Create triggers:
 
 ```bash
 kubectl apply -f trigger1.yaml -f trigger2.yaml -f trigger3.yaml
@@ -136,7 +136,7 @@ trigger.eventing.knative.dev/trigger3 created
 
 ## Verify
 
-Check the running pods:
+Check running pods:
 
 ```bash
 kubectl get pods

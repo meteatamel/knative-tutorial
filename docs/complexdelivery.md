@@ -1,6 +1,6 @@
 # Complex Delivery
 
-In [Simple Delivery](simpledelivery.md) example, we saw how an Event Source can send a message directly to a Service. This works for 1-1 case but if you need fan out from an Event Source to multiple Services, then you need to use Channels and Subscriptions.
+In [Simple Delivery](simpledelivery.md) example, we see how an Event Source can send a message directly to a Service. This works in 1-1 case but if you need to fan out from an Event Source to multiple Services, you need to use Channels and Subscriptions.
 
 ![Complex Delivery](./images/complex-delivery.png)
 
@@ -8,9 +8,9 @@ In [Simple Delivery](simpledelivery.md) example, we saw how an Event Source can 
 
 [Channel](https://knative.dev/docs/eventing/channels/) is the persistence and forwarding layer. Knative supports a number of [Channels](https://knative.dev/docs/eventing/channels/channels-crds/) with different persistence guarantees.
 
-For this example, we'll use InMemoryChannel which is not meant for production but ok for testing.
+For this example, we'll use `InMemoryChannel`. It's not meant for production but ok for testing.
 
-Create a [channel.yaml](../eventing/complex/channel.yaml):
+Define [channel.yaml](../eventing/complex/channel.yaml):
 
 ```yaml
 apiVersion: messaging.knative.dev/v1alpha1
@@ -19,7 +19,7 @@ metadata:
   name: channel
 ```
 
-Create the InMemoryChannel:
+Create the channel:
 
 ```bash
 kubectl apply -f channel.yaml
@@ -29,11 +29,7 @@ inmemorychannel.messaging.knative.dev/channel created
 
 ## Source
 
-Knative supports a number of [Event Sources](https://knative.dev/docs/eventing/sources) to read all sorts of events into Knative.
-
-For this example, let's use CronJobSource, an in-memory Event Source that fires events based on given cron schedule:
-
-Create a [source.yaml](../eventing/complex/source.yaml):
+Define [source.yaml](../eventing/complex/source.yaml):
 
 ```yaml
 apiVersion: sources.eventing.knative.dev/v1alpha1
@@ -49,7 +45,7 @@ spec:
     name: channel
 ```
 
-It sends a message every minute to an event sink, which is an InmMemoryChannel in this case.
+It sends a message every minute to an event sink, in this case, an `InMemoryChannel`.
 
 Create the source:
 
@@ -59,11 +55,9 @@ kubectl apply -f source.yaml
 cronjobsource.sources.eventing.knative.dev/source created
 ```
 
-## Service
+## Services
 
-Next, let's create the Kubernetes or Knative services that CronJobSource will target.
-
-Create a [service1.yaml](../eventing/complex/service1.yaml):
+Create [service1.yaml](../eventing/complex/service1.yaml):
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -92,9 +86,9 @@ service.serving.knative.dev/service2 created
 
 ## Subscription
 
-Finally, connect services to the channel with subscriptions.
+Connect services to the channel with subscriptions.
 
-Create a [subscription1.yaml](../eventing/complex/subscription1.yaml) file:
+Define [subscription1.yaml](../eventing/complex/subscription1.yaml):
 
 ```yaml
 apiVersion: messaging.knative.dev/v1alpha1
@@ -113,7 +107,7 @@ spec:
       name: service1
 ```
 
-Create another [subscription2.yaml](../eventing/complex/subscription2.yaml) for the second subscription.
+Define another [subscription2.yaml](../eventing/complex/subscription2.yaml) for the second subscription.
 
 Create the subscriptions:
 

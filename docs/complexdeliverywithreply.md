@@ -1,12 +1,12 @@
 # Complex Delivery with reply
 
-In [Complex Delivery](complexdelivery.md) example, we saw how an Event Source can fan out a message multiple Services with a Channel and Subscriptions. A Service can also reply to an event with another event. This reply can further be routed to another service with a Channel and a Subscription:
+In [Complex Delivery](complexdelivery.md) example, we see how an Event Source can fan out a message multiple Services with a Channel and Subscriptions. A Service can also reply to an event with another event. This reply can further be routed to another Service with a Channel and a Subscription:
 
 ![Complex Delivery with Reply](./images/complex-delivery-reply.png)
 
 ## Channels
 
-Define two InMemoryChannels with [channel1.yaml](../eventing/complexwithreply/channel1.yaml) and [channel2.yaml](../eventing/complexwithreply/channel2.yaml):
+Define two `InMemoryChannels` with [channel1.yaml](../eventing/complexwithreply/channel1.yaml) and [channel2.yaml](../eventing/complexwithreply/channel2.yaml):
 
 Create the channels:
 
@@ -19,7 +19,9 @@ inmemorychannel.messaging.knative.dev/channel2 created
 
 ## Source
 
-Create a CronJobSource to target the first channel. Define a [source.yaml](../eventing/complexwithreply/source.yaml):
+Create a `CronJobSource` to target the first channel.
+
+Define [source.yaml](../eventing/complexwithreply/source.yaml):
 
 ```yaml
 apiVersion: sources.eventing.knative.dev/v1alpha1
@@ -47,7 +49,7 @@ cronjobsource.sources.eventing.knative.dev/source created
 
 Create Knative services that will subscribe to the first channel.
 
-Create a [service1.yaml](../eventing/complexwithreply/service1.yaml):
+Define [service1.yaml](../eventing/complexwithreply/service1.yaml):
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -63,7 +65,7 @@ spec:
 
 This simply logs out received messages.
 
-Create another [service2.yaml](../eventing/complexwithreply/service2.yaml) for the second service:
+Define another [service2.yaml](../eventing/complexwithreply/service2.yaml) for the second service:
 
 ```yaml
 apiVersion: serving.knative.dev/v1
@@ -92,7 +94,7 @@ service.serving.knative.dev/service2 created
 
 Connect services to the channel with subscriptions.
 
-Create a [subscription1.yaml](../eventing/complexwithreply/subscription1.yaml) file:
+Define [subscription1.yaml](../eventing/complexwithreply/subscription1.yaml):
 
 ```yaml
 apiVersion: messaging.knative.dev/v1alpha1
@@ -111,7 +113,7 @@ spec:
       name: service1
 ```
 
-Create another [subscription2.yaml](../eventing/complexwithreply/subscription2.yaml) for the second subscription.
+Define another [subscription2.yaml](../eventing/complexwithreply/subscription2.yaml) for the second subscription.
 
 ```yaml
 apiVersion: messaging.knative.dev/v1alpha1
@@ -177,7 +179,7 @@ service2-fd752-deployment-9d589f7b7-m7r8j                         2/2     Runnin
 service3-hh6c7-deployment-7455c845cd-2ktr4                        2/2     Running   0          65s
 ```
 
-Check the logs of the services. 
+Check the logs of the services.
 
 In service1, you should see messages from the CronJobSource:
 
