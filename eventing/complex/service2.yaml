@@ -1,0 +1,9 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: service2
+spec:
+  template:
+    spec:
+      containers:
+        - image: docker.io/meteatamel/event-display:v1
