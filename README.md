@@ -42,6 +42,7 @@ Knative Serving
 
 Knative Eventing
 * [Hello World Eventing](docs/helloworldeventing.md)
+* [Simple Delivery](docs/simpledelivery.md)
 * [Pub/Sub triggered service](docs/pubsubeventing.md)
 * [Scheduled service](docs/scheduledeventing.md)
 * [Event registry](docs/eventregistry.md)

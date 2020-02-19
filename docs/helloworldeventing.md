@@ -1,6 +1,6 @@
 # Hello World Eventing
 
-Knative Eventing defines Broker and Trigger to receive and filter messages. This is explained in more detail on [Knative Eventing](https://www.knative.dev/docs/eventing/) page:
+In Knative Eventing, you'd typically use Broker and Trigger to receive and filter messages. This is explained in more detail on [Knative Eventing](https://www.knative.dev/docs/eventing/) page:
 
 ![Broker and Trigger](https://www.knative.dev/docs/eventing/images/broker-trigger-overview.svg)
 
