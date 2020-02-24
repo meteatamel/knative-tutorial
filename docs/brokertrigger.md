@@ -4,11 +4,13 @@ In [Complex Delivery with reply](complexdeliverywithreply.md) example, we see ho
 
 This model works but it's hard to maintain multiple Channels and Subscriptions. It also does not have the concept for filtering, so Services have to filter all messages themselves.
 
-A simpler model to work with is Broker and Trigger. Broker combines channel, reply, and filter functionality into a single resource. Trigger provides declarative filtering of all events. Replies are sent back into the Broker and filtered again.
+A simpler model to work with is Broker and Trigger. Broker combines channel, reply, and filter functionality into a single resource. Trigger provides declarative filtering of all events.
 
 In the Broker and Trigger model, the [Complex Delivery with reply](complexdeliverywithreply.md) example can be done as follows:
 
 ![Broker and Trigger Delivery](./images/broker-trigger-delivery.png)
+
+In this example, only Service2 sends a reply but any Service can reply back. Replies are sent back into the Broker and filtered again.
 
 ## Broker
 
@@ -29,7 +31,7 @@ NAME      READY   REASON   URL
 default   True             http://default-broker.default.svc.cluster.local
 ```
 
-There's also an underlying channel:
+There's also a default `InMemoryChannel` created and used by the Broker (but default channel can be [configured](https://knative.dev/docs/eventing/channels/default-channels/#setting-the-default-channel-configuration)):
 
 ```bash
 kubectl get channel
@@ -104,7 +106,7 @@ spec:
       name: service1
 ```
 
-Define [trigger2.yaml](../eventing/brokertrigger/trigger2.yaml) for service2.
+Define [trigger2.yaml](../eventing/brokertrigger/trigger2.yaml) for service2. It is the same as [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml) except it points to service2.
 
 Define [trigger3.yaml](../eventing/brokertrigger/trigger3.yaml). This filters `dev.knative.samples.hifromknative` events and sends them to service3:
 
