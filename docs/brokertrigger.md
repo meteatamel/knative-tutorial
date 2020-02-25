@@ -136,6 +136,17 @@ trigger.eventing.knative.dev/trigger2 created
 trigger.eventing.knative.dev/trigger3 created
 ```
 
+Under the covers, triggers creates the subscriptions:
+
+```bash
+kubectl get subscription
+
+NAME                                                    READY
+default-trigger1-8e05f7c3-702e-49b4-96f8-c46764aff45c   True
+default-trigger2-6fdd4bf3-992e-4edd-ac57-466235c2a09c   True
+default-trigger3-399562ed-65ec-4dba-bef2-0bb85d84081d   True
+```
+
 ## Verify
 
 Check running pods:
