@@ -7,8 +7,7 @@ spec:
   template:
     spec:
       containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/grpc-greeter:v1
+        - image: docker.io/meteatamel/grpc-greeter:v1
           ports:
           - name: h2c
             containerPort: 8080

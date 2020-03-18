@@ -77,7 +77,7 @@ To test your service, go to the greeter client and change the url from localhost
 
   ```csharp
   //httpClient.BaseAddress = new Uri("http://localhost:50051");
-  httpClient.BaseAddress = new Uri("http://grpc-greeter.default.34.77.201.183.nip.io");
+  httpClient.BaseAddress = new Uri("http://grpc-greeter.default.34.77.201.183.xip.io");
   ```
 
   Run the app:

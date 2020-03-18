@@ -43,11 +43,11 @@ kubectl get ksvc helloworld-local
 NAME               URL
 helloworld-local   http://helloworld-local.default.svc.cluster.local
 ```
-Notice that the URL has `svc.cluster.local` (and not our dummy nip.io domain) in it which makes it not publicly accessible. 
+Notice that the URL has `svc.cluster.local` (and not the xip.io domain) in it which makes it not publicly accessible.
 
 ## Turn a public service into local
 
-You can also take an existing public service and turn into a local service by simply adding the label. 
+You can also take an existing public service and turn into a local service by simply adding the label.
 
 For example, deploy the first version of helloworld service:
 
@@ -57,7 +57,7 @@ kubectl apply -f service-v1.yaml
 You should be able to access it via curl because it's public:
 
 ```bash
-curl http://helloworld.default.$ISTIO_INGRESS.nip.io
+curl http://helloworld.default.$ISTIO_INGRESS.xip.io
 
 Hello v1
 ```

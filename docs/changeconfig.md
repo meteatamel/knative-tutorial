@@ -55,7 +55,7 @@ route.serving.knative.dev/helloworld
 Test that the route is also updated and prints out `v2`:
 
 ```bash
-curl http://helloworld.default.$ISTIO_INGRESS.nip.io
+curl http://helloworld.default.$ISTIO_INGRESS.xip.io
 
 Hello v2
 ```
@@ -114,6 +114,6 @@ kubectl apply -f service-v3.yaml
 Test that the route is updated to `v3` with the new container. It prints not only `v3` (from env variable) but also says Bye (from container):
 
 ```bash
-curl http://helloworld.default.$ISTIO_INGRESS.nip.io
+curl http://helloworld.default.$ISTIO_INGRESS.xip.io
 Bye v3
 ```

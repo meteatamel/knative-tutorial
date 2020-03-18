@@ -103,7 +103,7 @@ Let's now send some traffic to our service to see that it scales up. Download an
 Send some requests to our sleeping service:
 
 ```bash
-fortio load -t 0 http://sleepingservice.default.$ISTIO_INGRESS.nip.io
+fortio load -t 0 http://sleepingservice.default.$ISTIO_INGRESS.xip.io
 ```
 
 After a while, you should see pods scaling up to 5:
@@ -111,11 +111,11 @@ After a while, you should see pods scaling up to 5:
 ```bash
 kubectl get pods
 
-sleepingservice-cphdq-deployment-5bf8ddb477-787sq  
-sleepingservice-cphdq-deployment-5bf8ddb477-b6ms9  
-sleepingservice-cphdq-deployment-5bf8ddb477-bmrds  
-sleepingservice-cphdq-deployment-5bf8ddb477-g2ssv  
-sleepingservice-cphdq-deployment-5bf8ddb477-kzt5t  
+sleepingservice-cphdq-deployment-5bf8ddb477-787sq
+sleepingservice-cphdq-deployment-5bf8ddb477-b6ms9
+sleepingservice-cphdq-deployment-5bf8ddb477-bmrds
+sleepingservice-cphdq-deployment-5bf8ddb477-g2ssv
+sleepingservice-cphdq-deployment-5bf8ddb477-kzt5t
 ```
 
 Once you kill Fortio, you should also see the sleeping service scale down to 1!

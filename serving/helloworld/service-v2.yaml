@@ -20,8 +20,7 @@ spec:
   template:
     spec:
       containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v1
+        - image: docker.io/meteatamel/helloworld:v1
           env:
             - name: TARGET
               value: "v2"

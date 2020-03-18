@@ -97,6 +97,13 @@ route.serving.knative.dev/helloworld   1m
 
 ## Test the service
 
+Starting with v0.13.0, Knative Serving comes up with an optional Kubernetes job
+that setups up xip.io as the default domain. This is useful for demo purposes
+and we're assuming that you have it setup. You can check the installation
+instructions on [Knative
+Installation](https://knative.dev/docs/install/any-kubernetes-cluster/) page or
+use the [install-serving](../setup/install-serving) script we provided.
+
 To test the service, we need to find the IP address of the Istio ingress gateway and the URL of the service.
 
 The IP address of Istio ingress is listed under `EXTERNAL_IP`:
@@ -116,6 +123,7 @@ The URL of the service follows this format: `{service}.{namespace}.example.com`.
 Make a request to your service:
 
 ```bash
-curl -H "Host: helloworld.default.example.com" http://$ISTIO_INGRESS
+curl http://helloworld.default.$ISTIO_INGRESS.xip.io
+
 Hello v1
 ```
