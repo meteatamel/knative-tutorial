@@ -6,7 +6,7 @@ DIR="$(dirname "$0")"
 set -v
 
 # Reference:
-# https://github.com/google/knative-gcp/blob/master/docs/install/README.md
+# https://github.com/google/knative-gcp/blob/master/docs/install/install-knative-gcp.md
 
 # Create the cloud-run-events namespace
 kubectl create namespace cloud-run-events
@@ -31,12 +31,12 @@ generic google-cloud-key --from-file=key.json=cloud-run-events.json
 
 # Install Cloud Run Eventing CRDs
 kubectl apply --selector pubsub.cloud.google.com/crd-install=true \
---filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
 kubectl apply --selector messaging.cloud.google.com/crd-install=true \
---filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
 kubectl apply --selector events.cloud.google.com/crd-install=true \
---filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
 
 # Install Cloud Run Eventing
 kubectl apply \
---filename https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"

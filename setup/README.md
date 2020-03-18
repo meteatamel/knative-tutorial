@@ -14,9 +14,9 @@ Create a GKE cluster *without* Istio add-on. We do this because the Istio versio
 ./create-gke-cluster
 ```
 
-## Install Istio with Cluster Local Gateway
+## Install Istio
 
-Install Istio and also the cluster local gateway that's needed to have Knative Services as event sinks:
+Install Istio:
 
 ```shell
 ./install-istio

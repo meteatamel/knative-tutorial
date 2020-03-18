@@ -22,5 +22,4 @@ spec:
         autoscaling.knative.dev/minScale: "1"
     spec:
       containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/translation:v1
+        - image: docker.io/meteatamel/translation:v1

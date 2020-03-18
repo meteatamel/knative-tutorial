@@ -6,12 +6,17 @@ DIR="$(dirname "$0")"
 . "${DIR}/config"
 
 # Install Eventing CRDs
-kubectl apply -l knative.dev/crd-install=true \
--f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-crds.yaml"
 
-# Install Eventing
-kubectl apply \
--f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing.yaml"
+
+# Install Eventing Core
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-core.yaml"
+
+# Install default in-memory channel (not suitable for production)
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/in-memory-channel.yaml"
+
+# Install default Broker
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/channel-broker.yaml"
 
 # Check all eventing pods have STATUS 'Running'
 # kubectl get pods -n knative-eventing

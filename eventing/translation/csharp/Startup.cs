@@ -23,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace translation
 {
@@ -53,13 +54,18 @@ namespace translation
                         {
                             var content = await reader.ReadToEndAsync();
                             logger.LogInformation($"Received content: {content}");
-    
-                            var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(content);
+
+                            var jObject = (JObject)JToken.Parse(content);
+                            var data = jObject["message"]["data"];
+                            var decodedData = GetDecodedData((string)data);
+                            logger.LogInformation($"Decoded data: {decodedData}");
+
+                            var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
                             logger.LogInformation($"Calling Translation API with request: {translationRequest}");
-                            
+
                             var response = await TranslateText(translationRequest);
                             logger.LogInformation($"Translated text: {response.TranslatedText}");
-                            if (response.DetectedSourceLanguage != null) 
+                            if (response.DetectedSourceLanguage != null)
                             {
                                 logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
                             }

@@ -53,14 +53,11 @@ namespace vision
                         {
                             var content = await reader.ReadToEndAsync();
                             logger.LogInformation($"Received content: {content}");
-                            
-                            dynamic json = JValue.Parse(content);
-                            if (json == null) return;
 
-                            var kind = json.kind;
-                            if (kind == null || kind != "storage#object") return;
+                            var jObject = (JObject)JToken.Parse(content);
+                            var attributes = jObject["message"]["attributes"];
 
-                            var storageUrl = (string)ConstructStorageUrl(json);
+                            var storageUrl = (string)ConstructStorageUrl(attributes);
                             logger.LogInformation($"Storage url: {storageUrl}");
 
                             var labels = await ExtractLabelsAsync(storageUrl);
@@ -79,10 +76,10 @@ namespace vision
             });
         }
 
-        private string ConstructStorageUrl(dynamic json)
+        private string ConstructStorageUrl(JToken attributes)
         {
-            return json == null? null 
-                : string.Format("gs://{0}/{1}", json.bucket, json.name);
+            return attributes == null? null
+                : string.Format("gs://{0}/{1}", attributes["bucketId"], attributes["objectId"]);
         }
 
         private async Task<string> ExtractLabelsAsync(string storageUrl)

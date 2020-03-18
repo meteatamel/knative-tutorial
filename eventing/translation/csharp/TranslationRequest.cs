@@ -21,7 +21,7 @@ namespace translation
     public class TranslationRequest
     {
         public string From;
-        
+
         public string To;
 
         public string Text;
