@@ -34,7 +34,6 @@ kubectl get pods -n knative-monitoring
 Knative Serving
 
 * [Hello World Serving](docs/helloworldserving.md)
-* [Configure domain](docs/configuredomain.md)
 * [Change configuration](docs/changeconfig.md)
 * [Traffic splitting](docs/trafficsplitting.md)
 * [Configure autoscaling](docs/configureautoscaling.md)
@@ -57,16 +56,18 @@ Knative Eventing
 * [Integrate with Vision API](docs/visioneventing.md)
 
 Build
+
 * Tekton Pipelines
-   * [Hello Tekton](docs/hellotekton.md)
-   * [Hello World Build](docs/tekton-helloworldbuild.md)
-   * [Docker Hub Build](docs/tekton-dockerbuild.md)
-   * [Kaniko Task Build](docs/tekton-kanikotaskbuild.md)
-* Knative Build (Deprecated) 
-   * [Hello World Build](docs/deprecated/helloworldbuild.md)
-   * [Docker Hub Build](docs/deprecated/dockerbuild.md)
-   * [Kaniko Build Template](docs/deprecated/kanikobuildtemplate.md)
-   * [Buildpacks Build Template](docs/deprecated/buildpacksbuildtemplate.md)
+  * [Hello Tekton](docs/hellotekton.md)
+  * [Hello World Build](docs/tekton-helloworldbuild.md)
+  * [Docker Hub Build](docs/tekton-dockerbuild.md)
+  * [Kaniko Task Build](docs/tekton-kanikotaskbuild.md)
+
+* Knative Build (Deprecated)
+  * [Hello World Build](docs/deprecated/helloworldbuild.md)
+  * [Docker Hub Build](docs/deprecated/dockerbuild.md)
+  * [Kaniko Build Template](docs/deprecated/kanikobuildtemplate.md)
+  * [Buildpacks Build Template](docs/deprecated/buildpacksbuildtemplate.md)
 
 -------
 
