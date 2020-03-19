@@ -26,7 +26,6 @@ spec:
     spec:
       containers:
       - name: user-container
-        # Replace {username} with your actual DockerHub
         image: docker.io/meteatamel/translation:v1
         imagePullPolicy: Always
         ports:

@@ -38,5 +38,4 @@ spec:
         type: image
         params:
         - name: url
-          # Replace {PROJECT_ID} with your GCP Project's ID.
-          value: gcr.io/{PROJECT_ID}/helloworld:kaniko-tekton
+          value: gcr.io/knative-atamel/helloworld:kaniko-tekton

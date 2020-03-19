@@ -32,15 +32,14 @@ spec:
   type: image
   params:
     - name: url
-      # Replace {username} with your actual DockerHub
-      value: docker.io/{username}/helloworld:tekton
+      value: docker.io/meteatamel/helloworld:tekton
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: TaskRun
 metadata:
   name: build-helloworld-docker
 spec:
-  serviceAccount: build-bot
+  serviceAccountName: build-bot
   taskRef:
     name: build-docker-image-from-git-source
   inputs:
@@ -53,7 +52,7 @@ spec:
         value: Dockerfile
       - name: pathToContext
         # Point to Dockerfile
-        value: /workspace/docker-source/serving/helloworld/csharp 
+        value: /workspace/docker-source/serving/helloworld/csharp
   outputs:
     resources:
       - name: builtImage

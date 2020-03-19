@@ -48,7 +48,7 @@ serviceaccount "build-bot" created
 
 ## Design the TaskRun
 
-We will use [Kaniko](https://github.com/GoogleContainerTools/kaniko) again. Create a [taskrun-build-helloworld-docker.yaml](../build/taskrun-build-helloworld-docker.yaml) file:
+Create a [taskrun-build-helloworld-docker.yaml](../build/taskrun-build-helloworld-docker.yaml) file:
 
 ```yaml
 apiVersion: tekton.dev/v1alpha1
@@ -80,7 +80,7 @@ kind: TaskRun
 metadata:
   name: build-helloworld-docker
 spec:
-  serviceAccount: build-bot
+  serviceAccountName: build-bot
   taskRef:
     name: build-docker-image-from-git-source
   inputs:
