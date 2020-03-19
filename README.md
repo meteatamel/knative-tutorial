@@ -19,6 +19,7 @@ We tested this tutorial on:
 * GKE: 1.15.9-gke.22
 * Istio: 1.4.6
 * Knative: 0.13.0
+* Tekton: 0.11.0-rc2
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 
