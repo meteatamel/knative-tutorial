@@ -13,3 +13,6 @@ kubectl get namespace knative-serving -o 'go-template={{index .metadata.labels "
 
 # Check Knative Eventing version
 kubectl get namespace knative-eventing -o 'go-template={{index .metadata.labels "eventing.knative.dev/release"}}'
+
+# Check Knative Monitoring version
+kubectl get namespace knative-monitoring -o 'go-template={{index .metadata.labels "serving.knative.dev/release"}}'

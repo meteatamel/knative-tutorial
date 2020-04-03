@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -v
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+# Install Monitoring Core Components
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-core.yaml"
+
+# Install Grafana and Prometheus observability plugins
+kubectl apply --filename https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-metrics-prometheus.yaml
+
+# Check all monitoring pods have STATUS 'Running'
+# kubectl get pods -n knative-monitoring
