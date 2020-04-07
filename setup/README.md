@@ -34,6 +34,12 @@ Install Istio:
 ./install-eventing
 ```
 
+## Install Knative Monitoring
+
+```shell
+./install-monitoring
+```
+
 ## Install Knative with GCP
 
 If you intend to read GCP Pub/Sub messages, go through these steps.
