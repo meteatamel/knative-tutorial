@@ -34,7 +34,9 @@ Install Istio:
 ./install-eventing
 ```
 
-## Install Knative Monitoring
+## (Optional) Install observability features
+
+Install observability features to enable logging, metrics, and request tracing in Serving and Eventing components:
 
 ```shell
 ./install-monitoring

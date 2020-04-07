@@ -8,8 +8,17 @@ DIR="$(dirname "$0")"
 # Install Monitoring Core Components
 kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-core.yaml"
 
-# Install Grafana and Prometheus observability plugins
-kubectl apply --filename https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-metrics-prometheus.yaml
+# Install Grafana and Prometheus for metrics
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-metrics-prometheus.yaml"
+
+# Install the ELK stack (Elasticsearch, Logstash and Kibana) for logs:
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-logs-elasticsearch.yaml"
+
+# Install Jaeger (in-memory) for distributed tracing
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-tracing-jaeger-in-mem.yaml"
+
+# Install Zipkin (in-memory) for distributed tracing
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/monitoring-tracing-zipkin-in-mem.yaml"
 
 # Check all monitoring pods have STATUS 'Running'
 # kubectl get pods -n knative-monitoring
