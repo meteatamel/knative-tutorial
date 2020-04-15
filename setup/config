@@ -2,7 +2,7 @@
 
 export KNATIVE_VERSION="0.13.0"
 
-export ISTIO_VERSION="1.4.6"
+export ISTIO_VERSION="1.4.7"
 
 export PROJECT_ID="knative-atamel"
 
