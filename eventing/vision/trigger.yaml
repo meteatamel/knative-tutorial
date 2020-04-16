@@ -1,7 +1,7 @@
 # The PubSub source output goes to the default Broker. This Trigger subscribes to events in the
 # default Broker.
 
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1beta1
 kind: Trigger
 metadata:
   name: trigger-vision

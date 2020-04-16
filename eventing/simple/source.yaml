@@ -1,11 +1,12 @@
-apiVersion: sources.eventing.knative.dev/v1alpha1
-kind: CronJobSource
+apiVersion: sources.knative.dev/v1alpha2
+kind: PingSource
 metadata:
   name: source
 spec:
   schedule: "* * * * *"
-  data: '{"message": "Hello world from cron!"}'
+  jsonData: '{"message": "Hello world from ping!"}'
   sink:
-    apiVersion: serving.knative.dev/v1
-    kind: Service
-    name: service
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: service

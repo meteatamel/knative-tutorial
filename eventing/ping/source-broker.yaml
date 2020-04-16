@@ -7,6 +7,6 @@ spec:
   jsonData: '{"message": "Hello world from ping!"}'
   sink:
     ref:
-      apiVersion: messaging.knative.dev/v1beta1
-      kind: InMemoryChannel
-      name: channel
+      apiVersion: eventing.knative.dev/v1beta1
+      kind: Broker
+      name: default

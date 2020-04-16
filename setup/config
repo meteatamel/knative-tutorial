@@ -1,12 +1,12 @@
 #!/bin/bash
 
-export KNATIVE_VERSION="0.13.0"
+export KNATIVE_VERSION="0.14.0"
 
-export ISTIO_VERSION="1.4.6"
+export ISTIO_VERSION="1.5.1"
 
 export PROJECT_ID="knative-atamel"
 
-export CLUSTER_NAME="knative-013"
+export CLUSTER_NAME="knative-014"
 
 export CLUSTER_REGION="europe-west1"
 
