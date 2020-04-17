@@ -4,6 +4,14 @@
 
 In this lab, we will use a [Cloud Storage](https://cloud.google.com/storage/docs/) bucket to store our images. We will also enable [Pub/Sub notifications](https://cloud.google.com/storage/docs/pubsub-notifications) on our bucket. This way, every time we add an image to the bucket, it will trigger a Pub/Sub message. This in turn will trigger our service where we will use Vision API to analyze the image.
 
+## Pub/Sub triggered service
+
+We're assuming that you already went through [Pub/Sub triggered
+service](pubsubeventing.md) tutorial and already setup Knative with GCP & PubSub
+Topic and also have a `CloudPubSubSource` defined.
+
+## Enable Vision API
+
 You want to make sure that the Vision API is enabled:
 
 ```bash

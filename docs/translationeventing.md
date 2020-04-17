@@ -4,7 +4,13 @@ In the [previous lab](helloworldeventing.md), our service simply logged out the 
 
 [Cloud Translation API](https://cloud.google.com/translate/docs/) is one of Machine Learning APIs of Google Cloud. It can dynamically translate text between thousands of language pairs. In this lab, we will use translation requests sent via Pub/Sub messages and use Translation API to translate text between languages.
 
-Since we're making calls to Google Cloud services, you need to make sure that the outbound network access is enabled, as described in the previous lab.
+## Pub/Sub triggered service
+
+We're assuming that you already went through [Pub/Sub triggered
+service](pubsubeventing.md) tutorial and already setup Knative with GCP & PubSub
+Topic and also have a `CloudPubSubSource` defined.
+
+## Enable Translation API
 
 You also want to make sure that the Translation API is enabled:
 

@@ -16,9 +16,10 @@ Alternatively, there are scripts in [setup](setup) folder to install Knative,
 Istio on Google Kubernetes Engine (GKE). You can follow the instructions there.
 
 We tested this tutorial on:
-* GKE: 1.15.9-gke.22
-* Istio: 1.4.6
-* Knative: 0.13.0
+
+* GKE: 1.15.11-gke.5
+* Istio: 1.5.1
+* Knative: 0.14.0
 * Tekton: 0.11.0-rc2
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
