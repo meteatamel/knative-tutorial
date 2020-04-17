@@ -46,34 +46,9 @@ In Tekton, you start with defining a [Task](https://github.com/tektoncd/pipeline
 
 Create a [task-helloworld.yaml](../build/task-helloworld.yaml) file:
 
-```yaml
-apiVersion: tekton.dev/v1alpha1
-kind: Task
-metadata:
-  name: hello-world
-spec:
-  steps:
-    - name: echo
-      image: ubuntu
-      command:
-        - echo
-      args:
-        - "hello world"
-```
-
 This is a simple task that will echo hello world. You can have one or more steps that are executed sequentially.
 
 A [TaskRun](https://github.com/tektoncd/pipeline/blob/master/docs/taskruns.md) runs the Task you defined. Create a [taskrun-helloworld.yaml](../build/taskrun-helloworld.yaml) file:
-
-```yaml
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
-metadata:
-  name: hello-world
-spec:
-  taskRef:
-    name: hello-world
-```
 
 Create the Task and the TaskRun:
 

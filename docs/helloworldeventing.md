@@ -63,45 +63,11 @@ docker build -t {username}/event-display:v1 .
 docker push {username}/event-display:v1
 ```
 
-### Kubernetes Service
+### Knative Service
 
 You can have any kind of addressable as event sinks (Kubernetes Service, Knative Service etc.). For this part, let's use a Kubernetes Service.
 
-Create a [service.yaml](../eventing/event-display/service.yaml) file:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: event-display
-spec:
-  selector:
-    matchLabels:
-      app: event-display
-  template:
-    metadata:
-      labels:
-        app: event-display
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/event-display:v1
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: event-display
-spec:
-  selector:
-    app: event-display
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-```
+Create a [kservice.yaml](../eventing/helloworld/kservice.yaml).
 
 This defines a Kubernetes Deployment and Service to receive messages.
 
@@ -118,23 +84,7 @@ service/event-display created
 
 Let's connect the Event Display service to the Broker with a Trigger.
 
-Create a [trigger-event-display.yaml](../eventing/event-display/trigger-event-display.yaml):
-
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger-event-display
-spec:
-  filter:
-    attributes:
-      type: event-display
-  subscriber:
-    ref:
-      apiVersion: v1
-      kind: Service
-      name: event-display
-```
+Create a [trigger.yaml](../eventing/helloworld/trigger.yaml).
 
 Notice that we're filtering with the required attribute `type` with value `event-display`. Only messages with this attribute will be sent to the `event-display` service.
 
@@ -161,26 +111,7 @@ You can only access the Broker from within your Eventing cluster. Normally, you 
 
 ### Curl Pod
 
-Create a [curl-pod.yaml](../eventing/event-display/curl-pod.yaml) file:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    run: curl
-  name: curl
-spec:
-  containers:
-  - image: radial/busyboxplus:curl
-    imagePullPolicy: IfNotPresent
-    name: curl
-    resources: {}
-    stdin: true
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
-    tty: true
-```
+Create a [curl-pod.yaml](../eventing/helloworld/curl-pod.yaml) file.
 
 Create the pod:
 

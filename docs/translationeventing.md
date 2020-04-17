@@ -48,79 +48,26 @@ docker push {username}/translation:v1
 
 ## Deploy the Translation service
 
-Create a [service.yaml](../eventing/translation/service.yaml):
+Create a [kservice.yaml](../eventing/translation/kservice.yaml).
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: translation
-spec:
-  selector:
-    matchLabels:
-      app: translation
-  template:
-    metadata:
-      labels:
-        app: translation
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/translation:v1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: translation
-spec:
-  selector:
-    app: translation
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-```
-
-This defines a Kubernetes Service to receive messages. 
+This defines a Knative Service to receive messages.
 
 ```bash
-kubectl apply -f service.yaml
-
-deployment.apps/translation created
-service/translation created
+kubectl apply -f kservice.yaml
 ```
 
 ## Create a trigger
 
-Last but not least, we need connect Translation service to Broker with a trigger. 
+Last but not least, we need connect Translation service to Broker with a trigger.
 
 Create a [trigger.yaml](../eventing/translation/trigger.yaml):
 
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger-translation
-spec:
-  subscriber:
-    ref:
-      #apiVersion: serving.knative.dev/v1
-      apiVersion: v1
-      kind: Service
-      name: translation
-```
-This connects the `testing` topic to `translation` service. 
+This connects the `testing` topic to `translation` service.
 
 Create the trigger:
 
 ```bash
 kubectl apply -f trigger.yaml
-
-trigger.eventing.knative.dev/trigger-translation created
 ```
 
 ## Test the service

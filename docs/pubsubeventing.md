@@ -10,21 +10,7 @@ We're assuming that you already went through [Install Knative with GCP](../setup
 
 Create a CloudPubSubSource to connect PubSub messages to Knative Eventing. The default [cloudpubsubsource.yaml](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/cloudpubsubsource.yaml) connects Pub/Sub messages to a service directly.
 
-Instead, create the following [cloudpubsubsource.yaml](../eventing/pubsub/cloudpubsubsource.yaml) to connect Pub/Sub messages to a Broker, so, we can have multiple triggers to invoke multiple services on the same message:
-
-```yaml
-apiVersion: events.cloud.google.com/v1alpha1
-kind: CloudPubSubSource
-metadata:
-  name: cloudpubsubsource-test
-spec:
-  topic: testing
-  sink:
-    ref:
-      apiVersion: eventing.knative.dev/v1alpha1
-      kind: Broker
-      name: default
-```
+Instead, create the following [cloudpubsubsource.yaml](../eventing/pubsub/cloudpubsubsource.yaml) to connect Pub/Sub messages to a Broker, so, we can have multiple triggers to invoke multiple services on the same message.
 
 Create the CloudPubSubSource:
 
@@ -57,23 +43,9 @@ For the event consumer, we can use the Event Display service in [Hello World Eve
 
 ## Trigger
 
-Connect the Event Display service to the Broker with a Trigger. 
+Connect the Event Display service to the Broker with a Trigger.
 
-Create a [trigger-event-display-pubsub.yaml](../eventing/pubsub/trigger-event-display-pubsub.yaml):
-
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger-event-display-pubsub
-spec:
-  subscriber:
-    ref:
-      #apiVersion: serving.knative.dev/v1
-      apiVersion: v1
-      kind: Service
-      name: event-display
-```
+Create a [trigger.yaml](../eventing/pubsub/trigger.yaml):
 
 Create the trigger:
 

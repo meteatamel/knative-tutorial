@@ -7,7 +7,7 @@ There are two autoscaler classes built into Knative:
 1. The default concurrency-based autoscaler which is based on the average number of in-flight requests per pod.
 2. Kubernetes CPU-based autoscaler which autoscales on CPU usage.
 
-The autoscaling can be bounded with `minScale` and `maxScale` annotations.  
+The autoscaling can be bounded with `minScale` and `maxScale` annotations.
 
 ## Create a 'Sleeping' service
 
@@ -44,38 +44,7 @@ docker push {username}/sleepingservice:v1
 
 ## Configure autoscaling
 
-Take a look at the [service.yaml](../serving/sleepingservice/service.yaml) file:
-
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: sleepingservice
-  namespace: default
-spec:
-  template:
-    metadata:
-      annotations:
-        # Default: Knative concurrency-based autoscaling with
-        # 100 requests in-flight per pod.
-        autoscaling.knative.dev/class:  kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/metric: concurrency
-        # Changed target to 1 to showcase autoscaling
-        autoscaling.knative.dev/target: "1"
-
-        # Alternative: Kubernetes CPU-based autoscaling.
-        # autoscaling.knative.dev/class:  hpa.autoscaling.knative.dev
-        # autoscaling.knative.dev/metric: cpu
-
-        # Disable scale to zero with a minScale of 1.
-        autoscaling.knative.dev/minScale: "1"
-        # Limit max scaling to 5 pods.
-        autoscaling.knative.dev/maxScale: "5"
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/meteatamel/sleepingservice:v1
-```
+Take a look at the [service.yaml](../serving/sleepingservice/service.yaml) file.
 
 Note the autoscaling annotations. We're keeping the default concurrency based autoscaling but setting the `target` to 1, so we can showcase autoscaling. We're also setting `minScale` to 1 and `maxScale` to 5. This will make sure that there is a single pod at all times and no more than 5 pods.
 
@@ -119,4 +88,3 @@ sleepingservice-cphdq-deployment-5bf8ddb477-kzt5t
 ```
 
 Once you kill Fortio, you should also see the sleeping service scale down to 1!
-

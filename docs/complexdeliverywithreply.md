@@ -19,23 +19,9 @@ inmemorychannel.messaging.knative.dev/channel2 created
 
 ## Source
 
-Create a `CronJobSource` to target the first channel.
+Create a `PingSource` to target the first channel.
 
-Define [source.yaml](../eventing/complexwithreply/source.yaml):
-
-```yaml
-apiVersion: sources.eventing.knative.dev/v1alpha1
-kind: CronJobSource
-metadata:
-  name: source
-spec:
-  schedule: "* * * * *"
-  data: '{"message": "Hello world from cron!"}'
-  sink:
-    apiVersion: messaging.knative.dev/v1alpha1
-    kind: InMemoryChannel
-    name: channel1
-```
+Define [source.yaml](../eventing/complexwithreply/source.yaml).
 
 Create the source:
 
@@ -49,35 +35,11 @@ cronjobsource.sources.eventing.knative.dev/source created
 
 Create Knative services that will subscribe to the first channel.
 
-Define [service1.yaml](../eventing/complexwithreply/service1.yaml):
-
-```yaml
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: service1
-spec:
-  template:
-    spec:
-      containers:
-        - image: docker.io/meteatamel/event-display:v1
-```
+Define [service1.yaml](../eventing/complexwithreply/service1.yaml).
 
 This simply logs out received messages.
 
-Define another [service2.yaml](../eventing/complexwithreply/service2.yaml) for the second service:
-
-```yaml
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: service2
-spec:
-  template:
-    spec:
-      containers:
-        - image: docker.io/meteatamel/event-display-with-reply:v1
-```
+Define another [service2.yaml](../eventing/complexwithreply/service2.yaml) for the second service.
 
 This logs the received message and replies back with another CloudEvent. You can check out the source in [event-display-with-reply](../eventing/event-display-with-reply/csharp) folder.
 
@@ -94,48 +56,9 @@ service.serving.knative.dev/service2 created
 
 Connect services to the channel with subscriptions.
 
-Define [subscription1.yaml](../eventing/complexwithreply/subscription1.yaml):
-
-```yaml
-apiVersion: messaging.knative.dev/v1alpha1
-kind: Subscription
-metadata:
-  name: subscription1
-spec:
-  channel:
-    apiVersion: messaging.knative.dev/v1alpha1
-    kind: InMemoryChannel
-    name: channel1
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: service1
-```
+Define [subscription1.yaml](../eventing/complexwithreply/subscription1.yaml).
 
 Define another [subscription2.yaml](../eventing/complexwithreply/subscription2.yaml) for the second subscription.
-
-```yaml
-apiVersion: messaging.knative.dev/v1alpha1
-kind: Subscription
-metadata:
-  name: subscription2
-spec:
-  channel:
-    apiVersion: messaging.knative.dev/v1alpha1
-    kind: InMemoryChannel
-    name: channel1
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: service2
-  reply:
-    ref:
-      apiVersion: messaging.knative.dev/v1alpha1
-      kind: InMemoryChannel
-      name: channel2
-```
 
 Notice that the reply of the second service is routed to the second channel.
 

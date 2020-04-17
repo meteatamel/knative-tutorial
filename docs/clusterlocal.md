@@ -6,26 +6,7 @@ So far, we've been deploying publicly accessible services. In this lab, we'll cr
 
 Create a [service-local.yaml](../serving/helloworld/service-local.yaml) file.
 
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: helloworld-local
-  namespace: default
-  labels:
-   serving.knative.dev/visibility: cluster-local
-spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v1
-          env:
-            - name: TARGET
-              value: "v1"
-```
-
-Notice how we labeled our service with `cluster-local`. This makes the service private. 
+Notice how we labeled our service with `cluster-local`. This makes the service private.
 
 Deploy the service:
 

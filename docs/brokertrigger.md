@@ -42,21 +42,7 @@ inmemorychannel.messaging.knative.dev/default-kne-trigger
 
 ## Source
 
-Create a `CronJobSource` to target the Broker. Define [source.yaml](../eventing/brokertrigger/source.yaml):
-
-```yaml
-apiVersion: sources.eventing.knative.dev/v1alpha1
-kind: CronJobSource
-metadata:
-  name: source
-spec:
-  schedule: "* * * * *"
-  data: '{"message": "Hello world from cron!"}'
-  sink:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Broker
-    name: default
-```
+Create a `PingSource` to target the Broker. Define [source.yaml].
 
 Create the source:
 
@@ -88,43 +74,13 @@ service.serving.knative.dev/service3 created
 
 Connect services to the Broker with Triggers.
 
-Define [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml). This filters CronJob events and sends them to service1:
-
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger1
-spec:
-  filter:
-    attributes:
-      type: dev.knative.cronjob.event
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: service1
-```
+Define [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml). This filters
+ping events and sends them to service1.
 
 Define [trigger2.yaml](../eventing/brokertrigger/trigger2.yaml) for service2. It is the same as [trigger1.yaml](../eventing/brokertrigger/trigger1.yaml) except it points to service2.
 
-Define [trigger3.yaml](../eventing/brokertrigger/trigger3.yaml). This filters `dev.knative.samples.hifromknative` events and sends them to service3:
+Define [trigger3.yaml](../eventing/brokertrigger/trigger3.yaml). This filters `dev.knative.samples.hifromknative` events and sends them to service3.
 
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger3
-spec:
-  filter:
-    attributes:
-      type: dev.knative.samples.hifromknative
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: service3
-```
 
 Create triggers:
 

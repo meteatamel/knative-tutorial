@@ -8,24 +8,7 @@ In [Knative Serving](https://github.com/knative/docs/tree/master/serving) whenev
 
 To see how Knative reacts to configuration changes, let's change the environment variable the container reads.
 
-Create a [service-v2.yaml](../serving/helloworld/service-v2.yaml) file that changes `TARGET` value to `v2`:
-
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: helloworld
-  namespace: default
-spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v1
-          env:
-            - name: TARGET
-              value: "v2"
-```
+Create a [service-v2.yaml](../serving/helloworld/service-v2.yaml) file that changes `TARGET` value to `v2`.
 
 Note that the image is still pointing to `v1` version. Apply the change:
 
@@ -86,24 +69,7 @@ docker build -t {username}/helloworld:v3 .
 docker push {username}/helloworld:v3
 ```
 
-Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld/service-v3.yaml) file that changes `TARGET` value to `v3` but more importantly, it refers to the new image with tag `v3`:
-
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: helloworld
-  namespace: default
-spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v3
-          env:
-            - name: TARGET
-              value: "v3"
-```
+Once the container image is pushed, create a [service-v3.yaml](../serving/helloworld/service-v3.yaml) file that changes `TARGET` value to `v3` but more importantly, it refers to the new image with tag `v3`.
 
 Apply the change:
 

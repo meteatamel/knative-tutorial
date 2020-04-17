@@ -10,23 +10,9 @@ Let's take a look at the simple delivery scenario where an Event Source sends me
 
 Knative supports a number of [Event Sources](https://knative.dev/docs/eventing/sources) to read all sorts of events in Knative.
 
-For this example, let's use CronJobSource, an in-memory Event Source that fires events based on given cron schedule:
+For this example, let's use Ping Source, an in-memory Event Source that fires events based on given cron schedule:
 
 Define [source.yaml](../eventing/simple/source.yaml):
-
-```yaml
-apiVersion: sources.eventing.knative.dev/v1alpha1
-kind: CronJobSource
-metadata:
-  name: source
-spec:
-  schedule: "* * * * *"
-  data: '{"message": "Hello world from cron!"}'
-  sink:
-    apiVersion: serving.knative.dev/v1
-    kind: Service
-    name: service
-```
 
 It sends a message every minute to an event sink, which is a Knative Service in this case.
 
@@ -34,27 +20,13 @@ Create the source:
 
 ```bash
 kubectl apply -f source.yaml
-
-cronjobsource.sources.eventing.knative.dev/source created
 ```
 
 ## Service
 
 Next, create the Knative service that CronJobSource will target.
 
-Define [service.yaml](../eventing/simple/service.yaml):
-
-```yaml
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: service
-spec:
-  template:
-    spec:
-      containers:
-        - image: docker.io/meteatamel/event-display:v1
-```
+Define [service.yaml](../eventing/simple/service.yaml).
 
 It's a Knative Service that simply logs out received messages.
 
@@ -62,8 +34,6 @@ Create the service:
 
 ```bash
 kubectl apply -f service.yaml
-
-service.serving.knative.dev/service created
 ```
 
 ## Verify

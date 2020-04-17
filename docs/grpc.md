@@ -28,23 +28,6 @@ docker push {username}/grpc-greeter:v1
 
 Create a [service.yaml](../serving/grpc/service.yaml) file.
 
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: grpc-greeter
-  namespace: default
-spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/grpc-greeter:v1
-          ports:
-          - name: h2c
-            containerPort: 8080
-```
-
 Notice how we need to define a port with `h2c` (HTTP/2) for gRPC to work. More info on this in [runtime-contract](https://github.com/knative/serving/blob/master/docs/runtime-contract.md#protocols-and-ports).
 
 Deploy the service:

@@ -10,14 +10,7 @@ In [Simple Delivery](simpledelivery.md) example, we see how an Event Source can 
 
 For this example, we'll use `InMemoryChannel`. It's not meant for production but ok for testing.
 
-Define [channel.yaml](../eventing/complex/channel.yaml):
-
-```yaml
-apiVersion: messaging.knative.dev/v1alpha1
-kind: InMemoryChannel
-metadata:
-  name: channel
-```
+Define [channel.yaml](../eventing/complex/channel.yaml).
 
 Create the channel:
 
@@ -29,21 +22,7 @@ inmemorychannel.messaging.knative.dev/channel created
 
 ## Source
 
-Define [source.yaml](../eventing/complex/source.yaml):
-
-```yaml
-apiVersion: sources.eventing.knative.dev/v1alpha1
-kind: CronJobSource
-metadata:
-  name: source
-spec:
-  schedule: "* * * * *"
-  data: '{"message": "Hello world from cron!"}'
-  sink:
-    apiVersion: messaging.knative.dev/v1alpha1
-    kind: InMemoryChannel
-    name: channel
-```
+Define [source.yaml](../eventing/complex/source.yaml).
 
 It sends a message every minute to an event sink, in this case, an `InMemoryChannel`.
 
@@ -57,19 +36,7 @@ cronjobsource.sources.eventing.knative.dev/source created
 
 ## Services
 
-Create [service1.yaml](../eventing/complex/service1.yaml):
-
-```yaml
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: service1
-spec:
-  template:
-    spec:
-      containers:
-        - image: docker.io/meteatamel/event-display:v1
-```
+Create [service1.yaml](../eventing/complex/service1.yaml).
 
 Create another [service2.yaml](../eventing/complex/service2.yaml) for the second service.
 
@@ -88,24 +55,7 @@ service.serving.knative.dev/service2 created
 
 Connect services to the channel with subscriptions.
 
-Define [subscription1.yaml](../eventing/complex/subscription1.yaml):
-
-```yaml
-apiVersion: messaging.knative.dev/v1alpha1
-kind: Subscription
-metadata:
-  name: subscription1
-spec:
-  channel:
-    apiVersion: messaging.knative.dev/v1alpha1
-    kind: InMemoryChannel
-    name: channel
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: service1
-```
+Define [subscription1.yaml](../eventing/complex/subscription1.yaml).
 
 Define another [subscription2.yaml](../eventing/complex/subscription2.yaml) for the second subscription.
 

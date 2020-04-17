@@ -38,80 +38,26 @@ docker push {username}/vision:v1
 
 ## Create Vision Service
 
-Create a [service.yaml](../eventing/vision/service.yaml) file.
+Create a [kservice.yaml](../eventing/vision/kservice.yaml) file.
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vision
-spec:
-  selector:
-    matchLabels:
-      app: vision
-  template:
-    metadata:
-      labels:
-        app: vision
-    spec:
-      containers:
-      - name: user-container
-        # Replace {username} with your actual DockerHub
-        image: docker.io/{username}/vision:v1
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: vision
-spec:
-  selector:
-    app: vision
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-```
-
-This defines a Kubernetes Service to receive messages. 
+This defines a Knative Service to receive messages.
 
 Create the Vision service:
 
 ```bash
-kubectl apply -f service.yaml
-
-deployment.apps/vision created
-service/vision created
+kubectl apply -f kservice.yaml
 ```
 
 ## Create a trigger
 
-We need connect Vision service to the Broker/ 
+We need connect Vision service to the Broker.
 
-Create a [trigger.yaml](../eventing/vision/trigger.yaml):
-
-```yaml
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Trigger
-metadata:
-  name: trigger-vision
-spec:
-  subscriber:
-    ref:
-      #apiVersion: serving.knative.dev/v1
-      apiVersion: v1
-      kind: Service
-      name: vision
-```
+Create a [trigger.yaml](../eventing/vision/trigger.yaml).
 
 Create the trigger:
 
 ```bash
 kubectl apply -f trigger.yaml
-
-trigger.eventing.knative.dev/trigger-vision created
 ```
 
 ## Create bucket and enable notifications

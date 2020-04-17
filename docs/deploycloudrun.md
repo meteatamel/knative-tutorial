@@ -52,7 +52,7 @@ gcloud builds submit --tag gcr.io/${PROJECT_ID}/helloworld:v1
 
 This builds and pushes the image to GCR using Cloud Build.  
 
-## Deploy to Cloud Run
+## Deploy
 
 Let's finally deploy our service to Cloud Run, it's a single gcloud command:
 

@@ -32,20 +32,6 @@ docker push {username}/twilio:v1
 
 Take a look at the [service.yaml](../serving/twilio/service.yaml) file.
 
-```yaml
-apiVersion: serving.knative.dev/v1alpha1
-kind: Service
-metadata:
-  name: twilio
-  namespace: default
-spec:
-  template:
-    spec:
-      containers:
-        # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/twilio:v1
-```
-
 After the container is pushed, deploy the app.
 
 ```bash
