@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: translation
+  name: event-display
 spec:
   selector:
     matchLabels:
-      app: translation
+      app: event-display
   template:
     metadata:
       labels:
-        app: translation
+        app: event-display
     spec:
       containers:
       - name: user-container
-        image: docker.io/meteatamel/translation:v1
+        image: docker.io/meteatamel/event-display:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -34,10 +34,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: translation
+  name: event-display
 spec:
   selector:
-    app: translation
+    app: event-display
   ports:
   - protocol: TCP
     port: 80
