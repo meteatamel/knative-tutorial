@@ -40,7 +40,7 @@ namespace helloworld
                 endpoints.MapGet("/", async context =>
                 {
                     var target = Environment.GetEnvironmentVariable("TARGET") ?? "World";
-                    await context.Response.WriteAsync($"Hello {target}!!\n");
+                    await context.Response.WriteAsync($"Hello {target}!!!\n");
                 });
             });
         }
