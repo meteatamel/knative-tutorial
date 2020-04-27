@@ -10,7 +10,11 @@ We're assuming that you already went through [Install Knative with GCP](../setup
 
 Create a CloudPubSubSource to connect PubSub messages to Knative Eventing. The default [cloudpubsubsource.yaml](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/cloudpubsubsource.yaml) connects Pub/Sub messages to a service directly.
 
-Instead, create the following [cloudpubsubsource.yaml](../eventing/pubsub/cloudpubsubsource.yaml) to connect Pub/Sub messages to a Broker, so, we can have multiple triggers to invoke multiple services on the same message.
+Instead, you the following [cloudpubsubsource.yaml](../eventing/pubsub/cloudpubsubsource.yaml) to connect Pub/Sub messages to a Broker, so, we can have multiple triggers to invoke multiple services on the same message.
+
+Note that there's an alternative
+[cloudpubsubsource-workload.yaml](../eventing/pubsub/cloudpubsubsource-workload.yaml).
+Use this version instead if you setup workload identity on GKE.
 
 Create the CloudPubSubSource:
 

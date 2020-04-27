@@ -18,4 +18,9 @@ kubectl apply --selector events.cloud.google.com/crd-install=true \
 kubectl apply \
 -f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
 
-bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane.sh)
+if [ "$1" == "workload" ]; then
+  bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane_gke.sh)
+else
+  bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane.sh)
+fi
+
