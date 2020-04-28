@@ -25,7 +25,7 @@ spec:
   # If running in GKE, we will ask the metadata server, change this if required.
   project: knative-atamel
   # If running with workload identity enabled, update googleServiceAccount.
-  googleServiceAccount: cloud-run-events@knative-atamel.iam.gserviceaccount.com
+  googleServiceAccount: cre-pubsub@knative-atamel.iam.gserviceaccount.com
   # If running with secret, here is the default secret name and key, change this if required.
   # secret:
   #  name: google-cloud-key
