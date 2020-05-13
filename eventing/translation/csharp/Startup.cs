@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.IO;
 using System.Threading.Tasks;
+using CloudNative.CloudEvents;
 using Google.Cloud.Translation.V2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,7 +40,7 @@ namespace translation
                 app.UseDeveloperExceptionPage();
             }
 
-            logger.LogInformation("Translation service is starting...");
+            logger.LogInformation("Service is starting...");
 
             app.UseRouting();
 
@@ -48,34 +48,33 @@ namespace translation
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    using (var reader = new StreamReader(context.Request.Body))
+                    var cloudEvent = await context.Request.ReadCloudEventAsync();
+
+                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
+
+                    try
                     {
-                        try
+                        var jObject = (JObject)JToken.Parse((string)cloudEvent.Data);
+                        var data = jObject["message"]["data"];
+                        var decodedData = GetDecodedData((string)data);
+                        logger.LogInformation($"Decoded data: {decodedData}");
+
+                        var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
+                        logger.LogInformation($"Calling Translation API with request: {translationRequest}");
+
+                        var response = await TranslateText(translationRequest);
+                        logger.LogInformation($"Translated text: {response.TranslatedText}");
+                        if (response.DetectedSourceLanguage != null)
                         {
-                            var content = await reader.ReadToEndAsync();
-                            logger.LogInformation($"Received content: {content}");
-
-                            var jObject = (JObject)JToken.Parse(content);
-                            var data = jObject["message"]["data"];
-                            var decodedData = GetDecodedData((string)data);
-                            logger.LogInformation($"Decoded data: {decodedData}");
-
-                            var translationRequest = JsonConvert.DeserializeObject<TranslationRequest>(decodedData);
-                            logger.LogInformation($"Calling Translation API with request: {translationRequest}");
-
-                            var response = await TranslateText(translationRequest);
-                            logger.LogInformation($"Translated text: {response.TranslatedText}");
-                            if (response.DetectedSourceLanguage != null)
-                            {
-                                logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
-                            }
-                            await context.Response.WriteAsync(response.TranslatedText);
+                            logger.LogInformation($"Detected language: {response.DetectedSourceLanguage}");
                         }
-                        catch (Exception e)
-                        {
-                            logger.LogError("Something went wrong: " + e.Message);
-                            await context.Response.WriteAsync(e.Message);
-                        }
+                        await context.Response.WriteAsync(response.TranslatedText);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError("Something went wrong: " + e.Message);
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync(e.Message);
                     }
                 });
             });
@@ -112,6 +111,19 @@ namespace translation
             {
                 throw new ArgumentException("Translation 'to' cannot be empty or null");
             }
+        }
+
+        private string GetEventLog(CloudEvent cloudEvent)
+        {
+            return $"ID: {cloudEvent.Id}\n"
+                + $"Source: {cloudEvent.Source}\n"
+                + $"Type: {cloudEvent.Type}\n"
+                + $"Subject: {cloudEvent.Subject}\n"
+                + $"DataSchema: {cloudEvent.DataSchema}\n"
+                + $"DataContentType: {cloudEvent.DataContentType}\n"
+                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
+                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
+                + $"Data: {cloudEvent.Data}";
         }
     }
 }
