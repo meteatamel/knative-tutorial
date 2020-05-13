@@ -32,7 +32,6 @@ dotnet build
 ## Create a Dockerfile
 
 Create a [Dockerfile](../eventing/event-display/csharp/Dockerfile) for the image.
-```
 
 ## What's Next?
 

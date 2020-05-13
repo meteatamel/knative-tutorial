@@ -37,7 +37,7 @@ namespace event_display_with_reply
                 app.UseDeveloperExceptionPage();
             }
 
-            logger.LogInformation("Event Display is starting...");
+            logger.LogInformation("Service is starting...");
 
             app.UseRouting();
 
@@ -47,11 +47,7 @@ namespace event_display_with_reply
                 {
                     var cloudEvent = await context.Request.ReadCloudEventAsync();
 
-                    logger.LogInformation($"Received CloudEvent\n"
-                        + $"Id: {cloudEvent.Id}\n"
-                        + $"Source: {cloudEvent.Source}\n"
-                        + $"Type: {cloudEvent.Type}\n"
-                        + $"Data: {cloudEvent.Data}");
+                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
 
                     var type = "dev.knative.samples.hifromknative";
                     var source = new Uri("urn:knative/eventing/samples/hello-world");
@@ -61,11 +57,7 @@ namespace event_display_with_reply
                         Data = JsonConvert.SerializeObject("This is a Knative reply!")
                     };
 
-                    logger.LogInformation($"Replying with CloudEvent\n"
-                        + $"Id: {newEvent.Id}\n"
-                        + $"Source: {newEvent.Source}\n"
-                        + $"Type: {newEvent.Type}\n"
-                        + $"Data: {newEvent.Data}");
+                    logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(newEvent));
 
                     //var content = new CloudEventContent(newEvent, ContentMode.Structured, new JsonEventFormatter());
 
@@ -78,6 +70,19 @@ namespace event_display_with_reply
                     await context.Response.WriteAsync(newEvent.Data.ToString());
                 });
             });
+        }
+
+        private string GetEventLog(CloudEvent cloudEvent)
+        {
+            return $"ID: {cloudEvent.Id}\n"
+                + $"Source: {cloudEvent.Source}\n"
+                + $"Type: {cloudEvent.Type}\n"
+                + $"Subject: {cloudEvent.Subject}\n"
+                + $"DataSchema: {cloudEvent.DataSchema}\n"
+                + $"DataContentType: {cloudEvent.DataContentType}\n"
+                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
+                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
+                + $"Data: {cloudEvent.Data}";
         }
     }
 }

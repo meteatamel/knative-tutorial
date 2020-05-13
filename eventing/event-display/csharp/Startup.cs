@@ -11,10 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System.IO;
+using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -34,7 +33,7 @@ namespace event_display
                 app.UseDeveloperExceptionPage();
             }
 
-            logger.LogInformation("Event Display is starting...");
+            logger.LogInformation("Service is starting...");
 
             app.UseRouting();
 
@@ -42,14 +41,24 @@ namespace event_display
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    using (var reader = new StreamReader(context.Request.Body))
-                    {
-                        var content = await reader.ReadToEndAsync();
-                        logger.LogInformation("Event Display received event: " + content);
-                        await context.Response.WriteAsync(content);
-                    }
+                    var cloudEvent = await context.Request.ReadCloudEventAsync();
+
+                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
                 });
             });
+        }
+
+        private string GetEventLog(CloudEvent cloudEvent)
+        {
+            return $"ID: {cloudEvent.Id}\n"
+                + $"Source: {cloudEvent.Source}\n"
+                + $"Type: {cloudEvent.Type}\n"
+                + $"Subject: {cloudEvent.Subject}\n"
+                + $"DataSchema: {cloudEvent.DataSchema}\n"
+                + $"DataContentType: {cloudEvent.DataContentType}\n"
+                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
+                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
+                + $"Data: {cloudEvent.Data}";
         }
     }
 }
