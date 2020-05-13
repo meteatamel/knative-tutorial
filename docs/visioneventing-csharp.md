@@ -31,7 +31,7 @@ Add Vision API NuGet package to our project:
 dotnet add package Google.Cloud.Vision.V1
 ```
 
-[Startup.cs](../eventing/vision/csharp/Startup.cs) checks for `storage#object` events. These events are emitted by Cloud Storage when a file is uploaded.  
+[Startup.cs](../eventing/vision/csharp/Startup.cs) checks for `storage#object` events. These events are emitted by Cloud Storage when a file is uploaded.
 
 ```csharp
 dynamic json = JValue.Parse(content);

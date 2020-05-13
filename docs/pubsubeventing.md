@@ -92,7 +92,7 @@ Wait a little and check that a pod is created:
 kubectl get pods
 ```
 
-You can inspect the logs of the pod (replace `<podid>` with actual pod id):
+Inspect the logs of the pod (replace `<podid>` with actual pod id):
 
 ```bash
 kubectl logs <podid> -c user-container --follow

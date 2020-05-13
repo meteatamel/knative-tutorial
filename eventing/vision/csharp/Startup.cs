@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CloudNative.CloudEvents;
 using Google.Cloud.Vision.V1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,7 +39,7 @@ namespace vision
                 app.UseDeveloperExceptionPage();
             }
 
-            logger.LogInformation("Vision service is starting...");
+            logger.LogInformation("Service is starting...");
 
             app.UseRouting();
 
@@ -47,39 +47,37 @@ namespace vision
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    using (var reader = new StreamReader(context.Request.Body))
+                    var cloudEvent = await context.Request.ReadCloudEventAsync();
+
+                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
+
+                    try
                     {
-                        try
-                        {
-                            var content = await reader.ReadToEndAsync();
-                            logger.LogInformation($"Received content: {content}");
+                        dynamic data = JValue.Parse((string)cloudEvent.Data);
+                        var storageUrl = (string)ConstructStorageUrl(data);
+                        logger.LogInformation($"Storage url: {storageUrl}");
 
-                            var jObject = (JObject)JToken.Parse(content);
-                            var attributes = jObject["message"]["attributes"];
+                        var labels = await ExtractLabelsAsync(storageUrl);
 
-                            var storageUrl = (string)ConstructStorageUrl(attributes);
-                            logger.LogInformation($"Storage url: {storageUrl}");
+                        var message = "This picture is labelled: " + labels;
+                        logger.LogInformation(message);
 
-                            var labels = await ExtractLabelsAsync(storageUrl);
-
-                            var message = "This picture is labelled: " + labels;
-                            logger.LogInformation(message);
-                            await context.Response.WriteAsync(message);
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError("Something went wrong: " + e.Message);
-                            await context.Response.WriteAsync(e.Message);
-                        }
+                        await context.Response.WriteAsync(message);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError("Something went wrong: " + e.Message);
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync(e.Message);
                     }
                 });
             });
         }
 
-        private string ConstructStorageUrl(JToken attributes)
+        private string ConstructStorageUrl(dynamic data)
         {
-            return attributes == null? null
-                : string.Format("gs://{0}/{1}", attributes["bucketId"], attributes["objectId"]);
+            return data == null? null
+                : string.Format("gs://{0}/{1}", data.bucket, data.name);
         }
 
         private async Task<string> ExtractLabelsAsync(string storageUrl)
@@ -94,6 +92,19 @@ namespace vision
                 .ToList();
 
             return string.Join(",", orderedLabels.ToArray());
+        }
+
+        private string GetEventLog(CloudEvent cloudEvent)
+        {
+            return $"ID: {cloudEvent.Id}\n"
+                + $"Source: {cloudEvent.Source}\n"
+                + $"Type: {cloudEvent.Type}\n"
+                + $"Subject: {cloudEvent.Subject}\n"
+                + $"DataSchema: {cloudEvent.DataSchema}\n"
+                + $"DataContentType: {cloudEvent.DataContentType}\n"
+                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
+                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
+                + $"Data: {cloudEvent.Data}";
         }
     }
 }
