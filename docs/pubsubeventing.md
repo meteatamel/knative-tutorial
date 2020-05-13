@@ -1,10 +1,18 @@
-# Pub/Sub triggered service
+# Cloud Pub/Sub triggered service
 
-In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a service with Knative Eventing. We'll roughly be following [CloudPubSubSource Example](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/README.md) docs page with slight modifications to make it easier to understand.
+In this sample, we'll take a look at how to connect GCP Pub/Sub messages to a service with Knative Eventing. We'll roughly be following [CloudPubSubSource Example](https://github.com/google/knative-gcp/blob/master/docs/examples/cloudpubsubsource/README.md) docs page.
 
 ## Knative with GCP & PubSub Topic
 
 We're assuming that you already went through [Install Knative with GCP](../setup/README.md) section of the setup.
+
+## Create a Pub/Sub topic
+
+Create a Pub/Sub topic where messages will be sent:
+
+```bash
+gcloud pubsub topics create testing
+```
 
 ## CloudPubSubSource
 

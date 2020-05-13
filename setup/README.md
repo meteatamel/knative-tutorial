@@ -81,12 +81,6 @@ Configure a Pub/Sub enabled Service Account with Workload identity:
 ./install-pubsub-serviceaccount workload
 ```
 
-Finaly, create a Pub/Sub topic where messages will be sent:
-
-```bash
-gcloud pubsub topics create testing
-```
-
 -------
 
 Thanks to [Mark Chmarny](https://github.com/mchmarny) for the idea and initial scripts.
