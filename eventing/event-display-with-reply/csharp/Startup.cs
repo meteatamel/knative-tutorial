@@ -13,6 +13,7 @@
 // limitations under the License.
 using System;
 using System.Net.Mime;
+using System.Text;
 using CloudNative.CloudEvents;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,30 +47,39 @@ namespace event_display_with_reply
                 endpoints.MapPost("/", async context =>
                 {
                     var cloudEvent = await context.Request.ReadCloudEventAsync();
-
                     logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
 
-                    var type = "dev.knative.samples.hifromknative";
-                    var source = new Uri("urn:knative/eventing/samples/hello-world");
-                    var newEvent = new CloudEvent(type, source)
-                    {
-                        DataContentType = new ContentType(MediaTypeNames.Application.Json),
-                        Data = JsonConvert.SerializeObject("This is a Knative reply!")
-                    };
+                    var replyEvent = GetEventReply();
+                    logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(replyEvent));
 
-                    logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(newEvent));
+                    // Structured format - Does not work for event replies for some reason
+                    // var formatter = new JsonEventFormatter();
+                    // byte[] data = formatter.EncodeStructuredEvent(replyEvent, out _);
+                    // context.Response.ContentType = "application/cloudevents+json;charset=UTF-8";
+                    // await context.Response.WriteAsync(Encoding.UTF8.GetString(data));
 
-                    //var content = new CloudEventContent(newEvent, ContentMode.Structured, new JsonEventFormatter());
-
-                    // TODO: There must be a better way to convert CloudEvent to HTTP response
-                    context.Response.ContentType = "application/json";
-                    context.Response.Headers.Add("Ce-Id", newEvent.Id);
+                    // Binary format
+                    //TODO: There must be a better way to convert CloudEvent to HTTP response
+                    context.Response.Headers.Add("Ce-Id", replyEvent.Id);
                     context.Response.Headers.Add("Ce-Specversion", "1.0");
-                    context.Response.Headers.Add("Ce-Type", newEvent.Type);
-                    context.Response.Headers.Add("Ce-Source", newEvent.Source.ToString());
-                    await context.Response.WriteAsync(newEvent.Data.ToString());
+                    context.Response.Headers.Add("Ce-Type", replyEvent.Type);
+                    context.Response.Headers.Add("Ce-Source", replyEvent.Source.ToString());
+                    context.Response.ContentType = "application/json;charset=utf-8";
+                    await context.Response.WriteAsync(replyEvent.Data.ToString());
                 });
             });
+        }
+
+        private CloudEvent GetEventReply()
+        {
+            var type = "dev.knative.samples.hifromknative";
+            var source = new Uri("urn:knative/eventing/samples/hello-world");
+            var replyEvent = new CloudEvent(type, source)
+            {
+                DataContentType = new ContentType(MediaTypeNames.Application.Json),
+                Data = JsonConvert.SerializeObject("This is a Knative reply!")
+            };
+            return replyEvent;
         }
 
         private string GetEventLog(CloudEvent cloudEvent)
