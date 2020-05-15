@@ -32,7 +32,6 @@ namespace Watermarker
     public class Startup
     {
         private const string Watermark = "Google Cloud Platform";
-        private static readonly Font Font = SystemFonts.CreateFont("Arial", 10); 
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -48,6 +47,10 @@ namespace Watermarker
             logger.LogInformation("Service is starting...");
 
             app.UseRouting();
+
+            var fontCollection = new FontCollection();
+            fontCollection.Install("Arial.ttf");
+            var font = fontCollection.CreateFont("Arial", 10);
 
             app.UseEndpoints(endpoints =>
             {
@@ -73,7 +76,7 @@ namespace Watermarker
                                 inputStream.Position = 0; // Reset to read
                                 using (var image = Image.Load(inputStream))
                                 {
-                                    using (var imageProcessed = image.Clone(ctx => ApplyScalingWaterMarkSimple(ctx, Font, Watermark, Color.DeepSkyBlue, 5)))
+                                    using (var imageProcessed = image.Clone(ctx => ApplyScalingWaterMarkSimple(ctx, font, Watermark, Color.DeepSkyBlue, 5)))
                                     {
                                         logger.LogInformation($"Added watermark to image '{inputObjectName}'");
                                         imageProcessed.SaveAsJpeg(outputStream);
