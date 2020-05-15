@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Filter
+namespace Resizer
 {
     public class Program
     {

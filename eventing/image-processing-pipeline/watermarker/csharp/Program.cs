@@ -15,7 +15,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Filter
+namespace Watermarker
 {
     public class Program
     {
