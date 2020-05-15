@@ -18,7 +18,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: dev.knative.samples.fileuploaded
+      type: dev.knative.samples.fileresized
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

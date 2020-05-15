@@ -22,13 +22,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Filter
 {
     public class Startup
     {
+        private const string EventType = "dev.knative.samples.fileuploaded";
+        private const string EventSource = "knative/eventing/samples/filter";
+
         public void ConfigureServices(IServiceCollection services)
         {
         }
@@ -96,9 +98,7 @@ namespace Filter
 
         private CloudEvent GetEventReply(object data)
         {
-            var type = "dev.knative.samples.fileuploaded";
-            var source = new Uri("urn:knative/eventing/samples/filter");
-            var replyEvent = new CloudEvent(type, source)
+            var replyEvent = new CloudEvent(EventType, new Uri($"urn:{EventSource}"))
             {
                 DataContentType = new ContentType(MediaTypeNames.Application.Json),
                 Data = data

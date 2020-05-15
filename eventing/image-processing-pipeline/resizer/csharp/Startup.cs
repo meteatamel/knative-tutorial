@@ -23,11 +23,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp.Processing;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Resizer
 {
     public class Startup
     {
+        private const string EventType = "dev.knative.samples.fileresized";
+        private const string EventSource = "knative/eventing/samples/resizer";
+
         private const int ThumbWidth = 400;
         private const int ThumbHeight = 400;
 
@@ -82,6 +88,19 @@ namespace Resizer
                                 var outputObjectName = $"{Path.GetFileNameWithoutExtension(inputObjectName)}-{ThumbWidth}x{ThumbHeight}.png";
                                 await client.UploadObjectAsync(outputBucket, outputObjectName, "image/png", outputStream);
                                 logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");
+
+                                var replyData = JsonConvert.SerializeObject(new {bucket = outputBucket, name = outputObjectName});
+                                var replyEvent = GetEventReply(replyData);
+                                logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(replyEvent));
+
+                                // Binary format
+                                //TODO: There must be a better way to convert CloudEvent to HTTP response
+                                context.Response.Headers.Add("Ce-Id", replyEvent.Id);
+                                context.Response.Headers.Add("Ce-Specversion", "1.0");
+                                context.Response.Headers.Add("Ce-Type", replyEvent.Type);
+                                context.Response.Headers.Add("Ce-Source", replyEvent.Source.ToString());
+                                context.Response.ContentType = "application/json;charset=utf-8";
+                                await context.Response.WriteAsync(replyEvent.Data.ToString());
                             }
                         }
                     }
@@ -105,6 +124,16 @@ namespace Resizer
                 + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
                 + $"SpecVersion: {cloudEvent.SpecVersion}\n"
                 + $"Data: {cloudEvent.Data}";
+        }
+
+        private CloudEvent GetEventReply(object data)
+        {
+            var replyEvent = new CloudEvent(EventType, new Uri($"urn:{EventSource}"))
+            {
+                DataContentType = new ContentType(MediaTypeNames.Application.Json),
+                Data = data
+            };
+            return replyEvent;
         }
     }
 }
