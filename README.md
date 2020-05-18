@@ -6,7 +6,7 @@ This tutorial shows how to use different parts of [Knative](https://www.knative.
 
 There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knative) that accompanies the tutorial.
 
-[![Serverless with Knative](./docs/images/serverless-with-knative.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
+[![Serverless with Knative](./docs/images/serverless-with-knative-cloudrun.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
 
 ## Setup
 
@@ -50,12 +50,16 @@ Knative Eventing
 * [Complex Delivery](docs/complexdelivery.md)
 * [Complex Delivery with reply](docs/complexdeliverywithreply.md)
 * [Broker and Trigger Delivery](docs/brokertrigger.md)
-* [Cloud Pub/Sub triggered service](docs/pubsubeventing.md)
-* [Cloud Storage triggered service](docs/storageeventing.md)
 * [Scheduled service](docs/scheduledeventing.md)
 * [Event registry](docs/eventregistry.md)
+
+Knative Eventing with Google Cloud
+
+* [Cloud Pub/Sub triggered service](docs/pubsubeventing.md)
+* [Cloud Storage triggered service](docs/storageeventing.md)
 * [Integrate with Translation API](docs/translationeventing.md)
 * [Integrate with Vision API](docs/visioneventing.md)
+* [Image processing pipeline](docs/image-processing-pipeline.md)
 
 Build
 

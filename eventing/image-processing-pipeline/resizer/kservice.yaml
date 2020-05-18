@@ -22,4 +22,4 @@ spec:
         - image: docker.io/meteatamel/resizer:v1
           env:
             - name: BUCKET
-              value: "knative-atamel-processed"
+              value: "knative-atamel-images-output"
