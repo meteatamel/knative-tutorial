@@ -19,12 +19,12 @@ metadata:
 spec:
   location: "europe-west1"
   data: "United Kingdom"
-  schedule: "* * * * *"
+  schedule: "0 16 * * *"
   sink:
     ref:
-      apiVersion: v1
-      kind: Service
-      name: query-runner
+      apiVersion: eventing.knative.dev/v1beta1
+      kind: Broker
+      name: default
 
 #    # If running in GKE, we will ask the metadata server, change this if required.
 #  project: MY_PROJECT
