@@ -60,6 +60,7 @@ Knative Eventing with Google Cloud
 * [Integrate with Translation API](docs/translationeventing.md)
 * [Integrate with Vision API](docs/visioneventing.md)
 * [Image processing pipeline](docs/image-processing-pipeline.md)
+* [BigQuery processing pipeline](docs/bigquery-processing-pipeline.md)
 
 Build
 
