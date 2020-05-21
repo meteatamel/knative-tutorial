@@ -64,7 +64,7 @@ namespace QueryRunner
                     var results = await RunQuery(client, country, logger);
                     logger.LogInformation("Executed query");
 
-                    var replyData = JsonConvert.SerializeObject(new {datasetId = DatasetId, tableId = _tableId});
+                    var replyData = JsonConvert.SerializeObject(new {datasetId = DatasetId, tableId = _tableId, country = country});
                     var replyEvent = GetEventReply(replyData);
                     logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(replyEvent));
 
