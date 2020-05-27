@@ -6,17 +6,19 @@ Storage events to various services.
 ![Image Processing Pipeline](./images/image-processing-pipeline.png)
 
 1. An image is saved to an input Cloud Storage bucket.
-2. Cloud Storage update event is read into Knative by CloudStorageSource.
-3. Filter service receives the event. It uses Vision API to determine if the
-   image is safe. If so, it passes a custom event onwards.
-4. Resizer service receives the custom event, resizes the image using
-   [ImageSharp](https://github.com/SixLabors/ImageSharp) library and passes the
-   event onwards.
-5. Watermark service receives the event, adds a watermark to the image using
-   [ImageSharp](https://github.com/SixLabors/ImageSharp) library and saves the
-   image to the output bucket.
-6. Labeler receives the event, extracts labels of the image with Vision API and
-   saves the labels to the output bucket.
+2. Cloud Storage update event is read into Knative by `CloudStorageSource`.
+3. Filter service receives the Cloud Storage event. It uses Vision API to
+   determine if the image is safe. If so, it creates a custom `CloudEvent` of
+   type `dev.knative.samples.fileuploaded` and passes it onwards.
+4. Resizer service receives the `fileuploaded` event, resizes the image using
+   [ImageSharp](https://github.com/SixLabors/ImageSharp) library, saves to the
+   resized image to the output bucket, creates a custom `CloudEvent` of type
+   `dev.knative.samples.fileresized` and passes the event onwards.
+5. Watermark service receives the `fileresized` event, adds a watermark to the
+   image using [ImageSharp](https://github.com/SixLabors/ImageSharp) library and
+   saves the image to the output bucket.
+6. Labeler receives the `fileuploaded` event, extracts labels of the image with
+   Vision API and saves the labels to the output bucket.
 
 ## Prerequisites
 
