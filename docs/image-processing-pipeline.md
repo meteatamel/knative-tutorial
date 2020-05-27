@@ -1,7 +1,7 @@
 # Image Processing Pipeline
 
 In this sample, we'll build an image processing pipeline to connect Google Cloud
-Storage events to various services.
+Storage events to various services with Knative Eventing on GKE.
 
 ![Image Processing Pipeline](./images/image-processing-pipeline.png)
 
@@ -79,6 +79,14 @@ NAME      READY   REASON   URL                                               AGE
 default   True             http://default-broker.default.svc.cluster.local   52m
 ```
 
+## Enable Vision API
+
+Some services use Vision API. Make sure the Vision API is enabled:
+
+```bash
+gcloud services enable vision.googleapis.com
+```
+
 ## Filter
 
 This service receives Cloud Storage events for saved images. It uses Vision API
@@ -120,7 +128,8 @@ The code of the service is in [resizer](../eventing/image-processing-pipeline/re
 folder.
 
 Create the service defined in
-[kservice.yaml](../eventing/image-processing-pipeline/resizer/kservice.yaml):
+[kservice.yaml](../eventing/image-processing-pipeline/resizer/kservice.yaml).
+Make sure you update the `BUCKET` env variable to the value of `$BUCKET2`:
 
 ```bash
 kubectl apply -f kservice.yaml
@@ -130,8 +139,6 @@ kubectl apply -f kservice.yaml
 
 The trigger of the service filters on `dev.knative.samples.fileuploaded` event
 types which is the custom event type emitted by the filter service.
-
-Make sure you update the `BUCKET` env variable in `trigger.yaml` to `$BUCKET2`.
 
 Create the trigger for the service defined in
 [trigger.yaml](../eventing/image-processing-pipeline/resizer/trigger.yaml):
@@ -152,7 +159,8 @@ The code of the service is in [watermarker](../eventing/image-processing-pipelin
 folder.
 
 Create the service defined in
-[kservice.yaml](../eventing/image-processing-pipeline/watermarker/kservice.yaml):
+[kservice.yaml](../eventing/image-processing-pipeline/watermarker/kservice.yaml).
+Make sure you update the `BUCKET` env variable to the value of `$BUCKET2`:
 
 ```bash
 kubectl apply -f kservice.yaml
@@ -162,8 +170,6 @@ kubectl apply -f kservice.yaml
 
 The trigger of the service filters on `dev.knative.samples.fileresized` event
 types which is the custom event type emitted by the resizer service.
-
-Make sure you update the `BUCKET` env variable in `trigger.yaml` to `$BUCKET2`.
 
 Create the trigger for the service defined in
 [trigger.yaml](../eventing/image-processing-pipeline/watermarker/trigger.yaml):
@@ -183,7 +189,8 @@ The code of the service is in [labeler](../eventing/image-processing-pipeline/la
 folder.
 
 Create the service defined in
-[kservice.yaml](../eventing/image-processing-pipeline/labeler/kservice.yaml):
+[kservice.yaml](../eventing/image-processing-pipeline/labeler/kservice.yaml).
+Make sure you update the `BUCKET` env variable to the value of `$BUCKET2`:
 
 ```bash
 kubectl apply -f kservice.yaml
@@ -193,8 +200,6 @@ kubectl apply -f kservice.yaml
 
 The trigger of the service filters on `dev.knative.samples.fileuploaded` event
 types which is the custom event type emitted by the filter service.
-
-Make sure you update the `BUCKET` env variable in `trigger.yaml` to `$BUCKET2`.
 
 Create the trigger for the service defined in
 [trigger.yaml](../eventing/image-processing-pipeline/labeler/trigger.yaml):
