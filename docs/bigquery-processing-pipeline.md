@@ -1,21 +1,22 @@
 # BigQuery Processing Pipeline
 
-In this sample, we'll build an BigQuery processing pipeline to query some
-Covid19 pubic dataset on a schedule, create charts out of them and then notify
-users about the new charts via SendGrid.
+In this sample, we'll build an BigQuery processing pipeline to query some public
+dataset on a schedule, create charts out of the data and then notify users about
+the new charts via SendGrid with Knative Eventing on GKE.
 
 ![BigQuery Processing Pipeline](./images/bigquery-processing-pipeline.png)
 
 1. Two `CloudSchedulerSources` are setup to call the `QueryRunner` service once
    a day for two countries.
-2. `QueryRunner` receives the scheduler event for each country, queries Covid-19
+2. `QueryRunner` receives the scheduler event for both country, queries Covid-19
    cases for the country using BigQuery's public Covid-19 dataset and saves the
-   result in a separate BigQuery table. Once done, `QueryRunner` sends a custom
-   message out.
-3. `ChartCreator` receives the custom message, creates a chart from BigQuery
-   data using `mathplotlib` and saves it to a Cloud Storage bucket.
-4. `Notifier` receives the object finalize event from the bucket via a
-   `CloudStorageSource` and sends an email notification to users using SendGrid.
+   result in a separate BigQuery table. Once done, `QueryRunner` returns a custom
+   `CloudEvent` of type `dev.knative.samples.querycompleted`.
+3. `ChartCreator` receives the `querycompleted` event, creates a chart from
+   BigQuery data using `mathplotlib` and saves it to a Cloud Storage bucket.
+4. `Notifier` receives the `com.google.cloud.storage.object.finalize` event from
+   the bucket via a `CloudStorageSource` and sends an email notification to
+   users using SendGrid.
 
 ## Prerequisites
 
