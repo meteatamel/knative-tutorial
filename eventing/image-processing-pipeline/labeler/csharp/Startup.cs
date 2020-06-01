@@ -16,7 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CloudNative.CloudEvents;
+using Common;
 using Google.Cloud.Storage.V1;
 using Google.Cloud.Vision.V1;
 using Microsoft.AspNetCore.Builder;
@@ -45,18 +45,19 @@ namespace Labeler
 
             app.UseRouting();
 
+            var eventAdapter = new CloudEventAdapter(logger);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await context.Request.ReadCloudEventAsync();
-                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
+                    var cloudEvent = await eventAdapter.ReadEvent(context);
 
                     try
                     {
                         dynamic data = JValue.Parse((string)cloudEvent.Data);
                         var inputObjectName = (string)data.name;
-                        var storageUrl = ConstructStorageUrl(data);
+                        var storageUrl = $"gs://{data.bucket}/{data.name}";
                         logger.LogInformation($"Storage url: {storageUrl}");
 
                         var labels = await ExtractLabelsAsync(storageUrl);
@@ -80,12 +81,6 @@ namespace Labeler
             });
         }
 
-        private string ConstructStorageUrl(dynamic data)
-        {
-            return data == null? null
-                : string.Format("gs://{0}/{1}", data.bucket, data.name);
-        }
-
         private async Task<string> ExtractLabelsAsync(string storageUrl)
         {
             var visionClient = ImageAnnotatorClient.Create();
@@ -98,19 +93,6 @@ namespace Labeler
                 .ToList();
 
             return string.Join(",", orderedLabels.ToArray());
-        }
-
-        private string GetEventLog(CloudEvent cloudEvent)
-        {
-            return $"ID: {cloudEvent.Id}\n"
-                + $"Source: {cloudEvent.Source}\n"
-                + $"Type: {cloudEvent.Type}\n"
-                + $"Subject: {cloudEvent.Subject}\n"
-                + $"DataSchema: {cloudEvent.DataSchema}\n"
-                + $"DataContentType: {cloudEvent.DataContentType}\n"
-                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
-                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
-                + $"Data: {cloudEvent.Data}";
         }
     }
 }

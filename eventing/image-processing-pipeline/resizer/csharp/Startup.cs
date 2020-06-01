@@ -26,13 +26,14 @@ using SixLabors.ImageSharp.Processing;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Common;
 
 namespace Resizer
 {
     public class Startup
     {
-        private const string EventType = "dev.knative.samples.fileresized";
-        private const string EventSource = "knative/eventing/samples/resizer";
+        private const string CloudEventType = "dev.knative.samples.fileresized";
+        private const string CloudEventSource = "knative/eventing/samples/resizer";
 
         private const int ThumbWidth = 400;
         private const int ThumbHeight = 400;
@@ -52,12 +53,13 @@ namespace Resizer
 
             app.UseRouting();
 
+            var eventAdapter = new CloudEventAdapter(logger);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await context.Request.ReadCloudEventAsync();
-                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
+                    var cloudEvent = await eventAdapter.ReadEvent(context);
 
                     dynamic data = JValue.Parse((string)cloudEvent.Data);
                     var inputBucket = (string)data.bucket;
@@ -90,17 +92,7 @@ namespace Resizer
                                 logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");
 
                                 var replyData = JsonConvert.SerializeObject(new {bucket = outputBucket, name = outputObjectName});
-                                var replyEvent = GetEventReply(replyData);
-                                logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(replyEvent));
-
-                                // Binary format
-                                //TODO: There must be a better way to convert CloudEvent to HTTP response
-                                context.Response.Headers.Add("Ce-Id", replyEvent.Id);
-                                context.Response.Headers.Add("Ce-Specversion", "1.0");
-                                context.Response.Headers.Add("Ce-Type", replyEvent.Type);
-                                context.Response.Headers.Add("Ce-Source", replyEvent.Source.ToString());
-                                context.Response.ContentType = "application/json;charset=utf-8";
-                                await context.Response.WriteAsync(replyEvent.Data.ToString());
+                                await eventAdapter.WriteEvent(CloudEventSource, CloudEventType, replyData, context);
                             }
                         }
                     }
@@ -111,29 +103,6 @@ namespace Resizer
                     }
                 });
             });
-        }
-
-        private string GetEventLog(CloudEvent cloudEvent)
-        {
-            return $"ID: {cloudEvent.Id}\n"
-                + $"Source: {cloudEvent.Source}\n"
-                + $"Type: {cloudEvent.Type}\n"
-                + $"Subject: {cloudEvent.Subject}\n"
-                + $"DataSchema: {cloudEvent.DataSchema}\n"
-                + $"DataContentType: {cloudEvent.DataContentType}\n"
-                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
-                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
-                + $"Data: {cloudEvent.Data}";
-        }
-
-        private CloudEvent GetEventReply(object data)
-        {
-            var replyEvent = new CloudEvent(EventType, new Uri($"urn:{EventSource}"))
-            {
-                DataContentType = new ContentType(MediaTypeNames.Application.Json),
-                Data = data
-            };
-            return replyEvent;
         }
     }
 }

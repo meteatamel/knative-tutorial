@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Common;
 
 // Based on https://github.com/SixLabors/Samples/blob/master/ImageSharp/DrawWaterMarkOnImage/Program.cs
 namespace Watermarker
@@ -48,6 +49,8 @@ namespace Watermarker
 
             app.UseRouting();
 
+            var eventAdapter = new CloudEventAdapter(logger);
+
             var fontCollection = new FontCollection();
             fontCollection.Install("Arial.ttf");
             var font = fontCollection.CreateFont("Arial", 10);
@@ -56,8 +59,7 @@ namespace Watermarker
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await context.Request.ReadCloudEventAsync();
-                    logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
+                    var cloudEvent = await eventAdapter.ReadEvent(context);
 
                     dynamic data = JValue.Parse((string)cloudEvent.Data);
                     var inputBucket = (string)data.bucket;
@@ -97,19 +99,6 @@ namespace Watermarker
                     }
                 });
             });
-        }
-
-        private string GetEventLog(CloudEvent cloudEvent)
-        {
-            return $"ID: {cloudEvent.Id}\n"
-                + $"Source: {cloudEvent.Source}\n"
-                + $"Type: {cloudEvent.Type}\n"
-                + $"Subject: {cloudEvent.Subject}\n"
-                + $"DataSchema: {cloudEvent.DataSchema}\n"
-                + $"DataContentType: {cloudEvent.DataContentType}\n"
-                + $"Time: {cloudEvent.Time?.ToUniversalTime():yyyy-MM-dd'T'HH:mm:ss.fff'Z'}\n"
-                + $"SpecVersion: {cloudEvent.SpecVersion}\n"
-                + $"Data: {cloudEvent.Data}";
         }
 
         private static IImageProcessingContext ApplyScalingWaterMarkSimple(IImageProcessingContext processingContext,

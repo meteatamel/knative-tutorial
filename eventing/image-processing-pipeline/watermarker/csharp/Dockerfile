@@ -3,17 +3,16 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /app
 
-# Install production dependencies.
-# Copy csproj and restore as distinct layers.
-COPY *.csproj ./
-RUN dotnet restore
-
 # Copy local code to the container image.
 COPY . ./
-WORKDIR /app
+
+# Install production dependencies
+# Restore as distinct layers
+RUN dotnet restore common/csharp
+RUN dotnet restore watermarker/csharp
 
 # Build a release artifact.
-RUN dotnet publish -c Release -o out
+RUN dotnet publish watermarker/csharp -c Release -o out
 
 # Use Microsoft's official runtime .NET image.
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
@@ -22,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # Copy the font file
-COPY Arial.ttf /app/Arial.ttf
+COPY watermarker/csharp/Arial.ttf /app/Arial.ttf
 
 # Run the web service on container startup.
 ENTRYPOINT ["dotnet", "Watermarker.dll"]
