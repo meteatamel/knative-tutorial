@@ -4,15 +4,18 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /app
 
 # Copy local code to the container image.
-COPY . ./
+COPY image/resizer ./image/resizer
+
+# Copy common library
+COPY common ./common
 
 # Install production dependencies
 # Restore as distinct layers
 RUN dotnet restore common/csharp
-RUN dotnet restore resizer/csharp
+RUN dotnet restore image/resizer/csharp
 
 # Build a release artifact.
-RUN dotnet publish resizer/csharp -c Release -o out
+RUN dotnet publish image/resizer/csharp -c Release -o out
 
 # Use Microsoft's official runtime .NET image.
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/

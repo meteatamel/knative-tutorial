@@ -4,15 +4,18 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /app
 
 # Copy local code to the container image.
-COPY . ./
+COPY image/labeler ./image/labeler
+
+# Copy common library
+COPY common ./common
 
 # Install production dependencies
 # Restore as distinct layers
 RUN dotnet restore common/csharp
-RUN dotnet restore filter/csharp
+RUN dotnet restore image/labeler/csharp
 
 # Build a release artifact.
-RUN dotnet publish filter/csharp -c Release -o out
+RUN dotnet publish image/labeler/csharp -c Release -o out
 
 # Use Microsoft's official runtime .NET image.
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
@@ -21,4 +24,4 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # Run the web service on container startup.
-ENTRYPOINT ["dotnet", "Filter.dll"]
+ENTRYPOINT ["dotnet", "Labeler.dll"]
