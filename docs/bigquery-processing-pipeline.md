@@ -43,9 +43,9 @@ Create 2 `CloudSchedulerSources` to create Cloud Scheduler jobs to call
 `QueryRunner` for 2 different countries (United Kingdom and Cyprus in this
 case).
 
-[schedulersource-uk.yaml](../eventing/bigquery-processing-pipeline/schedulersource-uk.yaml)
+[schedulersource-uk.yaml](../eventing/processing-pipelines/bigquery/schedulersource-uk.yaml)
 and
-[schedulersource-cy.yaml](../eventing/bigquery-processing-pipeline/schedulersource-cy.yaml)
+[schedulersource-cy.yaml](../eventing/processing-pipelines/bigquery/schedulersource-cy.yaml)
 defines the `CloudSchedulerSources` with the schedule and country information
 (under `data` field).
 
@@ -80,7 +80,7 @@ cre-scheduler-714c0b82-c441-42f4-8f99-0e2eac9a5869  europe-west1  0 17 * * * (UT
 Create a `CloudStorageSource` to connect storage events from the bucket where
 the charts will be saved to the `Broker` in Knative Eventing.
 
-[storagesource-charts.yaml](../eventing/bigquery-processing-pipeline/storagesource-charts.yaml)
+[storagesource-charts.yaml](../eventing/processing-pipelines/bigquery/storagesource-charts.yaml)
 defines the `CloudStorageSource`. Make sure you update the bucket name to the
 actual bucket name in your project.
 
@@ -124,11 +124,20 @@ the results to a new BigQuery table and passes a custom event onwards.
 
 ### Service
 
-The code of the service is in [query-runner](../eventing/bigquery-processing-pipeline/query-runner)
+The code of the service is in [query-runner](../eventing/processing-pipelines/bigquery/query-runner)
 folder.
 
+Inside the top level [processing-pipelines](../eventing/processing-pipelines) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=query-runner
+docker build -t meteatamel/${SERVICE_NAME}:v1 -f bigquery/${SERVICE_NAME}/csharp/Dockerfile .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
+
 Create the service defined in
-[kservice.yaml](../eventing/bigquery-processing-pipeline/query-runner/kservice.yaml).
+[kservice.yaml](../eventing/processing-pipelines/bigquery/query-runner/kservice.yaml).
 Make sure you update the `PROJECT_ID` with your actual project id. This is
 needed for the BigQuery client.
 
@@ -142,7 +151,7 @@ The trigger of the service filters on Cloud Scheduler execute events:
 `com.google.cloud.scheduler.job.execute`.
 
 Create the trigger for the service defined in
-[trigger.yaml](../eventing/bigquery-processing-pipeline/query-runner/trigger.yaml):
+[trigger.yaml](../eventing/processing-pipelines/bigquery/query-runner/trigger.yaml):
 
 ```bash
 kubectl apply -f trigger.yaml
@@ -157,11 +166,20 @@ Cloud Storage.
 
 ### Service
 
-The code of the service is in [chart-creator](../eventing/bigquery-processing-pipeline/chart-creator)
+The code of the service is in [chart-creator](../eventing/processing-pipelines/bigquery/chart-creator)
 folder.
 
+Inside the [chart-creator/python](../eventing/processing-pipelines/bigquery/chart-creator/python) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=chart-creator
+docker build -t meteatamel/${SERVICE_NAME}:v1 .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
+
 Create the service defined in
-[kservice.yaml](../eventing/bigquery-processing-pipeline/chart-creator/kservice.yaml).
+[kservice.yaml](../eventing/processing-pipelines/bigquery/chart-creator/kservice.yaml).
 Make sure you update the `BUCKET` env variable to the bucket name you created
 earlier.
 
@@ -175,7 +193,7 @@ The trigger of the service filters on `ddev.knative.samples.querycompleted` even
 types which is the custom event type emitted by the query service.
 
 Create the trigger for the service defined in
-[trigger.yaml](../eventing/bigquery-processing-pipeline/chart-creator/trigger.yaml):
+[trigger.yaml](../eventing/processing-pipelines/bigquery/chart-creator/trigger.yaml):
 
 ```bash
 kubectl apply -f trigger.yaml
@@ -191,11 +209,20 @@ for more details on how to setup SendGrid.
 
 ### Service
 
-The code of the service is in [notifier](../eventing/bigquery-processing-pipeline/notifier)
+The code of the service is in [notifier](../eventing/processing-pipelines/bigquery/notifier)
 folder.
 
+Inside the [notifier/python](../eventing/processing-pipelines/bigquery/notifier/python) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=notifier
+docker build -t meteatamel/${SERVICE_NAME}:v1 .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
+
 Create the service defined in
-[kservice.yaml](../eventing/bigquery-processing-pipeline/notifier/kservice.yaml).
+[kservice.yaml](../eventing/processing-pipelines/bigquery/notifier/kservice.yaml).
 Make sure you update `TO_EMAILS` and `SENDGRID_API_KEY` accordingly.
 
 ```bash
@@ -209,7 +236,7 @@ which is the event type emitted by the Cloud Storage when a file is saved to the
 bucket.
 
 Create the trigger for the service defined in
-[trigger.yaml](../eventing/bigquery-processing-pipeline/notifier/trigger.yaml):
+[trigger.yaml](../eventing/processing-pipelines/bigquery/notifier/trigger.yaml):
 
 ```bash
 kubectl apply -f trigger.yaml

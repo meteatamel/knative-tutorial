@@ -28,21 +28,39 @@ app = Flask(__name__)
 def handle_post():
     # TODO: Read proper CloudEvent with the SDK
     app.logger.info(pretty_print_POST(request))
-    content = json.loads(request.data)
+    bucket, name = read_event_data(request.data)
 
-    notify(content)
+    notify(bucket, name)
     return 'OK', 200
 
-def notify(content):
+def read_event_data(data):
+    content = json.loads(request.data)
+
+    event_data_reader = os.environ.get('EVENT_DATA_READER')
+
+    if event_data_reader == 'AuditLog':
+        app.logger.info("Received CloudEvent-AuditLog")
+        protoPayload = content['protoPayload']
+        resourceName = protoPayload['resourceName']
+        tokens = resourceName.split('/')
+        return tokens[3], tokens[5]
+
+    # TODO: Read proper CloudEvent with the SDK
+    app.logger.info("Received CloudEvent-Custom")
+    return content["bucket"], content["name"]
+
+def notify(bucket, name):
+
+    app.logger.info(f"notify with bucket '{bucket}' and name '{name}'")
 
     to_emails = os.environ.get('TO_EMAILS')
-    image_url = f'https://storage.googleapis.com/{content["bucket"]}/{content["name"]}'
+    image_url = f'https://storage.googleapis.com/{bucket}/{name}'
     app.logger.info(f"Sending email to '{to_emails}''")
 
     message = Mail(
         from_email='noreply@bigquery-pipeline.com',
         to_emails=to_emails,
-        subject=f'A new chart from BigQuery Pipeline - {content["timeCreated"]}',
+        subject='A new chart from BigQuery Pipeline',
         html_content=f'A new chart is available for you to view: {image_url} <br><img src="{image_url}"/>')
     try:
         app.logger.info(f"Email content {message}")

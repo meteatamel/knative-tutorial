@@ -13,6 +13,12 @@
 // limitations under the License.
 namespace Common
 {
+    public enum EventReaderType
+    {
+        CloudEvent,
+        HttpPost
+    }
+
     public enum EventWriterType
     {
         CloudEvent,

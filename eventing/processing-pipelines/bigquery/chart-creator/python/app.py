@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import base64
 import json
 import logging
 import os
@@ -26,15 +26,33 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def handle_post():
-    # TODO: Read proper CloudEvent with the SDK
-    app.logger.info("Received CloudEvent")
-    content = json.loads(request.data)
-    query_covid_dataset(content)
-    return 'OK', 200
-
-def query_covid_dataset(content):
+    content = read_event_data(request.data)
     country = content['country']
     tableId = content['tableId']
+    query_covid_dataset(country, tableId)
+
+    return 'OK', 200
+
+def read_event_data(data):
+    content = json.loads(request.data)
+
+    event_data_reader = os.environ.get('EVENT_DATA_READER')
+
+    if event_data_reader == 'PubSub':
+        app.logger.info("Received CloudEvent-PubSub")
+        message = content['message']
+        data = message['data']
+        decoded = base64.b64decode(data)
+        content = json.loads(decoded)
+        return content
+
+    # TODO: Read proper CloudEvent with the SDK
+    app.logger.info("Received CloudEvent-Custom")
+    return content
+
+def query_covid_dataset(country, tableId):
+
+    app.logger.info(f"query_covid_dataset with country '{country}' and tableId '{tableId}'")
 
     client = bigquery.Client()
 
