@@ -52,6 +52,7 @@ namespace Resizer
             var eventReader = new CloudEventReader(logger);
 
             var configReader = new ConfigReader(logger);
+            var outputBucket = configReader.ReadBucket();
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
             IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
@@ -83,7 +84,6 @@ namespace Resizer
                                     image.SaveAsPng(outputStream);
                                 }
 
-                                var outputBucket = Environment.GetEnvironmentVariable("BUCKET");
                                 var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-{ThumbWidth}x{ThumbHeight}.png";
                                 await client.UploadObjectAsync(outputBucket, outputObjectName, "image/png", outputStream);
                                 logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");

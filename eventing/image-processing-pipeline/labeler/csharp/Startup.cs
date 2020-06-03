@@ -68,7 +68,7 @@ namespace Labeler
 
                         using (var outputStream = new MemoryStream(Encoding.UTF8.GetBytes(labels)))
                         {
-                             var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-labels.txt";
+                            var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-labels.txt";
                             var client = await StorageClient.CreateAsync();
                             await client.UploadObjectAsync(outputBucket, outputObjectName, "text/plain", outputStream);
                             logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");

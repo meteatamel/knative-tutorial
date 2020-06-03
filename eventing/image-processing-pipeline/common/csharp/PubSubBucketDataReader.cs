@@ -33,7 +33,7 @@ namespace Common
             var data = (string)cloudEventData["message"]["data"];
             var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
  
-            var parsed = JValue.Parse(data);
+            var parsed = JValue.Parse(decoded);
             var bucket = (string)parsed["bucket"];
             var name = (string)parsed["name"];
             return (bucket, name);
