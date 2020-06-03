@@ -20,25 +20,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Common
 {
-    public class CloudEventAdapter : IEventAdapter
+    public class CloudEventWriter : IEventWriter
     {
+        private readonly string _eventSource;
+        private readonly string _eventType;
         private readonly ILogger _logger;
 
-        public CloudEventAdapter(ILogger logger)
+        public CloudEventWriter(string eventSource, string eventType, ILogger logger)
         {
+            _eventSource = eventSource;
+            _eventType = eventType;
             _logger = logger;
         }
 
-        public async Task<CloudEvent> ReadEvent(HttpContext context)
+        public async Task Write(string eventData, HttpContext context)
         {
-            var cloudEvent = await context.Request.ReadCloudEventAsync();
-            _logger.LogInformation($"Received CloudEvent\n{cloudEvent.GetLog()}");
-            return cloudEvent;
-        }
-
-        public async Task WriteEvent(string eventSource, string eventType, string eventData, HttpContext context)
-        {
-            var replyEvent = new CloudEvent(eventType, new Uri($"urn:{eventSource}"))
+            var replyEvent = new CloudEvent(_eventType, new Uri($"urn:{_eventSource}"))
             {
                 DataContentType = new ContentType("application/json"),
                 Data = eventData

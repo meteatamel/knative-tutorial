@@ -34,8 +34,8 @@ Create 2 unique storage buckets to save pre and post processed images:
 ```bash
 export BUCKET1="$(gcloud config get-value core/project)-images-input"
 export BUCKET2="$(gcloud config get-value core/project)-images-output"
-gsutil mb gs://$BUCKET1
-gsutil mb gs://$BUCKET2
+gsutil mb gs://${BUCKET1}
+gsutil mb gs://${BUCKET2}
 ```
 
 ## CloudStorageSource
@@ -97,6 +97,16 @@ to determine if the image is safe. If so, it passes a custom event onwards.
 The code of the service is in [filter](../eventing/image-processing-pipeline/filter)
 folder.
 
+Inside the top level
+[image-processing-pipeline](../eventing/image-processing-pipeline) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=filter
+docker build -t meteatamel/${SERVICE_NAME}:v1 -f ${SERVICE_NAME}/csharp/Dockerfile .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
+
 Create the service defined in
 [kservice.yaml](../eventing/image-processing-pipeline/filter/kservice.yaml):
 
@@ -126,6 +136,16 @@ event onwards.
 
 The code of the service is in [resizer](../eventing/image-processing-pipeline/resizer)
 folder.
+
+Inside the top level
+[image-processing-pipeline](../eventing/image-processing-pipeline) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=resizer
+docker build -t meteatamel/${SERVICE_NAME}:v1 -f ${SERVICE_NAME}/csharp/Dockerfile .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
 
 Create the service defined in
 [kservice.yaml](../eventing/image-processing-pipeline/resizer/kservice.yaml).
@@ -158,6 +178,16 @@ image to the output bucket.
 The code of the service is in [watermarker](../eventing/image-processing-pipeline/watermarker)
 folder.
 
+Inside the top level
+[image-processing-pipeline](../eventing/image-processing-pipeline) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=watermarker
+docker build -t meteatamel/${SERVICE_NAME}:v1 -f ${SERVICE_NAME}/csharp/Dockerfile .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
+
 Create the service defined in
 [kservice.yaml](../eventing/image-processing-pipeline/watermarker/kservice.yaml).
 Make sure you update the `BUCKET` env variable to the value of `$BUCKET2`:
@@ -187,6 +217,16 @@ saves the labels to the output bucket.
 
 The code of the service is in [labeler](../eventing/image-processing-pipeline/labeler)
 folder.
+
+Inside the top level
+[image-processing-pipeline](../eventing/image-processing-pipeline) folder, build
+and push the container image:
+
+```bash
+export SERVICE_NAME=labeler
+docker build -t meteatamel/${SERVICE_NAME}:v1 -f ${SERVICE_NAME}/csharp/Dockerfile .
+docker push meteatamel/${SERVICE_NAME}:v1
+```
 
 Create the service defined in
 [kservice.yaml](../eventing/image-processing-pipeline/labeler/kservice.yaml).
@@ -225,14 +265,14 @@ trigger-watermarker   True             default   http://watermarker.default.svc.
 You can upload an image to the input storage bucket:
 
 ```bash
-gsutil cp pics/beach.jpg gs://$BUCKET1
+gsutil cp  ../pictures/beach.jpg gs://${BUCKET1}
 ```
 
 After a minute or so, you should see resized, watermarked and labelled image in
 the output bucket:
 
 ```bash
-gsutil ls gs://$BUCKET2
+gsutil ls gs://${BUCKET2}
 
 gs://knative-atamel-images-output/beach-400x400-watermark.jpeg
 gs://knative-atamel-images-output/beach-400x400.png

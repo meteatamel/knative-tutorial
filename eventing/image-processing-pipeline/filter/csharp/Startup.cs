@@ -20,7 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Filter
 {
@@ -44,16 +43,29 @@ namespace Filter
 
             app.UseRouting();
 
-            var eventAdapter = new CloudEventAdapter(logger);
+            var eventReader = new CloudEventReader(logger);
+
+            var configReader = new ConfigReader(logger);
+            var bucketExpected = configReader.ReadBucket();
+            IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
+            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await eventAdapter.ReadEvent(context);
+                    var cloudEvent = await eventReader.Read(context);
+                    var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
 
-                    dynamic data = JValue.Parse((string)cloudEvent.Data);
-                    var storageUrl = $"gs://{data.bucket}/{data.name}";
+                    // This is only needed in Cloud Run (Managed) when the
+                    // events are not filtered by bucket yet.
+                    if (bucket != bucketExpected)
+                    {
+                        logger.LogInformation($"Input bucket '{bucket}' does not match with expected bucket '{bucketExpected}'");
+                        return;
+                    }
+
+                    var storageUrl = $"gs://{bucket}/{name}";
                     logger.LogInformation($"Storage url: {storageUrl}");
 
                     var safe = await DetectSafeSearch(storageUrl);
@@ -63,8 +75,8 @@ namespace Filter
                         return;
                     }
 
-                    var replyData = JsonConvert.SerializeObject(new {bucket = data.bucket, name = data.name});
-                    await eventAdapter.WriteEvent(CloudEventSource, CloudEventType, replyData, context);
+                    var replyData = JsonConvert.SerializeObject(new {bucket = bucket, name = name});
+                    await eventWriter.Write(replyData, context);
                 });
             });
         }

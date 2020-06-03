@@ -45,19 +45,22 @@ namespace Labeler
 
             app.UseRouting();
 
-            var eventAdapter = new CloudEventAdapter(logger);
+            var eventReader = new CloudEventReader(logger);
+
+            var configReader = new ConfigReader(logger);
+            var outputBucket = configReader.ReadBucket();
+            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await eventAdapter.ReadEvent(context);
-
                     try
                     {
-                        dynamic data = JValue.Parse((string)cloudEvent.Data);
-                        var inputObjectName = (string)data.name;
-                        var storageUrl = $"gs://{data.bucket}/{data.name}";
+                        var cloudEvent = await eventReader.Read(context);
+                        var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+
+                        var storageUrl = $"gs://{bucket}/{name}";
                         logger.LogInformation($"Storage url: {storageUrl}");
 
                         var labels = await ExtractLabelsAsync(storageUrl);
@@ -65,8 +68,7 @@ namespace Labeler
 
                         using (var outputStream = new MemoryStream(Encoding.UTF8.GetBytes(labels)))
                         {
-                            var outputBucket = Environment.GetEnvironmentVariable("BUCKET");
-                            var outputObjectName = $"{Path.GetFileNameWithoutExtension(inputObjectName)}-labels.txt";
+                             var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-labels.txt";
                             var client = await StorageClient.CreateAsync();
                             await client.UploadObjectAsync(outputBucket, outputObjectName, "text/plain", outputStream);
                             logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");

@@ -20,3 +20,6 @@ spec:
     spec:
       containers:
         - image: docker.io/meteatamel/filter:v1
+          env:
+            - name: BUCKET
+              value: "knative-atamel-images-input"

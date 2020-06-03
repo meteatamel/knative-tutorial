@@ -13,9 +13,16 @@
 // limitations under the License.
 namespace Common
 {
-    public enum EventFormat
+    public enum EventWriterType
     {
         CloudEvent,
+        PubSub
+    }
+
+    public enum BucketDataReaderType
+    {
+        CloudEvent,
+        AuditLog,
         PubSub
     }
 }

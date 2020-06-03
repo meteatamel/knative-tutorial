@@ -17,14 +17,12 @@ using SixLabors.ImageSharp;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
-using CloudNative.CloudEvents;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Common;
 
 // Based on https://github.com/SixLabors/Samples/blob/master/ImageSharp/DrawWaterMarkOnImage/Program.cs
@@ -49,7 +47,11 @@ namespace Watermarker
 
             app.UseRouting();
 
-            var eventAdapter = new CloudEventAdapter(logger);
+            var eventReader = new CloudEventReader(logger);
+
+            var configReader = new ConfigReader(logger);
+            var outputBucket = configReader.ReadBucket();
+            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             var fontCollection = new FontCollection();
             fontCollection.Install("Arial.ttf");
@@ -59,19 +61,16 @@ namespace Watermarker
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await eventAdapter.ReadEvent(context);
-
-                    dynamic data = JValue.Parse((string)cloudEvent.Data);
-                    var inputBucket = (string)data.bucket;
-                    var inputObjectName = (string)data.name;
-
                     try
                     {
+                        var cloudEvent = await eventReader.Read(context);
+                        var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+
                         using (var inputStream = new MemoryStream())
                         {
                             var client = await StorageClient.CreateAsync();
-                            await client.DownloadObjectAsync(inputBucket, inputObjectName, inputStream);
-                            logger.LogInformation($"Downloaded '{inputObjectName}' from bucket '{inputBucket}'");
+                            await client.DownloadObjectAsync(bucket, name, inputStream);
+                            logger.LogInformation($"Downloaded '{name}' from bucket '{bucket}'");
 
                             using (var outputStream = new MemoryStream())
                             {
@@ -80,13 +79,12 @@ namespace Watermarker
                                 {
                                     using (var imageProcessed = image.Clone(ctx => ApplyScalingWaterMarkSimple(ctx, font, Watermark, Color.DeepSkyBlue, 5)))
                                     {
-                                        logger.LogInformation($"Added watermark to image '{inputObjectName}'");
+                                        logger.LogInformation($"Added watermark to image '{name}'");
                                         imageProcessed.SaveAsJpeg(outputStream);
                                     }
                                 }
 
-                                var outputBucket = Environment.GetEnvironmentVariable("BUCKET");
-                                var outputObjectName = $"{Path.GetFileNameWithoutExtension(inputObjectName)}-watermark.jpeg";
+                                var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-watermark.jpeg";
                                 await client.UploadObjectAsync(outputBucket, outputObjectName, "image/jpeg", outputStream);
                                 logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");
                             }
@@ -94,7 +92,7 @@ namespace Watermarker
                     }
                     catch (Exception e)
                     {
-                        logger.LogError($"Error processing {inputObjectName}: " + e.Message);
+                        logger.LogError($"Error processing: " + e.Message);
                         throw e;
                     }
                 });

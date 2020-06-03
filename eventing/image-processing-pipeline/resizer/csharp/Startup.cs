@@ -14,17 +14,13 @@
 using System;
 using System.IO;
 using SixLabors.ImageSharp;
-using CloudNative.CloudEvents;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp.Processing;
-using System.Net.Mime;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Common;
 
@@ -53,25 +49,26 @@ namespace Resizer
 
             app.UseRouting();
 
-            var eventAdapter = new CloudEventAdapter(logger);
+            var eventReader = new CloudEventReader(logger);
+
+            var configReader = new ConfigReader(logger);
+            IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
+            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await eventAdapter.ReadEvent(context);
-
-                    dynamic data = JValue.Parse((string)cloudEvent.Data);
-                    var inputBucket = (string)data.bucket;
-                    var inputObjectName = (string)data.name;
-
                     try
                     {
+                        var cloudEvent = await eventReader.Read(context);
+                        var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+
                         using (var inputStream = new MemoryStream())
                         {
                             var client = await StorageClient.CreateAsync();
-                            await client.DownloadObjectAsync(inputBucket, inputObjectName, inputStream);
-                            logger.LogInformation($"Downloaded '{inputObjectName}' from bucket '{inputBucket}'");
+                            await client.DownloadObjectAsync(bucket, name, inputStream);
+                            logger.LogInformation($"Downloaded '{name}' from bucket '{bucket}'");
 
                             using (var outputStream = new MemoryStream())
                             {
@@ -81,24 +78,24 @@ namespace Resizer
                                     image.Mutate(x => x
                                         .Resize(ThumbWidth, ThumbHeight)
                                     );
-                                    logger.LogInformation($"Resized image '{inputObjectName}' to {ThumbWidth}x{ThumbHeight}");
+                                    logger.LogInformation($"Resized image '{name}' to {ThumbWidth}x{ThumbHeight}");
 
                                     image.SaveAsPng(outputStream);
                                 }
 
                                 var outputBucket = Environment.GetEnvironmentVariable("BUCKET");
-                                var outputObjectName = $"{Path.GetFileNameWithoutExtension(inputObjectName)}-{ThumbWidth}x{ThumbHeight}.png";
+                                var outputObjectName = $"{Path.GetFileNameWithoutExtension(name)}-{ThumbWidth}x{ThumbHeight}.png";
                                 await client.UploadObjectAsync(outputBucket, outputObjectName, "image/png", outputStream);
                                 logger.LogInformation($"Uploaded '{outputObjectName}' to bucket '{outputBucket}'");
 
                                 var replyData = JsonConvert.SerializeObject(new {bucket = outputBucket, name = outputObjectName});
-                                await eventAdapter.WriteEvent(CloudEventSource, CloudEventType, replyData, context);
+                                await eventWriter.Write(replyData, context);
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        logger.LogError($"Error processing {inputObjectName}: " + e.Message);
+                        logger.LogError($"Error processing: " + e.Message);
                         throw e;
                     }
                 });

@@ -17,10 +17,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace Common
 {
-    public interface IEventAdapter
+    public interface IEventWriter
     {
-        Task<CloudEvent> ReadEvent(HttpContext context);
-
-        Task WriteEvent(string eventSource, string eventType, string replyData, HttpContext context);
+        Task Write(string eventData, HttpContext context);
     }
 }
