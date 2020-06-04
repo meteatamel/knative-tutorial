@@ -39,17 +39,6 @@ namespace Common
             return projectId;
         }
 
-        public EventReaderType ReadEventReaderType()
-        {
-            var eventReaderConfig = Environment.GetEnvironmentVariable("EVENT_READER");
-            EventReaderType eventReaderType;
-            if (Enum.TryParse(eventReaderConfig, out eventReaderType))
-            {
-                return eventReaderType;
-            } 
-            return EventReaderType.CloudEvent;
-        }
-
         public IEventWriter ReadEventWriter(string CloudEventSource, string CloudEventType)
         {
             var eventWriterConfig = Environment.GetEnvironmentVariable("EVENT_WRITER");

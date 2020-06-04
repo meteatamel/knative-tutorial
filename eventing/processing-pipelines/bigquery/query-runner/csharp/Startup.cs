@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace QueryRunner
 {
@@ -52,8 +53,9 @@ namespace QueryRunner
 
             app.UseRouting();
 
+            var eventReader = new CloudEventReader(logger);
+
             var configReader = new ConfigReader(logger);
-            var eventReaderType = configReader.ReadEventReaderType();
             var projectId = configReader.ReadProjectId();
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
 
@@ -63,7 +65,8 @@ namespace QueryRunner
                 {
                     var client = await BigQueryClient.CreateAsync(projectId);
 
-                    var country = await ReadCountry(eventReaderType, context, logger);
+                    var cloudEvent = await eventReader.Read(context);
+                    var country = ReadCountry(cloudEvent);
 
                     _tableId = country.Replace(" ", "").ToLowerInvariant();
 
@@ -76,18 +79,22 @@ namespace QueryRunner
             });
         }
 
-        private async Task<string> ReadCountry(EventReaderType eventReaderType, HttpContext context, ILogger logger)
+        // TODO - Need to use the common library
+        private string ReadCountry(CloudEvent cloudEvent)
         {
-            if (eventReaderType == EventReaderType.HttpPost)
+            var eventDataReaderConfig = Environment.GetEnvironmentVariable("EVENT_DATA_READER");
+            BucketDataReaderType bucketDataReaderType;
+            if (Enum.TryParse(eventDataReaderConfig, out bucketDataReaderType))
             {
-                using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8))
+                switch (bucketDataReaderType)
                 {
-                    return await reader.ReadToEndAsync();
+                    case BucketDataReaderType.PubSub:
+                        var cloudEventData = JValue.Parse((string)cloudEvent.Data);
+                        var data = (string)cloudEventData["message"]["data"];
+                        var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
+                        return decoded;
                 }
             }
-
-            var eventReader = new CloudEventReader(logger);
-            var cloudEvent = await eventReader.Read(context);
             return (string)cloudEvent.Data;
         }
 

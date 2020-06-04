@@ -30,7 +30,15 @@ def handle_post():
     app.logger.info(pretty_print_POST(request))
     bucket, name = read_event_data(request.data)
 
-    notify(bucket, name)
+    bucketExpected = os.environ.get('BUCKET')
+
+    # This is only needed in Cloud Run (Managed) when the
+    # events are not filtered by bucket yet.
+    if bucket != bucketExpected:
+        app.logger.inf(f"Input bucket '{bucket}' does not match with expected bucket '{bucketExpected}'")
+    else:
+        notify(bucket, name)
+
     return 'OK', 200
 
 def read_event_data(data):
