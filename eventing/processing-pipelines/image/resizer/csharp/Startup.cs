@@ -52,7 +52,7 @@ namespace Resizer
             var eventReader = new CloudEventReader(logger);
 
             var configReader = new ConfigReader(logger);
-            var outputBucket = configReader.ReadBucket();
+            var outputBucket = configReader.Read("BUCKET");
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
             IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 

@@ -25,18 +25,11 @@ namespace Common
             _logger = logger;
         }
 
-        public string ReadBucket()
+        public string Read(string var)
         {
-            var bucket = Environment.GetEnvironmentVariable("BUCKET");
-            CheckArgExists(bucket, "BUCKET");
-            return bucket;
-        }
-
-        public string ReadProjectId()
-        {
-            var projectId = Environment.GetEnvironmentVariable("PROJECT_ID");
-            CheckArgExists(projectId, "PROJECT_ID");
-            return projectId;
+            var value = Environment.GetEnvironmentVariable(var);
+            CheckArgExists(value, var);
+            return value;
         }
 
         public IEventWriter ReadEventWriter(string CloudEventSource, string CloudEventType)

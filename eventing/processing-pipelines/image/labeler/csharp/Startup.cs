@@ -48,7 +48,7 @@ namespace Labeler
             var eventReader = new CloudEventReader(logger);
 
             var configReader = new ConfigReader(logger);
-            var outputBucket = configReader.ReadBucket();
+            var outputBucket = configReader.Read("BUCKET");
             IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>

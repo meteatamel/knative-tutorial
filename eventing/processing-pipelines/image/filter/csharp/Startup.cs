@@ -46,7 +46,7 @@ namespace Filter
             var eventReader = new CloudEventReader(logger);
 
             var configReader = new ConfigReader(logger);
-            var bucketExpected = configReader.ReadBucket();
+            var bucketExpected = configReader.Read("BUCKET");
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
             IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
