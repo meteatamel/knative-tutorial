@@ -68,7 +68,7 @@ namespace Filter
                     var storageUrl = $"gs://{bucket}/{name}";
                     logger.LogInformation($"Storage url: {storageUrl}");
 
-                    var safe = await DetectSafeSearch(storageUrl);
+                    var safe = await IsPictureSafe(storageUrl);
                     logger.LogInformation($"Is the picture safe? {safe}");
 
                     if (!safe) {
@@ -81,15 +81,15 @@ namespace Filter
             });
         }
 
-        private async Task<bool> DetectSafeSearch(string storageUrl)
+        private async Task<bool> IsPictureSafe(string storageUrl)
         {
             var visionClient = ImageAnnotatorClient.Create();
             var response = await visionClient.DetectSafeSearchAsync(Image.FromUri(storageUrl));
             return response.Adult < Likelihood.Possible
-                || response.Medical < Likelihood.Possible
-                || response.Racy < Likelihood.Possible
-                || response.Spoof < Likelihood.Possible
-                || response.Violence < Likelihood.Possible;
+                && response.Medical < Likelihood.Possible
+                && response.Racy < Likelihood.Possible
+                && response.Spoof < Likelihood.Possible
+                && response.Violence < Likelihood.Possible;
         }
     }
 }
