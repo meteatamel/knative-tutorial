@@ -69,6 +69,10 @@ You can have any kind of addressable as event sinks (Kubernetes Service, Knative
 
 Create a [kservice.yaml](../eventing/helloworld/kservice.yaml).
 
+```bash
+kubectl apply -f kservice.yaml
+```
+
 This defines a Kubernetes Deployment and Service to receive messages.
 
 Create the Event Display service:
@@ -91,7 +95,7 @@ Notice that we're filtering with the required attribute `type` with value `event
 Create the trigger:
 
 ```bash
-kubectl apply -f trigger-event-display.yaml
+kubectl apply -f trigger.yaml
 
 trigger.eventing.knative.dev/trigger-event-display created
 ```
