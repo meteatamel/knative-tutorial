@@ -172,7 +172,7 @@ spec:
     spec:
       containers:
         # Replace {username} with your actual DockerHub
-        - image: docker.io/{username}/helloworld:v1
+        - image: docker.io/{username}/helloworld:v4
           env:
             - name: TARGET
               value: "v4"
