@@ -69,7 +69,7 @@ def notify(bucket, name):
         from_email='noreply@bigquery-pipeline.com',
         to_emails=to_emails,
         subject='A new chart from BigQuery Pipeline',
-        html_content=f'A new chart is available for you to view: {image_url} <br><img src="{image_url}"/>')
+        html_content=f'<html><p>A new chart is available for you to view: <a href="{image_url}">{image_url}</a></p><img src="{image_url}"></img></html>')
     try:
         app.logger.info(f"Email content {message}")
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
