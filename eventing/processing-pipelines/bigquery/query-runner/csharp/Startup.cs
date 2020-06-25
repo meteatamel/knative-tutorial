@@ -98,26 +98,6 @@ namespace QueryRunner
             return (string)cloudEvent.Data;
         }
 
-        private async Task<BigQueryTable> GetOrCreateTable(BigQueryClient client)
-        {
-            var dataset = await client.GetOrCreateDatasetAsync(DatasetId);
-            try
-            {
-                await client.DeleteTableAsync(DatasetId, _tableId); // Start fresh each time
-            }
-            catch (Exception)
-            {
-                // Ignore. The table probably did not exist.
-            }
-            var table = await dataset.CreateTableAsync(_tableId, new TableSchemaBuilder
-            {
-                { "date", BigQueryDbType.Date },
-                { "num_reports", BigQueryDbType.Int64 },
-            }.Build());
-
-            return table;
-        }
-
         private async Task<BigQueryResults> RunQuery(BigQueryClient client, string country, ILogger<Startup> logger)
         {
             var sql = $@"SELECT date, SUM(confirmed) num_reports
@@ -126,13 +106,37 @@ namespace QueryRunner
                 GROUP BY date
                 ORDER BY date ASC";
 
+            var table = await GetOrCreateTable(client, logger);
+
             logger.LogInformation($"Executing query: \n{sql}");
+            return await client.ExecuteQueryAsync(sql, null, new QueryOptions
+            {
+                DestinationTable = table.Reference
+            });
+        }
 
-             var table = await GetOrCreateTable(client);
-             return await client.ExecuteQueryAsync(sql, null, new QueryOptions {
-                 DestinationTable = table.Reference
-             });
+        private async Task<BigQueryTable> GetOrCreateTable(BigQueryClient client, ILogger<Startup> logger)
+        {
+            logger.LogInformation($"Getting/creating destination dataset: {DatasetId}");
+            var dataset = await client.GetOrCreateDatasetAsync(DatasetId);
+            try
+            {
+                await client.DeleteTableAsync(DatasetId, _tableId); // Start fresh each time
+            }
+            catch (Exception e)
+            {
+                // Ignore. The table probably did not exist.
+                logger.LogError($"Table {_tableId} deletion failed: {e.Message}");
+            }
 
+            logger.LogInformation($"Getting/creation destination table: {_tableId}");
+            var table = await dataset.GetOrCreateTableAsync(_tableId, new TableSchemaBuilder
+            {
+                { "date", BigQueryDbType.Date },
+                { "num_reports", BigQueryDbType.Int64 },
+            }.Build());
+
+            return table;
         }
     }
 }
