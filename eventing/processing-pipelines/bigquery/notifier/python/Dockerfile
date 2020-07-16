@@ -2,8 +2,10 @@
 # https://hub.docker.com/_/python
 FROM python:3.7-slim
 
+COPY requirements.txt ./
+
 # Install production dependencies.
-RUN pip install Flask gunicorn sendgrid google.cloud.storage
+RUN pip install -r requirements.txt
 
 # Copy local code to the container image.
 WORKDIR /app
