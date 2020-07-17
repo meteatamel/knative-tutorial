@@ -100,11 +100,9 @@ namespace QueryRunner
 
         private async Task<BigQueryResults> RunQuery(BigQueryClient client, string country, ILogger<Startup> logger)
         {
-            var sql = $@"SELECT date, SUM(confirmed) num_reports
-                FROM `bigquery-public-data.covid19_jhu_csse.summary`
-                WHERE country_region = '{country}'
-                GROUP BY date
-                ORDER BY date ASC";
+            var sql = $@"SELECT date, cumulative_confirmed as num_reports
+                FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
+                WHERE cumulative_confirmed > 0 and country_name = '{country}' and subregion1_code is NULL";
 
             var table = await GetOrCreateTable(client, logger);
 
