@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: events.cloud.google.com/v1alpha1
+apiVersion: events.cloud.google.com/v1beta1
 kind: CloudPubSubSource
 metadata:
   name: cloudpubsubsource-test
@@ -24,8 +24,8 @@ spec:
       name: default
   # If running in GKE, we will ask the metadata server, change this if required.
   project: knative-atamel
-  # If running with workload identity enabled, update googleServiceAccount.
-  googleServiceAccount: cre-pubsub@knative-atamel.iam.gserviceaccount.com
+  # If running with workload identity enabled, update serviceAccountName.
+  serviceAccountName: default-cre-dataplane
   # If running with secret, here is the default secret name and key, change this if required.
   # secret:
   #  name: google-cloud-key

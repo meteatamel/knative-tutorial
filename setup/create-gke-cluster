@@ -12,14 +12,14 @@ gcloud services enable \
   containerregistry.googleapis.com
 
 # Create GKE cluster
-gcloud beta container clusters create $CLUSTER_NAME \
+gcloud beta container clusters create ${CLUSTER_NAME} \
   --addons HorizontalPodAutoscaling,HttpLoadBalancing \
-  --zone $CLUSTER_ZONE \
-  --cluster-version $CLUSTER_MASTER_VERSION \
-  --machine-type $CLUSTER_NODE_MACHINE_TYPE \
-  --num-nodes $CLUSTER_START_NODE_SIZE \
+  --zone ${CLUSTER_ZONE} \
+  --cluster-version ${CLUSTER_MASTER_VERSION} \
+  --machine-type ${CLUSTER_NODE_MACHINE_TYPE} \
+  --num-nodes ${CLUSTER_START_NODE_SIZE} \
   --min-nodes 1 \
-  --max-nodes $CLUSTER_MAX_NODE_SIZE \
+  --max-nodes ${CLUSTER_MAX_NODE_SIZE} \
   --enable-ip-alias \
   --enable-stackdriver-kubernetes \
   --enable-autoscaling \
@@ -27,8 +27,8 @@ gcloud beta container clusters create $CLUSTER_NAME \
   --scopes cloud-platform
 
 # Credentials
-gcloud container clusters get-credentials $CLUSTER_NAME \
-    --zone $CLUSTER_ZONE
+gcloud container clusters get-credentials ${CLUSTER_NAME} \
+    --zone ${CLUSTER_ZONE}
 
 # Cluster role binding
 kubectl create clusterrolebinding cluster-admin-binding \

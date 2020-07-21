@@ -16,7 +16,10 @@ kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATI
 kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/in-memory-channel.yaml"
 
 # Install default Broker
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/channel-broker.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/mt-channel-broker.yaml"
+
+# Install Sugar Controller
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-sugar-controller.yaml"
 
 # Check all eventing pods have STATUS 'Running'
 # kubectl get pods -n knative-eventing

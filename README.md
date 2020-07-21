@@ -17,10 +17,10 @@ Istio on Google Kubernetes Engine (GKE). You can follow the instructions there.
 
 We tested this tutorial on:
 
-* GKE: 1.15.11-gke.5
-* Istio: 1.5.1
-* Knative: 0.14.0
-* Tekton: 0.11.0-rc2
+* GKE: 1.16.11-gke.5
+* Istio: 1.5.7
+* Knative: 0.16.0
+* Tekton: 0.14.2
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 

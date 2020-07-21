@@ -18,9 +18,22 @@ kubectl apply --selector events.cloud.google.com/crd-install=true \
 kubectl apply \
 -f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
 
+# Needed for init scripts
+curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/lib.sh --output lib.sh
+gcloud config set run/cluster ${CLUSTER_NAME}
+gcloud config set run/cluster_location ${CLUSTER_ZONE}
+gcloud config set project ${PROJECT_ID}
+
 if [ "$1" == "workload" ]; then
-  bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane_gke.sh)
+  curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane_gke.sh --output init_control_plane_gke.sh
+  bash init_control_plane_gke.sh
+  rm init_control_plane_gke.sh
+  #bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane_gke.sh)
 else
-  bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane.sh)
+  #bash <(curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane.sh)
+  curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/init_control_plane.sh --output init_control_plane.sh
+  bash init_control_plane.sh
+  rm init_control_plane.sh
 fi
 
+rm lib.sh

@@ -31,7 +31,7 @@ We need to inject a Broker in the namespace where we want to receive messages.
 Let's use the default namespace.
 
 ```bash
-kubectl label namespace default knative-eventing-injection=enabled
+kubectl label ns default eventing.knative.dev/injection=enabled
 ```
 
 You should see a Broker in the namespace:
@@ -39,8 +39,8 @@ You should see a Broker in the namespace:
 ```bash
 kubectl get broker
 
-NAME      READY   REASON   URL                                                     AGE
-default   True             http://default-broker.default.svc.cluster.local   55s
+NAME      READY   REASON   URL
+default   True             http://broker-ingress.knative-eventing.svc.cluster.local/default/default
 ```
 
 ## Consumer
@@ -141,7 +141,7 @@ If you don't see a command prompt, try pressing enter.
 Send the event. Notice that we're sending with event type `event-display`:
 
 ```bash
-curl -v "http://default-broker.default.svc.cluster.local" \
+curl -v "http://broker-ingress.knative-eventing.svc.cluster.local/default/default" \
   -X POST \
   -H "Ce-Id: say-hello" \
   -H "Ce-Specversion: 1.0" \
