@@ -89,13 +89,19 @@ namespace QueryRunner
                 switch (bucketDataReaderType)
                 {
                     case BucketDataReaderType.PubSub:
+                        // TODO: This probably does not work anymore, test and fix
                         var cloudEventData = JValue.Parse((string)cloudEvent.Data);
                         var data = (string)cloudEventData["message"]["data"];
                         var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
                         return decoded;
                 }
             }
-            return (string)cloudEvent.Data;
+
+            //Data: {"custom_data":"Q3lwcnVz"}
+            var parsed = JValue.Parse((string)cloudEvent.Data);
+            var customData = (string)parsed["custom_data"];
+            var country = Encoding.UTF8.GetString(Convert.FromBase64String(customData));
+            return country;
         }
 
         private async Task<BigQueryResults> RunQuery(BigQueryClient client, string country, ILogger<Startup> logger)
