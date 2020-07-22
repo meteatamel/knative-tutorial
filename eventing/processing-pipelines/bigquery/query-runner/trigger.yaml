@@ -18,7 +18,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: com.google.cloud.scheduler.job.execute
+      type: google.cloud.scheduler.job.v1.executed
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

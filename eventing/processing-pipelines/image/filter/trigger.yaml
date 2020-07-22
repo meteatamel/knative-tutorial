@@ -18,7 +18,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: com.google.cloud.storage.object.finalize
+      type: google.cloud.storage.object.v1.finalized
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

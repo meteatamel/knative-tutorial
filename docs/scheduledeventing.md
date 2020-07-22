@@ -1,10 +1,10 @@
 # Scheduled service
 
-In this sample, we'll take a look at how to call a service on a schedule with CronJob event source in Knative Eventing.
+In this sample, we'll take a look at how to call a service on a schedule in Knative Eventing.
 
 ## Consumer
 
-For the event consumer, we can use the Event Display service in [Hello World Eventing](helloworldeventing.md) sample. Go through the steps mentioned there to create and deploy the Event Display service. 
+For the event consumer, we can use the Event Display service in [Hello World Eventing](helloworldeventing.md) sample. Go through the steps mentioned there to create and deploy the Event Display service.
 
 ## Ping event source - Service sink
 
@@ -12,7 +12,7 @@ Create a [source.yaml](../eventing/ping/source.yaml) in the same namespace (in t
 
 In this case, we have the service as the sink. We'll be calling the Event Display service every minute.
 
-Create the event source:
+Create the `PingSource`:
 
 ```bash
 kubectl apply -f source.yaml
@@ -30,7 +30,7 @@ Event Display received event: {"message":"Hello world from ping!"}
 
 ## Event source - Broker sink
 
-You can also setup CronJob source to point to a Broker instead.
+You can also setup `PingSource` to point to a Broker instead.
 
 Create a [source-broker.yaml](../eventing/ping/source-broker.yaml).
 
@@ -50,4 +50,4 @@ Notice that we're filtering on Ping events.
 kubectl apply -f trigger.yaml
 ```
 
-At this point, you should see CronJob events in the Event Display.
+At this point, you should see scheduled events in the Event Display.

@@ -67,7 +67,7 @@ storagesource-images-input   True             23s
 If there's no Broker in the default namespace already, label the namespace:
 
 ```bash
-kubectl label namespace default knative-eventing-injection=enabled
+kubectl label ns default eventing.knative.dev/injection=enabled
 ```
 
 You should see a Broker in the namespace:
@@ -261,7 +261,7 @@ trigger-watermarker   True             default   http://watermarker.default.svc.
 You can upload an image to the input storage bucket:
 
 ```bash
-gsutil cp  ../pictures/beach.jpg gs://${BUCKET1}
+gsutil cp  ../../pictures/beach.jpg gs://${BUCKET1}
 ```
 
 After a minute or so, you should see resized, watermarked and labelled image in

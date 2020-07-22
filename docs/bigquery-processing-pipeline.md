@@ -104,7 +104,7 @@ storagesource-charts         True
 If there's no Broker in the default namespace already, label the namespace:
 
 ```bash
-kubectl label namespace default knative-eventing-injection=enabled
+kubectl label ns default eventing.knative.dev/injection=enabled
 ```
 
 You should see a Broker in the namespace:

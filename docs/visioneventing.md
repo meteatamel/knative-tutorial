@@ -67,7 +67,7 @@ We can finally test our service by uploading an image to the bucket.
 Drop the image to the bucket in Google Cloud Console or use `gsutil` to copy the file as follows:
 
 ```bash
-gsutil cp ..pictures/beach.jpg gs://$BUCKET
+gsutil cp ../pictures/beach.jpg gs://${BUCKET}
 ```
 
 Wait a little and check that a pod is created:
