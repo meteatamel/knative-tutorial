@@ -46,7 +46,7 @@ namespace Filter
             var eventReader = new CloudEventReader(logger);
 
             var configReader = new ConfigReader(logger);
-            var bucketExpected = configReader.Read("BUCKET");
+            var bucketExpected = configReader.Read("BUCKET", false);
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
             IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
@@ -59,7 +59,7 @@ namespace Filter
 
                     // This is only needed in Cloud Run (Managed) when the
                     // events are not filtered by bucket yet.
-                    if (bucket != bucketExpected)
+                    if (bucketExpected != null && bucket != bucketExpected)
                     {
                         logger.LogInformation($"Input bucket '{bucket}' does not match with expected bucket '{bucketExpected}'");
                         return;
@@ -71,7 +71,8 @@ namespace Filter
                     var safe = await IsPictureSafe(storageUrl);
                     logger.LogInformation($"Is the picture safe? {safe}");
 
-                    if (!safe) {
+                    if (!safe)
+                    {
                         return;
                     }
 

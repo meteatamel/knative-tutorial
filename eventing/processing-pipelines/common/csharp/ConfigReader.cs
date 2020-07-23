@@ -25,10 +25,13 @@ namespace Common
             _logger = logger;
         }
 
-        public string Read(string var)
+        public string Read(string var, bool required = true)
         {
             var value = Environment.GetEnvironmentVariable(var);
-            CheckArgExists(value, var);
+            if (required)
+            {
+                CheckArgExists(value, var);
+            }
             return value;
         }
 
