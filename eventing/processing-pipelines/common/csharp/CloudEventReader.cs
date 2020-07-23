@@ -64,19 +64,20 @@ namespace Common
 
         public string ReadCloudSchedulerData(CloudEvent cloudEvent)
         {
-            var cloudEventData = JValue.Parse((string)cloudEvent.Data);
-
-            // TODO: TEST!
-            if (cloudEvent.Type == "com.google.cloud.pubsub.topic.publish")
+            switch (cloudEvent.Type)
             {
-                var data = (string)cloudEventData["message"]["data"];
-                var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
-                var parsed = JValue.Parse(decoded);
-                cloudEventData = parsed;
+                case "com.google.cloud.pubsub.topic.publish":
+                    var cloudEventData = JValue.Parse((string)cloudEvent.Data);
+                    var data = (string)cloudEventData["message"]["data"];
+                    var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
+                    return decoded;
+                case "com.google.cloud.scheduler.job.execute":
+                    return (string)cloudEvent.Data;
             }
 
             //Data: {"custom_data":"Q3lwcnVz"}
-            var customData = (string)cloudEventData["custom_data"];
+            var parsed = JValue.Parse((string)cloudEvent.Data);
+            var customData = (string)parsed["custom_data"];
             var country = Encoding.UTF8.GetString(Convert.FromBase64String(customData));
             return country;
         }
