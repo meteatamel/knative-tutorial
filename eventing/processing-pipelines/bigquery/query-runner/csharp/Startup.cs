@@ -55,9 +55,9 @@ namespace QueryRunner
 
             var eventReader = new CloudEventReader(logger);
 
-            var configReader = new ConfigReader(logger);
+            var configReader = new ConfigReader(logger, CloudEventSource, CloudEventType);
             var projectId = configReader.Read("PROJECT_ID");
-            IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
+            var eventWriter = configReader.ReadEventWriter();
 
             app.UseEndpoints(endpoints =>
             {

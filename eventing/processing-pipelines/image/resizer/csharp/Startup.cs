@@ -51,9 +51,9 @@ namespace Resizer
 
             var eventReader = new CloudEventReader(logger);
 
-            var configReader = new ConfigReader(logger);
+            var configReader = new ConfigReader(logger, CloudEventSource, CloudEventType);
             var outputBucket = configReader.Read("BUCKET");
-            IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
+            IEventWriter eventWriter = configReader.ReadEventWriter();
 
             app.UseEndpoints(endpoints =>
             {

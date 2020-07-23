@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.Text;
 using System.Threading.Tasks;
-using CloudNative.CloudEvents;
 using Google.Cloud.PubSub.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 
 namespace Common
 {

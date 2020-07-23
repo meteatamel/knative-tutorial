@@ -20,8 +20,14 @@ namespace Common
     {
         private ILogger _logger;
 
-        public ConfigReader(ILogger logger)
+        private string _cloudEventSource;
+
+        private string _cloudEventType;
+
+        public ConfigReader(ILogger logger, string cloudEventSource = null, string cloudEventType = null)
         {
+            _cloudEventSource = cloudEventSource;
+            _cloudEventType = cloudEventType;
             _logger = logger;
         }
 
@@ -35,25 +41,17 @@ namespace Common
             return value;
         }
 
-        public IEventWriter ReadEventWriter(string CloudEventSource, string CloudEventType)
+        public IEventWriter ReadEventWriter()
         {
-            var eventWriterConfig = Environment.GetEnvironmentVariable("EVENT_WRITER");
-            EventWriterType eventWriterType;
-            if (Enum.TryParse(eventWriterConfig, out eventWriterType))
+            // Use TOPIC_ID as an indicator for Pub/Sub event writer
+            var topicId = Read("TOPIC_ID", false);
+            if (topicId != null)
             {
-                switch (eventWriterType)
-                {
-                    case EventWriterType.PubSub:
-                        var projectId = Environment.GetEnvironmentVariable("PROJECT_ID");
-                        CheckArgExists(projectId, "PROJECT_ID");
-
-                        var topicId = Environment.GetEnvironmentVariable("TOPIC_ID");
-                        CheckArgExists(topicId, "TOPIC_ID");
-
-                        return new PubSubEventWriter(projectId, topicId, _logger);
-                }
+                var projectId = Read("PROJECT_ID");
+                return new PubSubEventWriter(projectId, topicId, _logger);
             }
-            return new CloudEventWriter(CloudEventSource, CloudEventType, _logger);
+
+            return new CloudEventWriter(_cloudEventSource, _cloudEventType, _logger);
         }
 
         private void CheckArgExists(string arg, string name)
