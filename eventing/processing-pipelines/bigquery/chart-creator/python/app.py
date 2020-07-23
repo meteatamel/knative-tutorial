@@ -36,10 +36,10 @@ def handle_post():
 def read_event_data(data):
     content = json.loads(request.data)
 
-    event_data_reader = os.environ.get('EVENT_DATA_READER')
+    type = request.headers['ce-type']
+    app.logger.info(f"Received ce-type '{type}'")
 
-    if event_data_reader == 'PubSub':
-        app.logger.info("Received CloudEvent-PubSub")
+    if type == 'com.google.cloud.pubsub.topic.publish':
         message = content['message']
         data = message['data']
         decoded = base64.b64decode(data)
@@ -47,7 +47,6 @@ def read_event_data(data):
         return content
 
     # TODO: Read proper CloudEvent with the SDK
-    app.logger.info("Received CloudEvent-Custom")
     return content
 
 def query_covid_dataset(country, tableId):

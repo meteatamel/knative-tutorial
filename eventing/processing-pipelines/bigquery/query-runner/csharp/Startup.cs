@@ -66,7 +66,7 @@ namespace QueryRunner
                     var client = await BigQueryClient.CreateAsync(projectId);
 
                     var cloudEvent = await eventReader.Read(context);
-                    var country = ReadCountry(cloudEvent);
+                    var country = eventReader.ReadCloudSchedulerData(cloudEvent);
 
                     _tableId = country.Replace(" ", "").ToLowerInvariant();
 
@@ -77,31 +77,6 @@ namespace QueryRunner
                     await eventWriter.Write(replyData, context);
                 });
             });
-        }
-
-        // TODO - Need to use the common library
-        private string ReadCountry(CloudEvent cloudEvent)
-        {
-            var eventDataReaderConfig = Environment.GetEnvironmentVariable("EVENT_DATA_READER");
-            BucketDataReaderType bucketDataReaderType;
-            if (Enum.TryParse(eventDataReaderConfig, out bucketDataReaderType))
-            {
-                switch (bucketDataReaderType)
-                {
-                    case BucketDataReaderType.PubSub:
-                        // TODO: This probably does not work anymore, test and fix
-                        var cloudEventData = JValue.Parse((string)cloudEvent.Data);
-                        var data = (string)cloudEventData["message"]["data"];
-                        var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
-                        return decoded;
-                }
-            }
-
-            //Data: {"custom_data":"Q3lwcnVz"}
-            var parsed = JValue.Parse((string)cloudEvent.Data);
-            var customData = (string)parsed["custom_data"];
-            var country = Encoding.UTF8.GetString(Convert.FromBase64String(customData));
-            return country;
         }
 
         private async Task<BigQueryResults> RunQuery(BigQueryClient client, string country, ILogger<Startup> logger)

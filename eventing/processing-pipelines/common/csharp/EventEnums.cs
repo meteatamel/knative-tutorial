@@ -18,11 +18,4 @@ namespace Common
         CloudEvent,
         PubSub
     }
-
-    public enum BucketDataReaderType
-    {
-        CloudEvent,
-        AuditLog,
-        PubSub
-    }
 }

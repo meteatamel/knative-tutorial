@@ -56,23 +56,6 @@ namespace Common
             return new CloudEventWriter(CloudEventSource, CloudEventType, _logger);
         }
 
-        public IBucketEventDataReader ReadEventDataReader()
-        {
-            var eventDataReaderConfig = Environment.GetEnvironmentVariable("EVENT_DATA_READER");
-            BucketDataReaderType bucketDataReaderType;
-            if (Enum.TryParse(eventDataReaderConfig, out bucketDataReaderType))
-            {
-                switch (bucketDataReaderType)
-                {
-                    case BucketDataReaderType.AuditLog:
-                        return new AuditLogBucketEventDataReader();
-                    case BucketDataReaderType.PubSub:
-                        return new PubSubBucketEventDataReader();
-                }
-            }
-            return new CloudEventBucketEventDataReader();
-        }
-
         private void CheckArgExists(string arg, string name)
         {
             if (string.IsNullOrEmpty(arg))

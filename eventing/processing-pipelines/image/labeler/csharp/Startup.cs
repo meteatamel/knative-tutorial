@@ -49,7 +49,6 @@ namespace Labeler
 
             var configReader = new ConfigReader(logger);
             var outputBucket = configReader.Read("BUCKET");
-            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>
             {
@@ -58,7 +57,7 @@ namespace Labeler
                     try
                     {
                         var cloudEvent = await eventReader.Read(context);
-                        var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+                        var (bucket, name) = eventReader.ReadCloudStorageData(cloudEvent);
 
                         var storageUrl = $"gs://{bucket}/{name}";
                         logger.LogInformation($"Storage url: {storageUrl}");

@@ -44,17 +44,16 @@ def handle_post():
 def read_event_data(data):
     content = json.loads(request.data)
 
-    event_data_reader = os.environ.get('EVENT_DATA_READER')
+    type = request.headers['ce-type']
+    app.logger.info(f"Received ce-type '{type}'")
 
-    if event_data_reader == 'AuditLog':
-        app.logger.info("Received CloudEvent-AuditLog")
+    if type == 'com.google.cloud.auditlog.event':
         protoPayload = content['protoPayload']
         resourceName = protoPayload['resourceName']
         tokens = resourceName.split('/')
         return tokens[3], tokens[5]
 
     # TODO: Read proper CloudEvent with the SDK
-    app.logger.info("Received CloudEvent-Custom")
     return content["bucket"], content["name"]
 
 def notify(bucket, name):

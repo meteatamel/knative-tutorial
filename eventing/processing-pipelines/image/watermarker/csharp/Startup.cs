@@ -51,7 +51,6 @@ namespace Watermarker
 
             var configReader = new ConfigReader(logger);
             var outputBucket = configReader.Read("BUCKET");
-            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             var fontCollection = new FontCollection();
             fontCollection.Install("Arial.ttf");
@@ -64,7 +63,7 @@ namespace Watermarker
                     try
                     {
                         var cloudEvent = await eventReader.Read(context);
-                        var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+                        var (bucket, name) = eventReader.ReadCloudStorageData(cloudEvent);
 
                         using (var inputStream = new MemoryStream())
                         {

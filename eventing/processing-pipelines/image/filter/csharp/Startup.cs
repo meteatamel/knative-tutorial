@@ -48,14 +48,13 @@ namespace Filter
             var configReader = new ConfigReader(logger);
             var bucketExpected = configReader.Read("BUCKET", false);
             IEventWriter eventWriter = configReader.ReadEventWriter(CloudEventSource, CloudEventType);
-            IBucketEventDataReader bucketEventDataReader = configReader.ReadEventDataReader();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/", async context =>
                 {
                     var cloudEvent = await eventReader.Read(context);
-                    var (bucket, name) = bucketEventDataReader.Read(cloudEvent);
+                    var (bucket, name) = eventReader.ReadCloudStorageData(cloudEvent);
 
                     // This is only needed in Cloud Run (Managed) when the
                     // events are not filtered by bucket yet.
