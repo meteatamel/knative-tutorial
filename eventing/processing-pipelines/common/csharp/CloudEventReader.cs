@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Common
 {
-    public class CloudEventReader : IEventReader
+    public class CloudEventReader
     {
         private readonly ILogger _logger;
 
