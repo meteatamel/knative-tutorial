@@ -10,27 +10,33 @@ Edit [config](config) file for your setup.
 
 Create a GKE cluster *without* Istio add-on. We do this because the Istio version of the add-on usually lags behind what Knative expects:
 
-```shell
+```sh
 ./create-gke-cluster
 ```
 
 ## Install Istio
 
-Install Istio:
-
-```shell
+```sh
 ./install-istio
 ```
 
 ## Install Knative Serving
 
-```shell
+```sh
 ./install-serving
+```
+
+## (Optional) Configure HTTPS
+
+If you intend to use HTTPS, configure it:
+
+```sh
+./configure-https
 ```
 
 ## Install Knative Eventing
 
-```shell
+```sh
 ./install-eventing
 ```
 
@@ -38,11 +44,11 @@ Install Istio:
 
 Install observability features to enable logging, metrics, and request tracing in Serving and Eventing components:
 
-```shell
+```sh
 ./install-monitoring
 ```
 
-## Install Knative with GCP
+## (Optional) Install Knative with GCP
 
 If you intend to read Google Cloud events, install [Knative GCP](https://github.com/google/knative-gcp) components.
 
@@ -56,7 +62,7 @@ Pick one of the mechanisms and use appropriate scripts.
 
 Install Knative with GCP:
 
-```bash
+```sh
 # Kubernetes secrets
 ./install-knative-gcp
 
@@ -66,7 +72,7 @@ Install Knative with GCP:
 
 Configure a Pub/Sub enabled Service Account for Data Plane:
 
-```bash
+```sh
 # Kubernetes secrets
 ./install-dataplane-serviceaccount
 
@@ -76,5 +82,6 @@ Configure a Pub/Sub enabled Service Account for Data Plane:
 
 -------
 
-Thanks to [Mark Chmarny](https://github.com/mchmarny) for the idea and initial
-scripts.
+Thanks to [Mark Chmarny](https://twitter.com/mchmarny) for the initial scripts
+and [James Ward](https://twitter.com/_JamesWard) for HTTPS configuration
+instructions.

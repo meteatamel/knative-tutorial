@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -v
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+# FIXME: Does not work 100% yet.
+
+# Configure HTTPS with Knative Serving
+# Ref: https://knative.dev/docs/serving/using-a-tls-cert/
+
+# Install cert manager
+# Ref: https://cert-manager.io/docs/installation/kubernetes/
+kubectl apply --validate=false -f \
+  "https://github.com/jetstack/cert-manager/releases/download/v${KNATIVE_VERSION}/cert-manager.yaml"
+
+kubectl wait --for=condition=Available -n cert-manager deployments/cert-manager-webhook
+
+# ClusterIssuer for HTTP-01 challenge
+# Ref: https://knative.dev/docs/serving/using-auto-tls/
+kubectl apply -f - <<EOF
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-http01-issuer
+spec:
+  acme:
+    privateKeySecretRef:
+      name: letsencrypt
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - http01:
+       ingress:
+         class: istio
+EOF
+
+# Install networking-certmanager deployment
+kubectl apply -f \
+  "https://github.com/knative/net-certmanager/releases/download/v${KNATIVE_VERSION}/release.yaml"
+
+# (Optional) Install networking-ns-cert component
+kubectl apply -f \
+  "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/serving-nscert.yaml"
+
+# Configure config-certmanager ConfigMap
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-certmanager
+  namespace: knative-serving
+  labels:
+    networking.knative.dev/certificate-provider: cert-manager
+data:
+  issuerRef: |
+    kind: ClusterIssuer
+    name: letsencrypt-http01-issuer
+EOF
+
+# Turn on Auto TLS
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-network
+  namespace: knative-serving
+data:
+  autoTLS: Enabled
+  httpProtocol: Enabled
+EOF
