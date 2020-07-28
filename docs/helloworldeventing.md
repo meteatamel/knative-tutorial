@@ -65,23 +65,13 @@ docker push {username}/event-display:v1
 
 ### Knative Service
 
-You can have any kind of addressable as event sinks (Kubernetes Service, Knative Service etc.). For this part, let's use a Kubernetes Service.
+You can have any kind of addressable as event sinks (Kubernetes Service, Knative
+Service etc.).
 
 Create a [kservice.yaml](../eventing/helloworld/kservice.yaml).
 
 ```bash
 kubectl apply -f kservice.yaml
-```
-
-This defines a Kubernetes Deployment and Service to receive messages.
-
-Create the Event Display service:
-
-```bash
-kubectl apply -f service.yaml
-
-deployment.apps/event-display created
-service/event-display created
 ```
 
 ## Trigger
