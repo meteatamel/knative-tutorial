@@ -29,7 +29,7 @@ default   True             http://default-broker.default.svc.cluster.local
 
 *Note:* If your environment doesn't support automatic injection, refer to [Broker](broker.md).
 
-Now, create a CronJob event source. You can use the [cronjob-source-broker.yaml](../eventing/cronjob/cronjob-source-broker.yaml) from [ScheduledEventing](scheduledeventing.md).
+Now, create a PingSource event source. You can use the [source-broker.yaml](../eventing/ping/source-broker.yaml) from [ScheduledEventing](scheduledeventing.md).
 
 ```bash
 kubectl apply -f cronjob-source-broker.yaml
