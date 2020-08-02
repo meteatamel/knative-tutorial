@@ -47,6 +47,8 @@ NAME      READY   REASON   URL
 default   True             http://broker-ingress.knative-eventing.svc.cluster.local/default/default
 ```
 
+*Note:* If your environment doesn't support automatic injection, refer to [Broker](broker.md).
+
 ## Event source - Broker sink
 
 Next, setup `PingSource` to point to our Broker instead.
