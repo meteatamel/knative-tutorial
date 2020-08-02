@@ -42,7 +42,7 @@ Create the event source:
 kubectl apply -f source-broker.yaml
 ```
 
-You can need to create a [trigger.yaml](../eventing/ping/trigger.yaml]r to listen for events.
+You need to create a [trigger.yaml](../eventing/ping/trigger.yaml) to listen for events.
 
 Notice that we're filtering on Ping events.
 
