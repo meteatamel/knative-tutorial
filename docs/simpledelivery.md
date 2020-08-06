@@ -6,6 +6,20 @@ Let's take a look at the simple delivery scenario where an Event Source sends me
 
 ![Simple Delivery](./images/simple-delivery.png)
 
+## Service
+
+First, create the Knative Service that will be the target of our event.
+
+Define [service.yaml](../eventing/simple/service.yaml).
+
+It's a Knative Service that simply logs out received messages.
+
+Create the service:
+
+```bash
+kubectl apply -f service.yaml
+```
+
 ## Source
 
 Knative supports a number of [Event Sources](https://knative.dev/docs/eventing/sources) to read all sorts of events in Knative.
@@ -20,20 +34,6 @@ Create the source:
 
 ```bash
 kubectl apply -f source.yaml
-```
-
-## Service
-
-Next, create the Knative service that CronJobSource will target.
-
-Define [service.yaml](../eventing/simple/service.yaml).
-
-It's a Knative Service that simply logs out received messages.
-
-Create the service:
-
-```bash
-kubectl apply -f service.yaml
 ```
 
 ## Verify
