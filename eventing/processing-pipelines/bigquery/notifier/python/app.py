@@ -61,7 +61,7 @@ def notify(bucket, name):
     app.logger.info(f"notify with bucket '{bucket}' and name '{name}'")
 
     to_emails = os.environ.get('TO_EMAILS')
-    image_url = f'https://storage.googleapis.com/{bucket}/{name}'
+    image_url = f'https://storage.cloud.google.com/{bucket}/{name}'
     app.logger.info(f"Sending email to '{to_emails}''")
 
     message = Mail(
