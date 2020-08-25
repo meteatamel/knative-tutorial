@@ -60,7 +60,7 @@ Define [subscription1.yaml](../eventing/complexwithreply/subscription1.yaml).
 
 Define another [subscription2.yaml](../eventing/complexwithreply/subscription2.yaml) for the second subscription.
 
-Notice that the reply of the second service is routed to the second channel.
+Notice that the reply of the second service is routed to the second channel in [subscription2.yaml](../eventing/complexwithreply/subscription2.yaml).
 
 Create the subscriptions:
 

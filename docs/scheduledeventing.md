@@ -28,9 +28,30 @@ kubectl logs --follow <podid>
 Event Display received event: {"message":"Hello world from ping!"}
 ```
 
+# Broker
+
+You can also inject a Broker in the namespace where we want to receive messages. Let's use the default namespace:
+
+```bash
+kubectl label ns default eventing.knative.dev/injection=enabled
+
+namespace/default labeled
+```
+
+In a few seconds, you should see a Broker in the default namespace:
+
+```bash
+kubectl get broker
+
+NAME      READY   REASON   URL
+default   True             http://broker-ingress.knative-eventing.svc.cluster.local/default/default
+```
+
+*Note:* If your environment doesn't support automatic injection, refer to [Broker](broker.md).
+
 ## Event source - Broker sink
 
-You can also setup `PingSource` to point to a Broker instead.
+Next, setup `PingSource` to point to our Broker instead.
 
 Create a [source-broker.yaml](../eventing/ping/source-broker.yaml).
 
@@ -42,7 +63,7 @@ Create the event source:
 kubectl apply -f source-broker.yaml
 ```
 
-You can need to create a [trigger.yaml](../eventing/ping/trigger.yaml]r to listen for events.
+You need to create a [trigger.yaml](../eventing/ping/trigger.yaml) to listen for events.
 
 Notice that we're filtering on Ping events.
 

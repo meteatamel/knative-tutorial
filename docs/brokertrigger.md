@@ -40,9 +40,11 @@ NAME
 inmemorychannel.messaging.knative.dev/default-kne-trigger
 ```
 
+*Note:* If your environment doesn't support automatic injection, refer to [Broker](broker.md).
+
 ## Source
 
-Create a `PingSource` to target the Broker. Define [source.yaml].
+Create a `PingSource` to target the Broker. Define [source.yaml](../eventing/brokertrigger/source.yaml).
 
 Create the source:
 
