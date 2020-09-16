@@ -44,6 +44,8 @@ namespace Common
 
         public (string, string) ReadCloudStorageData(CloudEvent cloudEvent)
         {
+            _logger.LogInformation($"Parsing cloud storage data for type: {cloudEvent.Type}");
+
             dynamic cloudEventData = JValue.Parse((string)cloudEvent.Data);
 
             switch (cloudEvent.Type)
@@ -59,7 +61,11 @@ namespace Common
                     //     "data": "eyJidWNrZXQiOiJldmVudHMtYXRhbWVsLWltYWdlcy1pbnB1dCIsIm5hbWUiOiJiZWFjaC5qcGcifQ==",
                     // },"subscription": "projects/events-atamel/subscriptions/cre-europe-west1-trigger-resizer-sub-000"}
                     var data = (string)cloudEventData["message"]["data"];
+                    _logger.LogInformation($"data: {data}");
+
                     var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
+                    _logger.LogInformation($"decoded: {decoded}");
+
                     var parsed = JValue.Parse(decoded);
                     return ((string)parsed["bucket"], (string)parsed["name"]);
             }

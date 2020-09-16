@@ -44,6 +44,7 @@ namespace Common
         public IEventWriter ReadEventWriter()
         {
             // Use TOPIC_ID as an indicator for Pub/Sub event writer
+            // Can be a single topic or a list of topics seperated by colon.
             var topicId = Read("TOPIC_ID", false);
             if (topicId != null)
             {
