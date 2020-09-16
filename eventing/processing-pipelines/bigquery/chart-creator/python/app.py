@@ -39,7 +39,7 @@ def read_event_data(data):
     type = request.headers['ce-type']
     app.logger.info(f"Received ce-type '{type}'")
 
-    if type == 'com.google.cloud.pubsub.topic.publish':
+    if type == 'google.cloud.pubsub.topic.v1.messagePublished':
         message = content['message']
         data = message['data']
         decoded = base64.b64decode(data)

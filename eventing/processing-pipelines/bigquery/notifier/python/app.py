@@ -47,7 +47,7 @@ def read_event_data(data):
     type = request.headers['ce-type']
     app.logger.info(f"Received ce-type '{type}'")
 
-    if type == 'com.google.cloud.auditlog.event':
+    if type == 'google.cloud.audit.log.v1.written':
         protoPayload = content['protoPayload']
         resourceName = protoPayload['resourceName']
         tokens = resourceName.split('/')

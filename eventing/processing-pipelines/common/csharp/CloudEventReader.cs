@@ -23,6 +23,11 @@ namespace Common
 {
     public class CloudEventReader
     {
+        private const string EVENT_TYPE_AUDITLOG = "google.cloud.audit.log.v1.written";
+        private const string EVENT_TYPE_PUBSUB = "google.cloud.pubsub.topic.v1.messagePublished";
+
+        private const string EVENT_TYPE_SCHEDULER = "google.cloud.scheduler.job.v1.executed";
+
         private readonly ILogger _logger;
 
         public CloudEventReader(ILogger logger)
@@ -43,13 +48,13 @@ namespace Common
 
             switch (cloudEvent.Type)
             {
-                case "com.google.cloud.auditlog.event":
+                case EVENT_TYPE_AUDITLOG:
                     //"protoPayload" : {"resourceName":"projects/_/buckets/events-atamel-images-input/objects/atamel.jpg}";
                     var tokens = ((string)cloudEventData.protoPayload.resourceName).Split('/');
                     var bucket = tokens[3];
                     var name = tokens[5];
                     return (bucket, name);
-                case "com.google.cloud.pubsub.topic.publish":
+                case EVENT_TYPE_PUBSUB:
                     // {"message": {
                     //     "data": "eyJidWNrZXQiOiJldmVudHMtYXRhbWVsLWltYWdlcy1pbnB1dCIsIm5hbWUiOiJiZWFjaC5qcGcifQ==",
                     // },"subscription": "projects/events-atamel/subscriptions/cre-europe-west1-trigger-resizer-sub-000"}
@@ -66,12 +71,12 @@ namespace Common
         {
             switch (cloudEvent.Type)
             {
-                case "com.google.cloud.pubsub.topic.publish":
+                case EVENT_TYPE_PUBSUB:
                     var cloudEventData = JValue.Parse((string)cloudEvent.Data);
                     var data = (string)cloudEventData["message"]["data"];
                     var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
                     return decoded;
-                case "com.google.cloud.scheduler.job.execute":
+                case EVENT_TYPE_SCHEDULER:
                     return (string)cloudEvent.Data;
             }
 
