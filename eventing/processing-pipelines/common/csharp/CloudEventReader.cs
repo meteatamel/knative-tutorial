@@ -11,10 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System;
-using System.Text;
 using System.Threading.Tasks;
 using CloudNative.CloudEvents;
+using Google.Events;
+using Google.Events.Protobuf.Cloud.Audit.V1;
+using Google.Events.Protobuf.Cloud.PubSub.V1;
+using Google.Events.Protobuf.Cloud.Scheduler.V1;
+using Google.Events.Protobuf.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -27,6 +30,8 @@ namespace Common
         private const string EVENT_TYPE_PUBSUB = "google.cloud.pubsub.topic.v1.messagePublished";
 
         private const string EVENT_TYPE_SCHEDULER = "google.cloud.scheduler.job.v1.executed";
+
+        private const string EVENT_TYPE_STORAGE = "google.cloud.storage.object.v1.finalized";
 
         private readonly ILogger _logger;
 
@@ -44,52 +49,79 @@ namespace Common
 
         public (string, string) ReadCloudStorageData(CloudEvent cloudEvent)
         {
-            _logger.LogInformation($"Parsing cloud storage data for type: {cloudEvent.Type}");
+            _logger.LogInformation("Reading cloud storage data");
 
-            dynamic cloudEventData = JValue.Parse((string)cloudEvent.Data);
+            string bucket = null, name = null;
 
             switch (cloudEvent.Type)
             {
                 case EVENT_TYPE_AUDITLOG:
                     //"protoPayload" : {"resourceName":"projects/_/buckets/events-atamel-images-input/objects/atamel.jpg}";
-                    var tokens = ((string)cloudEventData.protoPayload.resourceName).Split('/');
-                    var bucket = tokens[3];
-                    var name = tokens[5];
-                    return (bucket, name);
+
+                    var logEntryData = CloudEventConverters.ConvertCloudEventData<LogEntryData>(cloudEvent);
+                    var tokens = logEntryData.ProtoPayload.ResourceName.Split('/');
+                    bucket = tokens[3];
+                    name = tokens[5];
+                    break;
+                case EVENT_TYPE_STORAGE:
+                    var storageObjectData = CloudEventConverters.ConvertCloudEventData<StorageObjectData>(cloudEvent);
+                    bucket = storageObjectData.Bucket;
+                    name = storageObjectData.Name;
+                    break;
                 case EVENT_TYPE_PUBSUB:
                     // {"message": {
                     //     "data": "eyJidWNrZXQiOiJldmVudHMtYXRhbWVsLWltYWdlcy1pbnB1dCIsIm5hbWUiOiJiZWFjaC5qcGcifQ==",
                     // },"subscription": "projects/events-atamel/subscriptions/cre-europe-west1-trigger-resizer-sub-000"}
-                    var data = (string)cloudEventData["message"]["data"];
-                    _logger.LogInformation($"data: {data}");
 
-                    var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
+                    var messagePublishedData = CloudEventConverters.ConvertCloudEventData<MessagePublishedData>(cloudEvent);
+                    var pubSubMessage = messagePublishedData.Message;
+                    _logger.LogInformation($"Type: {EVENT_TYPE_PUBSUB} data: {pubSubMessage.Data.ToBase64()}");
+
+                    var decoded = pubSubMessage.Data.ToStringUtf8();
                     _logger.LogInformation($"decoded: {decoded}");
 
                     var parsed = JValue.Parse(decoded);
-                    return ((string)parsed["bucket"], (string)parsed["name"]);
+                    bucket = (string)parsed["bucket"];
+                    name = (string)parsed["name"];
+                    break;
+                default:
+                    // Data: {"bucket":"knative-atamel-images-input","name":"beach.jpg"}
+                    _logger.LogInformation($"Type: {cloudEvent.Type} data: {cloudEvent.Data}");
+
+                    var parsedCustom = JValue.Parse((string)cloudEvent.Data);
+                    bucket = (string)parsedCustom["bucket"];
+                    name = (string)parsedCustom["name"];
+                    break;
             }
-            // google.cloud.storage.object.v1.finalized
-            return (cloudEventData.bucket, cloudEventData.name);
+            _logger.LogInformation($"Extracted bucket: {bucket}, name: {name}");
+            return (bucket, name);
         }
 
         public string ReadCloudSchedulerData(CloudEvent cloudEvent)
         {
+            _logger.LogInformation("Reading cloud scheduler data");
+
+            string country = null;
+
             switch (cloudEvent.Type)
             {
                 case EVENT_TYPE_PUBSUB:
-                    var cloudEventData = JValue.Parse((string)cloudEvent.Data);
-                    var data = (string)cloudEventData["message"]["data"];
-                    var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(data));
-                    return decoded;
+                    var messagePublishedData = CloudEventConverters.ConvertCloudEventData<MessagePublishedData>(cloudEvent);
+                    var pubSubMessage = messagePublishedData.Message;
+                    _logger.LogInformation($"Type: {EVENT_TYPE_PUBSUB} data: {pubSubMessage.Data.ToBase64()}");
+
+                    country = pubSubMessage.Data.ToStringUtf8();
+                    break;
                 case EVENT_TYPE_SCHEDULER:
-                    return (string)cloudEvent.Data;
+                    // Data: {"custom_data":"Q3lwcnVz"}
+                    var schedulerJobData = CloudEventConverters.ConvertCloudEventData<SchedulerJobData>(cloudEvent);
+                    _logger.LogInformation($"Type: {EVENT_TYPE_SCHEDULER} data: {schedulerJobData.CustomData.ToBase64()}");
+
+                    country = schedulerJobData.CustomData.ToStringUtf8();
+                    break;
             }
 
-            //Data: {"custom_data":"Q3lwcnVz"}
-            var parsed = JValue.Parse((string)cloudEvent.Data);
-            var customData = (string)parsed["custom_data"];
-            var country = Encoding.UTF8.GetString(Convert.FromBase64String(customData));
+            _logger.LogInformation($"Extracted country: {country}");
             return country;
         }
     }

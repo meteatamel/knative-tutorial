@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using System.IO;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
-using CloudNative.CloudEvents;
 using Common;
 using Google.Cloud.BigQuery.V2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace QueryRunner
 {
