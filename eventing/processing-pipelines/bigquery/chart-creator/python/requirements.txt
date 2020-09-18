@@ -2,5 +2,6 @@ Flask
 gunicorn
 pandas
 matplotlib==3.2.2
+cloudevents==1.2.0
 google.cloud.bigquery
 google.cloud.storage

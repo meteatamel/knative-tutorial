@@ -19,35 +19,47 @@ import pandas
 import matplotlib.pyplot as plt
 
 from flask import Flask, request
+from cloudevents.http import from_http
 from google.cloud import bigquery
 from google.cloud import storage
+
+def read_config(var):
+    value = os.environ.get(var)
+    if value is None:
+       raise Exception(f'{var} cannot be None')
+    return value
+
+bucket_name = read_config('BUCKET')
 
 app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def handle_post():
-    content = read_event_data(request.data)
-    country = content['country']
-    tableId = content['tableId']
+    app.logger.info(pretty_print_POST(request))
+
+    # Read CloudEvent from the request
+    cloud_event = from_http(request.headers, request.get_data())
+
+    # Parse the event body
+    country, tableId = read_event_data(cloud_event)
+
     query_covid_dataset(country, tableId)
 
     return 'OK', 200
 
-def read_event_data(data):
-    content = json.loads(request.data)
+def read_event_data(cloud_event):
 
-    type = request.headers['ce-type']
-    app.logger.info(f"Received ce-type '{type}'")
+    # Assume custom event by default
+    event_data = cloud_event.data
 
+    type = cloud_event['type']
     if type == 'google.cloud.pubsub.topic.v1.messagePublished':
-        message = content['message']
+        message = event_data['message']
         data = message['data']
         decoded = base64.b64decode(data)
-        content = json.loads(decoded)
-        return content
+        event_data = json.loads(decoded)
 
-    # TODO: Read proper CloudEvent with the SDK
-    return content
+    return event_data['country'], event_data['tableId']
 
 def query_covid_dataset(country, tableId):
 
@@ -89,12 +101,17 @@ def query_covid_dataset(country, tableId):
 
 def upload_blob(file_name):
     storage_client = storage.Client()
-    bucket_name = os.environ.get('BUCKET')
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(file_name)
     blob.upload_from_filename(file_name)
     app.logger.info(f'File {file_name} uploaded to bucket {bucket_name}')
 
+def pretty_print_POST(req):
+    return '{}\r\n{}\r\n\r\n{}'.format(
+        req.method + ' ' + req.url,
+        '\r\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+        req.data,
+    )
 
 if __name__ != '__main__':
     # Redirect Flask logs to Gunicorn logs
