@@ -60,7 +60,8 @@ def read_event_data(cloud_event):
     event_data = cloud_event.data
 
     type = cloud_event['type']
-    if type == 'google.cloud.audit.log.v1.written':
+    # Handling new and old AuditLog types, just in case
+    if type == 'google.cloud.audit.log.v1.written' or type == 'com.google.cloud.auditlog.event':
         protoPayload = event_data['protoPayload']
         resourceName = protoPayload['resourceName']
         tokens = resourceName.split('/')
