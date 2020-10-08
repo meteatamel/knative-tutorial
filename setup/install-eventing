@@ -6,20 +6,20 @@ DIR="$(dirname "$0")"
 . "${DIR}/config"
 
 # Install Eventing CRDs
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-crds.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/eventing-crds.yaml"
 
 
 # Install Eventing Core
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-core.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/eventing-core.yaml"
 
 # Install default in-memory channel (not suitable for production)
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/in-memory-channel.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/in-memory-channel.yaml"
 
 # Install default Broker
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/mt-channel-broker.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/mt-channel-broker.yaml"
 
 # Install Sugar Controller
-kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_VERSION}/eventing-sugar-controller.yaml"
+kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/eventing-sugar-controller.yaml"
 
 # Check all eventing pods have STATUS 'Running'
 # kubectl get pods -n knative-eventing

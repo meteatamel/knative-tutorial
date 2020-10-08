@@ -10,13 +10,13 @@ set -v
 
 # Install Cloud Run Eventing CRDs
 kubectl apply --selector messaging.cloud.google.com/crd-install=true \
--f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_SERVING_VERSION}/cloud-run-events.yaml"
 kubectl apply --selector events.cloud.google.com/crd-install=true \
--f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_SERVING_VERSION}/cloud-run-events.yaml"
 
 # Install Cloud Run Eventing
 kubectl apply \
--f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_VERSION}/cloud-run-events.yaml"
+-f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_SERVING_VERSION}/cloud-run-events.yaml"
 
 # Needed for init scripts
 curl -s https://raw.githubusercontent.com/google/knative-gcp/master/hack/lib.sh --output lib.sh

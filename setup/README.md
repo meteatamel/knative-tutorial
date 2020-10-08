@@ -16,22 +16,34 @@ Create a GKE cluster *without* Istio add-on. We do this because the Istio versio
 
 ## Install Istio
 
+There's now an installation script for Istio in
+[net-istio](https://github.com/knative-sandbox/net-istio.git) repo. Script
+seems to assume Linux (didn't work on MacOS for me), so I suggest to run it in
+Cloud Shell, if you don't have a Linux environment.
+
+Clone the repo:
+
 ```sh
-./install-istio
+git clone https://github.com/knative-sandbox/net-istio.git
+```
+
+Install stable Istio with minimal Istio configuration:
+
+```sh
+cd net-istio/third_party/istio-stable
+./install-istio.sh istio-minimal.yaml
+```
+
+You can check if Istio installed properly with:
+
+```sh
+kubectl get pods -n istio-system
 ```
 
 ## Install Knative Serving
 
 ```sh
 ./install-serving
-```
-
-## (Optional) Configure HTTPS
-
-If you intend to use HTTPS, configure it:
-
-```sh
-./configure-https
 ```
 
 ## Install Knative Eventing
@@ -54,8 +66,8 @@ If you intend to read Google Cloud events, install [Knative GCP](https://github.
 
 There are 2 ways of setting up authentication in Knative GCP:
 
-1. Workload identity (Recommended)
-2. Kubernetes secrets
+1. Kubernetes secrets
+2. Workload identity
 
 Workload identity is the recommended mechanism but we have scripts for both.
 Pick one of the mechanisms and use appropriate scripts.

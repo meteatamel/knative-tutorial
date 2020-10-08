@@ -6,16 +6,16 @@ DIR="$(dirname "$0")"
 . "${DIR}/config"
 
 # Install Serving CRDs
-kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/serving-crds.yaml"
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_SERVING_VERSION}/serving-crds.yaml"
 
 # Install Serving Core Components
-kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/serving-core.yaml"
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_SERVING_VERSION}/serving-core.yaml"
 
 # Install Knative Istio Controller needed for Serving
-kubectl apply -f "https://github.com/knative/net-istio/releases/download/v${KNATIVE_VERSION}/net-istio.yaml"
+kubectl apply -f "https://github.com/knative/net-istio/releases/download/v${KNATIVE_SERVING_VERSION}/release.yaml"
 
 # Optional: Setup Magic DNS (xip.io)
-kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_VERSION}/serving-default-domain.yaml"
+kubectl apply -f "https://github.com/knative/serving/releases/download/v${KNATIVE_SERVING_VERSION}/serving-default-domain.yaml"
 
 # Check all serving pods have STATUS 'Running'
 # kubectl get pods -n knative-serving

@@ -14,7 +14,7 @@ We're assuming that you already went through [Install Knative with GCP](../setup
 
 Enable the Cloud Storage API:
 
-```bash
+```sh
 gcloud services enable storage-component.googleapis.com storage-api.googleapis.com
 ```
 
@@ -22,16 +22,23 @@ Give Google Cloud Storage permissions to publish to GCP Pub/Sub.
 
 First, find the Service Account that GCS uses to publish to Pub/Sub. Use the
 steps outlined in [Cloud Console or the JSON
-API](https://cloud.google.com/storage/docs/getting-service-account). Assuming
-the service account you found from above was
+API](https://cloud.google.com/storage/docs/getting-service-account) or run the
+following command and check `email_address` field:
+
+```sh
+curl -X GET -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+"https://storage.googleapis.com/storage/v1/projects/$(gcloud config get-value project)/serviceAccount"
+```
+
+Assuming the service account you found from above was
 `service-XYZ@gs-project-accounts.iam.gserviceaccount.com`, run the following to
 grant rights to that Service Account to publish to Pub/Sub:
 
-```bash
+```sh
 export GCS_SERVICE_ACCOUNT=service-XYZ@gs-project-accounts.iam.gserviceaccount.com
 export PROJECT_ID=$(gcloud config get-value core/project)
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member=serviceAccount:$GCS_SERVICE_ACCOUNT \
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member=serviceAccount:${GCS_SERVICE_ACCOUNT} \
   --role roles/pubsub.publisher
 ```
 
@@ -39,9 +46,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 Create a unique storage bucket to save files:
 
-```bash
+```sh
 export BUCKET="$(gcloud config get-value core/project)-storage"
-gsutil mb gs://$BUCKET
+gsutil mb gs://${BUCKET}
 ```
 
 ## CloudStorageSource
@@ -60,7 +67,7 @@ Make sure you update the bucket name.
 
 Create the CloudStorageSource:
 
-```bash
+```sh
 kubectl apply -f cloudstoragesource.yaml
 ```
 
@@ -68,13 +75,13 @@ kubectl apply -f cloudstoragesource.yaml
 
 If there's no Broker in the default namespace already, label the namespace:
 
-```bash
+```sh
 kubectl label ns default eventing.knative.dev/injection=enabled
 ```
 
 You should see a Broker in the namespace:
 
-```bash
+```sh
 kubectl get broker
 
 NAME      READY   REASON   URL                                               AGE
@@ -88,7 +95,7 @@ For the event consumer, we can use the Event Display service defined in
 
 Create the service:
 
-```bash
+```sh
 kubectl apply -f kservice.yaml
 ```
 
@@ -98,13 +105,13 @@ Connect the Event Display service to the Broker with a Trigger defined in [trigg
 
 Create the trigger:
 
-```bash
+```sh
 kubectl apply -f trigger.yaml
 ```
 
 Check that the trigger is ready:
 
-```bash
+```sh
 kubectl get trigger
 
 NAME                           READY   REASON   BROKER    SUBSCRIBER_URI                                   AGE
@@ -115,19 +122,19 @@ trigger-event-display-storage   True             default   http://event-display.
 
 We can now test our service by sending a file to the bucket.
 
-```bash
-gsutil cp cloudstoragesource.yaml gs://$BUCKET
+```sh
+gsutil cp cloudstoragesource.yaml gs://${BUCKET}
 ```
 
 Wait a little and check that a pod is created:
 
-```bash
+```sh
 kubectl get pods
 ```
 
 Inspect the logs of the pod (replace `<podid>` with actual pod id):
 
-```bash
+```sh
 kubectl logs <podid> --follow -c user-container
 ```
 
