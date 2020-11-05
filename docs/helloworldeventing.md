@@ -31,7 +31,13 @@ We need to inject a Broker in the namespace where we want to receive messages.
 Let's use the default namespace.
 
 ```bash
-kubectl label ns default eventing.knative.dev/injection=enabled
+kubectl create -f - <<EOF
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default
+  namespace: default
+EOF
 ```
 
 You should see a Broker in the namespace:
