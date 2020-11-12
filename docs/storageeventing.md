@@ -73,20 +73,8 @@ kubectl apply -f cloudstoragesource.yaml
 
 ## Broker
 
-If there's no Broker in the default namespace already, label the namespace:
-
-```sh
-kubectl label ns default eventing.knative.dev/injection=enabled
-```
-
-You should see a Broker in the namespace:
-
-```sh
-kubectl get broker
-
-NAME      READY   REASON   URL                                               AGE
-default   True             http://default-broker.default.svc.cluster.local   52m
-```
+Make sure there's a Broker in the default namespace by following instructions in
+[Broker Creation](brokercreation.md) page.
 
 ## Consumer
 

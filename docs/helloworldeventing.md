@@ -27,21 +27,8 @@ If not, you can follow the instructions on Knative Eventing Installation [page](
 
 ## Broker
 
-We need to inject a Broker in the namespace where we want to receive messages.
-Let's use the default namespace.
-
-```bash
-kubectl label ns default eventing.knative.dev/injection=enabled
-```
-
-You should see a Broker in the namespace:
-
-```bash
-kubectl get broker
-
-NAME      READY   REASON   URL
-default   True             http://broker-ingress.knative-eventing.svc.cluster.local/default/default
-```
+Make sure there's a Broker in the default namespace by following instructions in
+[Broker Creation](brokercreation.md) page.
 
 ## Consumer
 

@@ -14,33 +14,8 @@ In this example, only Service2 sends a reply but any Service can reply back. Rep
 
 ## Broker
 
-We need to inject a Broker in the namespace where we want to receive messages. Let's use the default namespace:
-
-```bash
-kubectl label ns default eventing.knative.dev/injection=enabled
-
-namespace/default labeled
-```
-
-In a few seconds, you should see a Broker in the default namespace:
-
-```bash
-kubectl get broker
-
-NAME      READY   REASON   URL
-default   True             http://broker-ingress.knative-eventing.svc.cluster.local/default/default
-```
-
-There's also a default `InMemoryChannel` created and used by the Broker (but default channel can be [configured](https://knative.dev/docs/eventing/channels/default-channels/#setting-the-default-channel-configuration)):
-
-```bash
-kubectl get channel
-
-NAME
-inmemorychannel.messaging.knative.dev/default-kne-trigger
-```
-
-*Note:* If your environment doesn't support automatic injection, refer to [Broker](broker.md).
+Make sure there's a Broker in the default namespace by following instructions in
+[Broker Creation](brokercreation.md) page.
 
 ## Source
 
