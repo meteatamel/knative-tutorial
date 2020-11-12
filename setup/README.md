@@ -52,6 +52,11 @@ kubectl get pods -n istio-system
 ./install-eventing
 ```
 
+## (Optional) Create Broker
+
+You probably need a Broker in the default namespace. You can follow instructions
+in [Broker Creation](../docs/brokercreation.md) page to do that.
+
 ## (Optional) Install observability features
 
 Install observability features to enable logging, metrics, and request tracing in Serving and Eventing components:

@@ -2,8 +2,8 @@
 
 You can create Broker in the namespace in 2 ways:
 
-1- Automatically by labelling the namespace.
-2- Manually.
+1. Automatically by labelling the namespace.
+2. Manually.
 
 ## Automatically
 
