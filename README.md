@@ -22,7 +22,7 @@ We tested this tutorial on:
 * Knative Serving: 0.19.0
 * Knative Eventing: 0.19.0
 * Knative-GCP: 0.19.0
-* Tekton: 0.14.2
+* Tekton: 0.20.1
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 

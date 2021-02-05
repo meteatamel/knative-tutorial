@@ -26,13 +26,13 @@ You can follow instructions at [Installing Tekton Pipelines](https://github.com/
 
 As a recap, this is the command:
 
-```bash
+```sh
 kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 ```
 
 Check that Tekton pipeline pods are running:
 
-```bash
+```sh
 kubectl get pods -n tekton-pipelines
 
 NAME                                           READY   STATUS
@@ -52,14 +52,14 @@ A [TaskRun](https://github.com/tektoncd/pipeline/blob/master/docs/taskruns.md) r
 
 Create the Task and the TaskRun:
 
-```bash
+```sh
 kubectl apply -f task-helloworld.yaml
 kubectl apply -f taskrun-helloworld.yaml
 ```
 
 Check that both Task and TaskRun are created:
 
-```bash
+```sh
 kubectl get tekton-pipelines
 
 NAME                             SUCCEEDED   REASON      STARTTIME   COMPLETIONTIME
@@ -67,6 +67,15 @@ taskrun.tekton.dev/hello-world   True        Succeeded   7s          2s
 
 NAME                          AGE
 task.tekton.dev/hello-world   13s
+```
+
+You can see the result of TaskRun as follows:
+
+```sh
+kubectl describe taskrun echo-hello-world-task-run
+
+...
+Normal  Succeeded  119s  TaskRun  All Steps have completed executing
 ```
 
 You can see that the TaskRun was successful. This confirms that Tekton is installed properly and everything is working. In the next step, we'll design and run the first build.
