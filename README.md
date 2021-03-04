@@ -17,10 +17,10 @@ Istio on Google Kubernetes Engine (GKE). You can follow the instructions there.
 
 We tested this tutorial on:
 
-* GKE: 1.17.12-gke.500
-* Istio: 1.7.1
-* Knative Serving: 0.19.0
-* Knative Eventing: 0.19.0
+* GKE: 1.18.16-gke.300
+* Istio: 1.8.2
+* Knative Serving: 0.21.0
+* Knative Eventing: 0.21.1
 * Knative-GCP: 0.19.0
 * Tekton: 0.20.1
 

@@ -8,39 +8,11 @@ Edit [config](config) file for your setup.
 
 ## Create a GKE cluster
 
-Create a GKE cluster *without* Istio add-on. We do this because the Istio version of the add-on usually lags behind what Knative expects:
-
 ```sh
 ./create-gke-cluster
 ```
 
-## Install Istio
-
-There's now an installation script for Istio in
-[net-istio](https://github.com/knative-sandbox/net-istio.git) repo. Script
-seems to assume Linux (didn't work on MacOS for me), so I suggest to run it in
-Cloud Shell, if you don't have a Linux environment.
-
-Clone the repo:
-
-```sh
-git clone https://github.com/knative-sandbox/net-istio.git
-```
-
-Install stable Istio with minimal Istio configuration:
-
-```sh
-cd net-istio/third_party/istio-stable
-./install-istio.sh istio-minimal.yaml
-```
-
-You can check if Istio installed properly with:
-
-```sh
-kubectl get pods -n istio-system
-```
-
-## Install Knative Serving
+## Install Istio & Knative Serving
 
 ```sh
 ./install-serving
@@ -56,14 +28,6 @@ kubectl get pods -n istio-system
 
 You probably need a Broker in the default namespace. You can follow instructions
 in [Broker Creation](../docs/brokercreation.md) page to do that.
-
-## (Optional) Install observability features
-
-Install observability features to enable logging, metrics, and request tracing in Serving and Eventing components:
-
-```sh
-./install-monitoring
-```
 
 ## (Optional) Install Knative with GCP
 
