@@ -1,4 +1,4 @@
-# Hello World Build
+# Google Container Registry Build
 
 In this step, let's utilize Tekton Pipelines to build containers and push to Google Container Registry (GCR).
 

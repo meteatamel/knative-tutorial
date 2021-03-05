@@ -24,12 +24,10 @@ Edit [config](config) file for your setup.
 ./install-eventing
 ```
 
-## (Optional) Create Broker
+You probably need a Broker in the default namespace with Knative Eventing.
+You can follow instructions in [Broker Creation](../docs/brokercreation.md) page to do that.
 
-You probably need a Broker in the default namespace. You can follow instructions
-in [Broker Creation](../docs/brokercreation.md) page to do that.
-
-## (Optional) Install Knative with GCP
+## Install Knative GCP
 
 If you intend to read Google Cloud events, install [Knative GCP](https://github.com/google/knative-gcp) components.
 
@@ -40,7 +38,7 @@ There are 2 ways of setting up authentication in Knative GCP:
 
 Pick one of the mechanisms and use appropriate scripts.
 
-Install Knative with GCP:
+Install Knative GCP:
 
 ```sh
 # Kubernetes secrets
@@ -58,6 +56,14 @@ Configure a Pub/Sub enabled Service Account for Data Plane:
 
 # Workload identity
 ./install-dataplane-serviceaccount workload
+```
+
+## Install Tekton Pipelines
+
+Install Tekton Pipelines, if you want to run build samples:
+
+```sh
+./install-tekton
 ```
 
 -------

@@ -22,7 +22,7 @@ We tested this tutorial on:
 * Knative Serving: 0.21.0
 * Knative Eventing: 0.21.1
 * Knative-GCP: 0.21.0
-* Tekton: 0.20.1
+* Tekton: 0.21.0
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 
@@ -67,8 +67,8 @@ Knative Eventing with Google Cloud
 Build
 
 * Tekton Pipelines
-  * [Hello Tekton](docs/hellotekton.md)
-  * [Hello World Build](docs/tekton-helloworldbuild.md)
+  * [Hello World Tekton](docs/hellotekton.md)
+  * [Google Container Registry Build](docs/tekton-gcrbuild.md)
   * [Docker Hub Build](docs/tekton-dockerbuild.md)
   * [Kaniko Task Build](docs/tekton-kanikotaskbuild.md)
 

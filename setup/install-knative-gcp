@@ -41,5 +41,5 @@ fi
 
 rm lib.sh
 
-# Check Cloud Run Events pods have STATUS 'Running'
+# Check pods have STATUS 'Running'
 # kubectl get pods -n cloud-run-events

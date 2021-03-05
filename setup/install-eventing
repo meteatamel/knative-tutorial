@@ -21,5 +21,5 @@ kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATI
 # Install Sugar Controller
 kubectl apply -f "https://github.com/knative/eventing/releases/download/v${KNATIVE_EVENTING_VERSION}/eventing-sugar-controller.yaml"
 
-# Check all eventing pods have STATUS 'Running'
+# Check pods have STATUS 'Running'
 # kubectl get pods -n knative-eventing
