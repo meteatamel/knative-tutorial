@@ -21,6 +21,7 @@ spec:
     - name: revision
       value: master
     - name: url
+      # Point to your repo
       value: https://github.com/meteatamel/knative-tutorial
 ---
 apiVersion: tekton.dev/v1alpha1
