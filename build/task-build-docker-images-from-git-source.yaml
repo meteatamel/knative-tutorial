@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,40 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: build-docker-image-from-git-source
 spec:
-  inputs:
-    resources:
+  params:
+    - name: pathToDockerFile
+      type: string
+      description: The path to the dockerfile to build
+      default: $(resources.inputs.docker-source.path)/Dockerfile
+    - name: pathToContext
+      type: string
+      description: |
+        The build context used by Kaniko
+        (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
+      default: $(resources.inputs.docker-source.path)
+  resources:
+    inputs:
       - name: docker-source
         type: git
-    params:
-      - name: pathToDockerFile
-        type: string
-        description: The path to the dockerfile to build
-        default: /workspace/docker-source/Dockerfile
-      - name: pathToContext
-        type: string
-        description:
-          The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        default: /workspace/docker-source
-  outputs:
-    resources:
+    outputs:
       - name: builtImage
         type: image
   steps:
     - name: build-and-push
-      image: gcr.io/kaniko-project/executor:v0.9.0
+      image: gcr.io/kaniko-project/executor:v0.16.0
       # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
-          value: "/builder/home/.docker/"
+          value: "/tekton/home/.docker/"
       command:
         - /kaniko/executor
       args:
-        - --dockerfile=$(inputs.params.pathToDockerFile)
-        - --destination=$(outputs.resources.builtImage.url)
-        - --context=$(inputs.params.pathToContext)
+        - --dockerfile=$(params.pathToDockerFile)
+        - --destination=$(resources.outputs.builtImage.url)
+        - --context=$(params.pathToContext)
