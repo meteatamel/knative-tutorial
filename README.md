@@ -70,7 +70,6 @@ Build
   * [Hello World Tekton](docs/hellotekton.md)
   * [Google Container Registry Build](docs/tekton-gcrbuild.md)
   * [Docker Hub Build](docs/tekton-dockerbuild.md)
-  * [Kaniko Task Build](docs/tekton-kanikotaskbuild.md)
 
 * Knative Build (Deprecated)
   * [Hello World Build](docs/deprecated/helloworldbuild.md)
