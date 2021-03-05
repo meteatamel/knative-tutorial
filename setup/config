@@ -4,6 +4,8 @@ export KNATIVE_SERVING_VERSION="0.21.0"
 
 export KNATIVE_EVENTING_VERSION="0.21.1"
 
+export KNATIVE_GCP_VERSION="0.21.0"
+
 export PROJECT_ID="knative-atamel"
 
 export CLUSTER_NAME="knative-021"

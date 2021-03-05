@@ -36,9 +36,8 @@ If you intend to read Google Cloud events, install [Knative GCP](https://github.
 There are 2 ways of setting up authentication in Knative GCP:
 
 1. Kubernetes secrets
-2. Workload identity
+2. Workload identity (recommended)
 
-Workload identity is the recommended mechanism but we have scripts for both.
 Pick one of the mechanisms and use appropriate scripts.
 
 Install Knative with GCP:

@@ -21,7 +21,7 @@ We tested this tutorial on:
 * Istio: 1.8.2
 * Knative Serving: 0.21.0
 * Knative Eventing: 0.21.1
-* Knative-GCP: 0.19.0
+* Knative-GCP: 0.21.0
 * Tekton: 0.20.1
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
