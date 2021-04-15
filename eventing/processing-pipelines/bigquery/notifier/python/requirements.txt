@@ -1,5 +1,0 @@
-sendgrid==6.3.1
-Flask
-gunicorn
-cloudevents==1.2.0
-google.cloud.storage
