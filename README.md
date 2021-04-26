@@ -20,7 +20,7 @@ We tested this tutorial on:
 * GKE: 1.19.9-gke.1400
 * Istio: 1.8.4
 * Knative Serving: 0.22.0
-* Knative Eventing: 0.21.1
+* Knative Eventing: 0.22.1
 * Knative-GCP: 0.21.0
 * Tekton: 0.21.0
 
