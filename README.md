@@ -21,15 +21,16 @@ We tested this tutorial on:
 * Istio: 1.8.4
 * Knative Serving: 0.22.0
 * Knative Eventing: 0.22.1
-* Knative-GCP: 0.21.0
-* Tekton: 0.21.0
+* Knative-GCP: 0.22.0
+* Tekton: 0.22.0
 
 If everything worked, all Knative components should show a `STATUS` of `Running`:
 
-```bash
+```sh
 kubectl get pods -n knative-serving
 kubectl get pods -n knative-eventing
-kubectl get pods -n knative-monitoring
+kubectl get pods -n cloud-run-events
+kubectl get pods -n tekton-pipelines
 ```
 
 ## Samples

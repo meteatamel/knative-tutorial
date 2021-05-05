@@ -8,10 +8,6 @@ set -v
 # Reference:
 # https://github.com/google/knative-gcp/blob/master/docs/install/install-knative-gcp.md
 
-# Install the pre-install job
-kubectl apply \
-  -f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_GCP_VERSION}/cloud-run-events-pre-install-jobs.yaml"
-
 # Install Cloud Run Eventing CRDs
 kubectl apply --selector events.cloud.google.com/crd-install=true \
   -f "https://github.com/google/knative-gcp/releases/download/v${KNATIVE_GCP_VERSION}/cloud-run-events.yaml"
