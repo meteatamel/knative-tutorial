@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: events.cloud.google.com/v1beta1
+apiVersion: events.cloud.google.com/v1
 kind: CloudPubSubSource
 metadata:
   name: cloudpubsubsource-test
@@ -19,7 +19,7 @@ spec:
   topic: testing
   sink:
     ref:
-      apiVersion: eventing.knative.dev/v1beta1
+      apiVersion: eventing.knative.dev/v1
       kind: Broker
       name: default
   # If running in GKE, we will ask the metadata server, change this if required.
