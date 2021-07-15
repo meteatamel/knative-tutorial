@@ -13,15 +13,14 @@
 // limitations under the License.
 using System;
 using System.Net.Mime;
-using System.Text;
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.AspNetCore;
+using CloudNative.CloudEvents.NewtonsoftJson;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace event_display_with_reply
 {
@@ -46,40 +45,28 @@ namespace event_display_with_reply
             {
                 endpoints.MapPost("/", async context =>
                 {
-                    var cloudEvent = await context.Request.ReadCloudEventAsync();
+                    var formatter = new JsonEventFormatter();
+                    var cloudEvent = await context.Request.ToCloudEventAsync(formatter);
                     logger.LogInformation("Received CloudEvent\n" + GetEventLog(cloudEvent));
 
                     var replyEvent = GetEventReply();
                     logger.LogInformation("Replying with CloudEvent\n" + GetEventLog(replyEvent));
 
-                    // Structured format - Does not work for event replies for some reason
-                    // var formatter = new JsonEventFormatter();
-                    // byte[] data = formatter.EncodeStructuredEvent(replyEvent, out _);
-                    // context.Response.ContentType = "application/cloudevents+json;charset=UTF-8";
-                    // await context.Response.WriteAsync(Encoding.UTF8.GetString(data));
-
-                    // Binary format
-                    //TODO: There must be a better way to convert CloudEvent to HTTP response
-                    context.Response.Headers.Add("Ce-Id", replyEvent.Id);
-                    context.Response.Headers.Add("Ce-Specversion", "1.0");
-                    context.Response.Headers.Add("Ce-Type", replyEvent.Type);
-                    context.Response.Headers.Add("Ce-Source", replyEvent.Source.ToString());
-                    context.Response.ContentType = "application/json;charset=utf-8";
-                    await context.Response.WriteAsync(replyEvent.Data.ToString());
+                    await replyEvent.CopyToHttpResponseAsync(context.Response, ContentMode.Binary, formatter);
                 });
             });
         }
 
         private CloudEvent GetEventReply()
         {
-            var type = "dev.knative.samples.hifromknative";
-            var source = new Uri("urn:knative/eventing/samples/hello-world");
-            var replyEvent = new CloudEvent(type, source)
+            return new CloudEvent
             {
-                DataContentType = new ContentType(MediaTypeNames.Application.Json),
-                Data = JsonConvert.SerializeObject("This is a Knative reply!")
+                Id = Guid.NewGuid().ToString(),
+                DataContentType = MediaTypeNames.Application.Json,
+                Data = new { key = "This is a Knative reply" },
+                Type = "dev.knative.samples.hifromknative",
+                Source = new Uri("urn:knative/eventing/samples/hello-world"),
             };
-            return replyEvent;
         }
 
         private string GetEventLog(CloudEvent cloudEvent)
