@@ -6,7 +6,9 @@ This tutorial shows how to use different parts of [Knative](https://www.knative.
 
 There's a [presentation](https://speakerdeck.com/meteatamel/serverless-with-knative) that accompanies the tutorial.
 
-[![Serverless with Knative](./docs/images/serverless-with-knative-cloudrun.png)](https://speakerdeck.com/meteatamel/serverless-with-knative)
+<a href="https://speakerdeck.com/meteatamel/serverless-with-knative">
+    <img alt="Serverless with Knative" src="docs/images/serverless-with-knative-cloudrun.png" width="50%" height="50%">
+</a>
 
 ## Setup
 
