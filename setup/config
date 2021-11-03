@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export KNATIVE_SERVING_VERSION="0.23.1"
+export KNATIVE_SERVING_VERSION="1.0.0"
 
-export KNATIVE_EVENTING_VERSION="0.23.2"
+export KNATIVE_EVENTING_VERSION="1.0.0"
 
 export KNATIVE_GCP_VERSION="0.23.0"
 
@@ -10,7 +10,7 @@ export TEKTON_VERSION="0.22.0"
 
 export PROJECT_ID="knative-atamel"
 
-export CLUSTER_NAME="knative-023"
+export CLUSTER_NAME="knative-100"
 
 export CLUSTER_REGION="europe-west1"
 
