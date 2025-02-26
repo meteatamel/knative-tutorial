@@ -43,7 +43,6 @@ Knative Serving
 * [Change configuration](docs/changeconfig.md)
 * [Traffic splitting](docs/trafficsplitting.md)
 * [Configure autoscaling](docs/configureautoscaling.md)
-* [Deploy to Cloud Run](docs/deploycloudrun.md)
 * [gRPC with Knative](docs/grpc.md)
 * [Cluster local services](docs/clusterlocal.md)
 * [Integrate with Twilio](docs/twiliointegration.md)
